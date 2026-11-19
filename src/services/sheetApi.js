@@ -1,7 +1,16 @@
 /**
  * ============================================================================
  * SHEET API SERVICE: GOOGLE APPS SCRIPT TWO-WAY FULL SYNC
- * src/services/sheetApi.js
+ * Mendukung sinkronisasi penuh 2 arah untuk 9 tab:
+ * 1. MASTER
+ * 2. PRE WEDDING
+ * 3. VENDOR DIRECTORY
+ * 4. TIMELINE & RUNDOWN
+ * 5. ADMINISTRASI
+ * 6. WEDDING TRACKER
+ * 7. SESERAHAN
+ * 8. MAHAR
+ * 9. TAMU
  * ============================================================================
  */
 
@@ -33,16 +42,22 @@
   function formatDateIso(val) {
     if (!val) return '';
     const s = String(val).trim();
+    // Jika format DD/MM/YYYY atau sejenisnya
     const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
     if (dmy) {
       return dmy[3] + '-' + dmy[2].padStart(2, '0') + '-' + dmy[1].padStart(2, '0');
     }
+    // Jika format yyyy-mm-dd
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
       return s.substring(0, 10);
     }
     return s;
   }
 
+  /**
+   * 1. GET ALL 9 TABS DARI BACKEND
+   * Mengambil data langsung dari Spreadsheet dengan getDisplayValues()
+   */
   async function getAll(endpoint, pin) {
     const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
     const pinVal = pin || DEFAULT_PIN;
@@ -67,6 +82,10 @@
     return result;
   }
 
+  /**
+   * 2. APPEND ROW (MUTASI FORM ENTRI BARU)
+   * Mengirim POST dengan payload: { sheet, action: 'append', rowValues: [...] }
+   */
   async function append(sheetName, rowValues, endpoint, pin) {
     const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
     const pinVal = pin || DEFAULT_PIN;
@@ -96,6 +115,10 @@
     return result;
   }
 
+  /**
+   * 3. UPDATE ROW (UPDATE DATA EKSISTING TANPA MENIMPA FORMULA)
+   * Mengirim POST dengan payload: { sheet, action: 'updateRow', rowIndex, startCol, rowValues }
+   */
   async function updateRow(sheetName, rowIndex, rowValues, startCol, endpoint, pin) {
     const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
     const pinVal = pin || DEFAULT_PIN;
@@ -127,6 +150,9 @@
     return result;
   }
 
+  /**
+   * 4. DELETE ROW
+   */
   async function deleteRow(sheetName, rowIndex, endpoint, pin) {
     const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
     const pinVal = pin || DEFAULT_PIN;
@@ -156,6 +182,10 @@
     return result;
   }
 
+  /**
+   * 5. EXTRACT FORMULA SUMMARY METRICS LANGSUNG DARI SHEET MASTER
+   * Mengambil hasil kalkulasi formula tanpa menghitung ulang di JS
+   */
   function extractMasterFormulas(masterRows) {
     if (!masterRows || !Array.isArray(masterRows)) return null;
 
@@ -166,11 +196,13 @@
       return '';
     };
 
+    // Row 33 (0-indexed 32): Konsolidasi Keuangan
     const totalPaguStr = getCell(32, 5) || 'Rp140.051.211';
     const totalRealStr = getCell(32, 7) || 'Rp31.087.301';
     const totalSisaStr = getCell(32, 9) || 'Rp108.963.910';
     const serapanPctStr = getCell(32, 11) || '22,2%';
 
+    // Profil Mempelai & Tanggal (Rows 5-6)
     const cpp = getCell(4, 3) || 'FARHAN RAFIQI';
     const cpw = getCell(4, 7) || 'INDIRA GUSTI ARINI';
     const weddingDateText = getCell(5, 3) || 'Minggu, 27 Juni 2027';
@@ -178,6 +210,7 @@
     const targetReady = getCell(5, 11) || 'April 2027 (H-2 Bulan)';
     const countdownText = getCell(4, 11) || '⏳ 221 Hari Menuju Akad';
 
+    // Pilar Konsolidasi (Rows 28-32, 0-indexed 27-31)
     const p1Pagu = parseCurrency(getCell(27, 5));
     const p1Real = parseCurrency(getCell(27, 7));
     const p1Pct = getCell(27, 11) || '0,0%';
@@ -198,6 +231,7 @@
     const p5Real = parseCurrency(getCell(31, 7));
     const p5Pct = getCell(31, 11) || '0,0%';
 
+    // Ringkasan Kartu Modul (Rows 11-15 & 19-23)
     const wtStatusText = getCell(14, 2) || '0 dari 18 Selesai';
     const pwStatusText = getCell(14, 6) || '0 / 12 Item';
     const ssStatusText = getCell(14, 10) || '0 dari 31 Item';
@@ -209,6 +243,7 @@
     const tmCppAllocText = getCell(20, 10) || '5 / 250 Pax (Sisa: 245)';
     const tmCpwAllocText = getCell(21, 10) || '106 / 250 Pax (Sisa: 144)';
 
+    // Timeline & Vendor (Rows 37-38)
     const rdTotalSesi = getCell(36, 2) || '20 Sesi';
     const rdKesiapanPct = getCell(36, 4) || '0,0%';
     const vdTotalVendor = getCell(36, 8) || '14 Rekanan';
@@ -245,12 +280,16 @@
     };
   }
 
+  /**
+   * 6. PARSER LENGKAP: 9 TAB SPREADSHEET MENJADI GLOBAL STATE APLIKASI
+   */
   function parseAllTabs(tabsData) {
     if (!tabsData || typeof tabsData !== 'object') return null;
 
     const masterRows = tabsData['MASTER'] || [];
     const masterFormulas = extractMasterFormulas(masterRows);
 
+    // META
     const meta = {
       cpp: (masterFormulas && masterFormulas.cpp) || 'FARHAN RAFIQI',
       cpw: (masterFormulas && masterFormulas.cpw) || 'INDIRA GUSTI ARINI',
@@ -263,6 +302,7 @@
       targetPaxTotal: 500
     };
 
+    // Ambil kuota tamu dari TAMU baris 4
     const tamuRows = tabsData['TAMU'] || [];
     if (tamuRows[3]) {
       const cppQ = parseInt(tamuRows[3][6], 10);
@@ -272,6 +312,7 @@
       meta.targetPaxTotal = meta.targetPaxCpp + meta.targetPaxCpw;
     }
 
+    // 1. WEDDING TRACKER (Baris 8 s/d 32, 0-indexed 7 s/d 31)
     const wtRows = tabsData['WEDDING TRACKER'] || [];
     const weddingTracker = [];
     let lastCatWT = 'Umum';
@@ -296,6 +337,7 @@
       });
     }
 
+    // 2. PRE WEDDING (Baris 9 s/d 43, 0-indexed 8 s/d 42)
     const pwRows = tabsData['PRE WEDDING'] || [];
     const preWedding = [];
     let lastCatPW = 'Pra-Nikah';
@@ -322,6 +364,7 @@
       });
     }
 
+    // 3. SESERAHAN (Baris 8 s/d 73, 0-indexed 7 s/d 72)
     const ssRows = tabsData['SESERAHAN'] || [];
     const seserahan = [];
     let lastCatSS = 'Seserahan';
@@ -346,6 +389,7 @@
       });
     }
 
+    // 4. MAHAR (Targets: rows 10-12, Logs: rows 16-30)
     const mhRows = tabsData['MAHAR'] || [];
     const maharTargets = [];
     for (let r = 9; r < Math.min(12, mhRows.length); r++) {
@@ -409,6 +453,7 @@
       });
     }
 
+    // 5. ADMINISTRASI (Baris 8 s/d 33, 0-indexed 7 s/d 32)
     const adRows = tabsData['ADMINISTRASI'] || [];
     const administrasi = [];
     for (let r = 7; r < Math.min(33, adRows.length); r++) {
@@ -434,6 +479,7 @@
       });
     }
 
+    // 6. VENDOR DIRECTORY (Baris 17 s/d 30, 0-indexed 16 s/d 29)
     const vdRows = tabsData['VENDOR DIRECTORY'] || [];
     const vendors = [];
     for (let r = 16; r < Math.min(30, vdRows.length); r++) {
@@ -457,6 +503,7 @@
       });
     }
 
+    // 7. TIMELINE & RUNDOWN (Timeline: rows 8-22, Rundown: rows 31-50)
     const trRows = tabsData['TIMELINE & RUNDOWN'] || [];
     const timeline = [];
     for (let r = 7; r < Math.min(22, trRows.length); r++) {
@@ -498,11 +545,14 @@
       });
     }
 
+    // 8. TAMU (Keluarga Inti: rows 10-19, Tamu Umum: rows 23-171)
     const tamu = [];
+    // Keluarga Inti (Rows 10 to 19, 0-indexed 9 to 18)
     for (let r = 9; r < Math.min(19, tamuRows.length); r++) {
       const row = tamuRows[r];
       if (!row) continue;
       const rowIndex = r + 1;
+      // CPP (Cols 2-7, 0-indexed 1-6)
       if (row[3] && String(row[3]).trim()) {
         tamu.push({
           id: 'TM-CPP-FAM-R' + rowIndex,
@@ -517,6 +567,7 @@
           rsvp: String(row[6] || 'Hadir').trim()
         });
       }
+      // CPW (Cols 9-14, 0-indexed 8-13)
       if (row[10] && String(row[10]).trim()) {
         tamu.push({
           id: 'TM-CPW-FAM-R' + rowIndex,
@@ -533,10 +584,12 @@
       }
     }
 
+    // Tamu Umum (Rows 23 to 171, 0-indexed 22 to 170)
     for (let r = 22; r < Math.min(171, tamuRows.length); r++) {
       const row = tamuRows[r];
       if (!row) continue;
       const rowIndex = r + 1;
+      // CPP
       if (row[3] && String(row[3]).trim()) {
         tamu.push({
           id: 'TM-CPP-GEN-R' + rowIndex,
@@ -551,6 +604,7 @@
           rsvp: String(row[6] || 'Belum Konfirmasi').trim()
         });
       }
+      // CPW
       if (row[10] && String(row[10]).trim()) {
         tamu.push({
           id: 'TM-CPW-GEN-R' + rowIndex,

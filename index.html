@@ -14,7 +14,36 @@
   <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
   <title>Farhan &amp; Indira — Wedding Tracker &amp; Command Center</title>
   <link rel="manifest" href="./manifest.json" />
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <!-- CRITICAL: ON-SCREEN RUNTIME ERROR LOGGER & SW FORCE UPDATE -->
+  <script>
+    window.onerror = function(msg, url, line) {
+      const errDiv = document.createElement('div');
+      errDiv.style = "position:fixed; bottom:0; left:0; width:100%; background:red; color:white; font-size:11px; padding:8px; z-index:9999999; word-break:break-all;";
+      errDiv.innerText = `JS ERROR: ${msg} at line ${line}`;
+      document.body.appendChild(errDiv);
+      return false;
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      const errDiv = document.createElement('div');
+      errDiv.style = "position:fixed; bottom:32px; left:0; width:100%; background:#b91c1c; color:white; font-size:11px; padding:8px; z-index:9999999; word-break:break-all;";
+      errDiv.innerText = `PROMISE ERROR: ${event.reason}`;
+      document.body.appendChild(errDiv);
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (var reg of registrations) {
+          reg.update(); // Paksa periksa update ke server GitHub Pages
+        }
+      });
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        window.location.reload();
+      });
+    }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -43,9 +72,11 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=2.1-unfrozen" />
 </head>
 <body class="min-h-screen antialiased bg-[#0D1117] text-[#C9D1D9] selection:bg-[#58A6FF]/30 selection:text-[#F0F6FC]">
+
+  <div style="position:fixed; top:4px; left:4px; font-size:10px; color:#10B981; z-index:999999; background:rgba(13,17,23,0.85); padding:2px 6px; border-radius:4px; border:1px solid #10B981; pointer-events:none; font-family:monospace; font-weight:bold;">BUILD: v2.1-UNFROZEN</div>
 
   <!-- ==================== FUTURISTIC PWA SPLASH SCREEN ==================== -->
   <div id="splash-screen" class="splash-overlay fixed inset-0 z-[99999] bg-[#0D1117] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-400 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
@@ -187,14 +218,17 @@
               <span class="status-dot status-dot-teal"></span>
               <span>byIndira Digital Tracker</span>
             </span>
-            <span id="countdownBadge" data-countdown="true" class="px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#9E6A03] font-tabular shadow-[0_0_12px_rgba(226,199,153,0.15)]">⏳ 220 Hari Menuju Acara</span>
+            <span id="countdownBadge" class="countdown px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#9E6A03] font-tabular shadow-[0_0_12px_rgba(226,199,153,0.15)]" data-countdown="true">⏳ 220 Hari Menuju Acara</span>
             <script>
               (function() {
                 try {
-                  const targetTime = new Date(2027, 5, 27).getTime();
-                  const diffDays = Math.max(0, Math.ceil((targetTime - Date.now()) / (1000 * 60 * 60 * 24)));
-                  const el = document.getElementById('countdownBadge');
-                  if (el) el.textContent = diffDays <= 0 ? '🎉 Hari Bahagia Telah Tiba!' : ('⏳ ' + diffDays + ' Hari Menuju Acara');
+                  const targetDate = new Date(2027, 5, 27).getTime();
+                  const today = new Date().getTime();
+                  const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+                  const countdownElement = document.getElementById('countdownBadge') || document.getElementById('countdown-text') || document.querySelector('.countdown');
+                  if (countdownElement) {
+                    countdownElement.textContent = `⏳ ${diffDays > 0 ? diffDays : 0} Hari Menuju Acara`;
+                  }
                 } catch(e) {}
               })();
             </script>
@@ -1131,7 +1165,7 @@
   <!-- Toast Notification Container -->
   <div id="toastBox" class="fixed top-16 right-4 left-4 sm:left-auto sm:w-80 z-50 pointer-events-none space-y-2"></div>
 
-  <script src="./sheetApi.js"></script>
-  <script src="./app.js"></script>
+  <script src="./sheetApi.js?v=2.1-unfrozen"></script>
+  <script src="./app.js?v=2.1-unfrozen"></script>
 </body>
 </html>

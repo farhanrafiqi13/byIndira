@@ -431,38 +431,21 @@
     }
   }
 
-  function updateCountdownDisplay(wDateIso) {
-    const cdEl = document.getElementById('countdownBadge') || document.getElementById('countdown-badge') || document.querySelector('[data-countdown]');
-    if (!cdEl) return;
-
+  function updateCountdownDisplay() {
     try {
-      if (state.data.masterFormulas && state.data.masterFormulas.countdownText) {
-        cdEl.textContent = state.data.masterFormulas.countdownText;
-        return;
-      }
-
-      // Hitung langsung menggunakan numeric timestamp agar kebal Invalid Date di Safari/Mobile
-      let targetTime;
-      if (wDateIso) {
-        const dt = parseSafeWeddingDate(wDateIso);
-        targetTime = (dt && !isNaN(dt.getTime())) ? dt.getTime() : new Date(2027, 5, 27).getTime();
-      } else {
-        targetTime = new Date(2027, 5, 27).getTime();
-      }
-
-      const diffMs = targetTime - Date.now();
-      const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-
-      if (isNaN(diffDays)) {
-        cdEl.textContent = '⏳ Hari Bahagia Semakin Dekat';
-      } else if (diffDays <= 0) {
-        cdEl.textContent = '🎉 Hari Bahagia Telah Tiba!';
-      } else {
-        cdEl.textContent = '⏳ ' + diffDays + ' Hari Menuju Acara';
+      const targetDate = new Date(2027, 5, 27).getTime();
+      const today = new Date().getTime();
+      const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+      const countdownElement = document.getElementById('countdownBadge') ||
+                               document.getElementById('countdown-text') ||
+                               document.getElementById('countdown-badge') ||
+                               document.querySelector('.countdown') ||
+                               document.querySelector('[data-countdown]');
+      if (countdownElement) {
+        countdownElement.textContent = `⏳ ${diffDays > 0 ? diffDays : 0} Hari Menuju Acara`;
       }
     } catch (eCd) {
       console.error('Countdown parsing error:', eCd);
-      cdEl.textContent = '⏳ Hari Bahagia Semakin Dekat';
     }
   }
 
@@ -491,7 +474,7 @@
     if (rdSubtitle) rdSubtitle.textContent = wDateFormatted + ' • ' + venueStr;
 
     try {
-      updateCountdownDisplay(wDateIso);
+      updateCountdownDisplay();
     } catch (eCd) {
       console.error('Countdown render error:', eCd);
     }
@@ -3261,7 +3244,7 @@
 
     try {
       if ('serviceWorker' in navigator && window.location.protocol.indexOf('http') === 0) {
-        navigator.serviceWorker.register('./sw.js').catch(function() {});
+        navigator.serviceWorker.register('./sw.js?v=2.1-unfrozen').catch(function() {});
       }
     } catch (eSw) {}
 
