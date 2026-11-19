@@ -471,13 +471,17 @@ select option {
 /* --------------------------------------------------------------------------
    8b. FUTURISTIC SPLASH & SAFE AREA INSETS
    -------------------------------------------------------------------------- */
-#appSplashScreen {
+#splash-screen,
+#appSplashScreen,
+.splash-overlay {
   opacity: 1;
   transition: opacity 0.4s ease-out;
   pointer-events: auto;
 }
 
-#appSplashScreen.splash-hidden {
+#splash-screen.splash-hidden,
+#appSplashScreen.splash-hidden,
+.splash-overlay.splash-hidden {
   opacity: 0 !important;
   pointer-events: none !important;
   display: none !important;

@@ -48,7 +48,7 @@
 <body class="min-h-screen antialiased bg-[#0D1117] text-[#C9D1D9] selection:bg-[#58A6FF]/30 selection:text-[#F0F6FC]">
 
   <!-- ==================== FUTURISTIC PWA SPLASH SCREEN ==================== -->
-  <div id="appSplashScreen" class="fixed inset-0 z-[99999] bg-[#0D1117] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-400 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
+  <div id="splash-screen" class="splash-overlay fixed inset-0 z-[99999] bg-[#0D1117] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-400 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
     <div class="relative flex flex-col items-center max-w-xs w-full text-center space-y-6">
       <!-- Centerpiece: Monogram with subtle breathing glow -->
       <div class="relative w-20 h-20 flex items-center justify-center">
@@ -82,6 +82,29 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // CRITICAL FAILSAFE TIMEOUT: UNSTUCK SPLASH SCREEN (MAKSIMAL 2.5 DETIK)
+    const dismissSplash = () => {
+      const splashEl = document.getElementById('splash-screen') || document.getElementById('appSplashScreen') || document.querySelector('.splash-overlay');
+      if (splashEl && splashEl.dataset.hidden !== 'true') {
+        splashEl.dataset.hidden = 'true';
+        splashEl.style.transition = 'opacity 0.4s ease-out';
+        splashEl.style.opacity = '0';
+        splashEl.style.pointerEvents = 'none';
+        setTimeout(() => {
+          splashEl.style.display = 'none';
+          splashEl.classList.add('splash-hidden');
+        }, 400);
+      }
+    };
+    window.dismissSplash = dismissSplash;
+
+    // PAKSA TUTUP SPLASH SETELAH 2.5 DETIK JIKA API BELUM MERESPON
+    setTimeout(() => {
+      dismissSplash();
+    }, 2500);
+  </script>
 
   <!-- ==================== STICKY TOP HEADER ==================== -->
   <header class="sticky top-0 z-30 sticky top-0 z-30 bg-[#161B22]/95 border-b border-[#30363D] px-3.5 py-2.5 backdrop-blur-md">

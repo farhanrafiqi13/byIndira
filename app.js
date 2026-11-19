@@ -177,14 +177,20 @@
   }
 
   function hideSplashScreen() {
-    const splash = document.getElementById('appSplashScreen');
+    if (typeof window.dismissSplash === 'function') {
+      window.dismissSplash();
+      return;
+    }
+    const splash = document.getElementById('splash-screen') || document.getElementById('appSplashScreen') || document.querySelector('.splash-overlay');
     if (!splash || splash.dataset.hidden === 'true') return;
     splash.dataset.hidden = 'true';
+    splash.style.transition = 'opacity 0.4s ease-out';
     splash.style.opacity = '0';
     splash.style.pointerEvents = 'none';
     setTimeout(function() {
+      splash.style.display = 'none';
       splash.classList.add('splash-hidden');
-    }, 450);
+    }, 400);
   }
 
   function recalculateMaharTargets() {
@@ -3066,7 +3072,7 @@
     });
   }
 
-  window.addEventListener('DOMContentLoaded', function() {
+  function initApp() {
     try {
       loadLocalState();
     } catch (e) {
@@ -3101,6 +3107,9 @@
       console.error('refreshAll error:', eRefresh);
     }
 
+    // Graceful fallback: render data lokal segera & tutup splash screen
+    setTimeout(hideSplashScreen, 500);
+
     // 4. Auto-sync background tanpa memblokir interaksi pengguna
     try {
       if (state.config.scriptUrl) {
@@ -3110,8 +3119,8 @@
       console.error('syncFromAppsScript error:', eSync);
     }
 
-    // 5. Fallback timeout agar splash screen selalu tertutup maksimal 1.8 detik jika network lambat/offline
-    setTimeout(hideSplashScreen, 1800);
+    // 5. Hard timeout failsafe (maksimal 2.5 detik)
+    setTimeout(hideSplashScreen, 2500);
 
     try {
       document.addEventListener('visibilitychange', function() {
@@ -3183,5 +3192,12 @@
         }
       }
     } catch(eManifestSync) {}
-  });
+  }
+
+  // JALANKAN INISIALISASI SECARA ROBUST & AMAN
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 })();
