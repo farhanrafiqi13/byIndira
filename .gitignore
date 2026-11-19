@@ -1,0 +1,28 @@
+# Secrets and Credentials
+.env
+.env.*
+*.env
+
+# Dependency directories
+node_modules/
+
+# Build and temporary files
+dist/
+build/
+*.zip
+*.tar.gz
+*.log
+deploy_bundle.zip
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,579 @@
+/* ==========================================================================
+   GITHUB PRIMER DARK THEME — Farhan & Indira Wedding Tracker & Command Center
+   Official Tokens:
+   Canvas Default: #0D1117 | Canvas Sub: #161B22 | Canvas Subtle: #21262D
+   Border Default: #30363D | Border Muted: #21262D
+   Text Primary: #F0F6FC | Text Body: #C9D1D9 | Text Muted: #8B949E
+   Green Accent: #238636 (Hover: #2EA043) | Blue Accent: #58A6FF
+   Yellow Accent: #D29922 | Red Accent: #F85149
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. HARD UNFREEZE & OVERLAY POINTER-EVENTS PROTECTION
+   -------------------------------------------------------------------------- */
+html, body {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+  -webkit-touch-callout: default !important;
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
+main {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+}
+
+/* Strict .hidden rule: never display or intercept touches when inactive */
+.hidden {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Modal Backdrops & Overlays Default Protection */
+#quickEditModal,
+#editQuotaModal,
+#coupleNameModal,
+#roleModal,
+.modal-backdrop,
+.modal-overlay,
+[id$="Modal"] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Active Modal State: display flex and allow touches only when NOT hidden */
+#quickEditModal:not(.hidden),
+#editQuotaModal:not(.hidden),
+#coupleNameModal:not(.hidden),
+#roleModal:not(.hidden),
+.modal-backdrop:not(.hidden),
+.modal-overlay:not(.hidden),
+[id$="Modal"]:not(.hidden) {
+  display: flex !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Interactive Elements & Touch Targets */
+button,
+a,
+input,
+select,
+textarea,
+.btn,
+.bottom-nav-btn,
+.jump-card-btn,
+.submod-btn,
+.guest-tab-btn,
+#btnUnlockHero,
+#btnSwitchRole,
+#btnSyncSheets,
+#btnOpenSetup,
+#btnToggleNavMenu {
+  pointer-events: auto !important;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* --------------------------------------------------------------------------
+   2. GITHUB PRIMER DESIGN TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  --color-canvas-default: #0D1117;
+  --color-canvas-subtle: #161B22;
+  --color-canvas-inset: #0D1117;
+  --color-canvas-overlay: #161B22;
+  --color-canvas-sub: #21262D;
+
+  --color-border-default: #30363D;
+  --color-border-muted: #21262D;
+  --color-border-subtle: rgba(240, 246, 252, 0.1);
+
+  --color-fg-default: #F0F6FC;
+  --color-fg-muted: #8B949E;
+  --color-fg-subtle: #6E7681;
+  --color-fg-body: #C9D1D9;
+
+  --color-accent-fg: #58A6FF;
+  --color-accent-emphasis: #1F6FEB;
+  --color-accent-muted: rgba(56, 139, 253, 0.15);
+  --color-accent-subtle: rgba(56, 139, 253, 0.1);
+
+  --color-success-fg: #3FB950;
+  --color-success-emphasis: #238636;
+  --color-success-hover: #2EA043;
+  --color-success-muted: rgba(46, 160, 67, 0.15);
+
+  --color-attention-fg: #D29922;
+  --color-attention-emphasis: #9E6A03;
+  --color-attention-muted: rgba(187, 128, 9, 0.15);
+
+  --color-danger-fg: #F85149;
+  --color-danger-emphasis: #DA3633;
+  --color-danger-muted: rgba(248, 81, 73, 0.15);
+
+  --color-done-fg: #A371F7;
+  --color-done-emphasis: #8957E5;
+  --color-done-muted: rgba(163, 113, 247, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  background-color: var(--color-canvas-default);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  background-color: #0D1117 !important;
+  color: #C9D1D9 !important;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Numeric & Monospace Tabular Fonts */
+.font-tabular,
+.font-mono-num {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Text Selection */
+::selection {
+  background-color: rgba(56, 139, 253, 0.35);
+  color: #F0F6FC;
+}
+
+/* --------------------------------------------------------------------------
+   3. GITHUB PRIMER CARDS, SURFACES & CONTAINERS
+   -------------------------------------------------------------------------- */
+.glass-card,
+.bento-surface,
+.gh-box,
+.gh-card {
+  background-color: #161B22 !important;
+  border: 1px solid #30363D !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 0 rgba(1, 4, 9, 0.4) !important;
+  color: #C9D1D9 !important;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.glass-card-hover:hover,
+.bento-surface:hover {
+  border-color: #8B949E !important;
+}
+
+/* Header Sticky Bar */
+header.glass-card {
+  background: rgba(22, 27, 34, 0.95) !important;
+  border-bottom: 1px solid #30363D !important;
+  border-radius: 0 !important;
+  box-shadow: 0 1px 0 rgba(1, 4, 9, 0.6) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* --------------------------------------------------------------------------
+   4. GITHUB BUTTONS & CONTROLS
+   -------------------------------------------------------------------------- */
+/* Primary GitHub Button (Green) */
+.btn-primary,
+.fab-burgundy,
+.bg-rose-600 {
+  background-color: #238636 !important;
+  border: 1px solid rgba(240, 246, 252, 0.1) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 0 rgba(1, 4, 9, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+.btn-primary:hover,
+.fab-burgundy:hover,
+.bg-rose-600:hover {
+  background-color: #2EA043 !important;
+  border-color: rgba(240, 246, 252, 0.1) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-primary:active,
+.fab-burgundy:active,
+.bg-rose-600:active {
+  background-color: #1F7F32 !important;
+  box-shadow: inset 0 1px 0 rgba(0, 45, 17, 0.2) !important;
+  transform: none !important;
+}
+
+/* Secondary / Subtle GitHub Button */
+.btn-secondary,
+.bg-slate-100,
+.bg-slate-50,
+.bg-white:not(header) {
+  background-color: #21262D !important;
+  border: 1px solid #30363D !important;
+  color: #C9D1D9 !important;
+  border-radius: 6px !important;
+  transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+.btn-secondary:hover,
+.bg-slate-100:hover,
+.bg-slate-50:hover,
+.bg-white:not(header):hover {
+  background-color: #30363D !important;
+  border-color: #8B949E !important;
+  color: #F0F6FC !important;
+}
+
+/* Subtle Action Card Button */
+.action-card-btn {
+  background-color: #161B22 !important;
+  border: 1px solid #30363D !important;
+  border-radius: 8px !important;
+}
+.action-card-btn:hover {
+  background-color: #21262D !important;
+  border-color: #58A6FF !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. INPUTS, SELECTS & TEXTAREAS (GitHub Inset)
+   -------------------------------------------------------------------------- */
+input,
+select,
+textarea {
+  background-color: #0D1117 !important;
+  border: 1px solid #30363D !important;
+  color: #C9D1D9 !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  padding: 6px 12px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background-color: #0D1117 !important;
+  border-color: #58A6FF !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3) !important;
+  color: #F0F6FC !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8B949E !important;
+}
+
+select option {
+  background-color: #161B22 !important;
+  color: #C9D1D9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. GITHUB BADGES, STATUS CHIPS & LABELS
+   -------------------------------------------------------------------------- */
+/* Status Dot Indicators */
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.status-confirmed,
+.status-dot-emerald {
+  background-color: #3FB950 !important;
+  box-shadow: 0 0 6px rgba(63, 185, 80, 0.4) !important;
+}
+
+.status-pending,
+.status-dot-amber {
+  background-color: #D29922 !important;
+  box-shadow: 0 0 6px rgba(210, 153, 34, 0.4) !important;
+}
+
+.status-draft,
+.status-dot-slate {
+  background-color: #8B949E !important;
+  box-shadow: none !important;
+}
+
+.status-dot-teal {
+  background-color: #58A6FF !important;
+  box-shadow: 0 0 6px rgba(88, 166, 255, 0.4) !important;
+}
+
+/* Status Badges */
+.emerald-badge,
+.bg-emerald-50,
+.status-chip-confirmed {
+  background: rgba(35, 134, 54, 0.15) !important;
+  border: 1px solid #238636 !important;
+  color: #3FB950 !important;
+  border-radius: 20px !important;
+}
+
+.gold-badge,
+.bg-amber-50,
+.status-chip-pending {
+  background: rgba(187, 128, 9, 0.15) !important;
+  border: 1px solid #9E6A03 !important;
+  color: #D29922 !important;
+  border-radius: 20px !important;
+}
+
+.coral-badge,
+.status-chip-danger {
+  background: rgba(248, 81, 73, 0.15) !important;
+  border: 1px solid #DA3633 !important;
+  color: #F85149 !important;
+  border-radius: 20px !important;
+}
+
+.teal-badge,
+.bg-blue-50,
+.bg-sky-50,
+.status-chip-info {
+  background: rgba(56, 139, 253, 0.15) !important;
+  border: 1px solid #388BFD !important;
+  color: #58A6FF !important;
+  border-radius: 20px !important;
+}
+
+.neutral-badge,
+.status-chip-neutral {
+  background: #21262D !important;
+  border: 1px solid #30363D !important;
+  color: #C9D1D9 !important;
+  border-radius: 20px !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. FLOATING DOCK NAVIGATION (GITHUB PRIMER DARK)
+   -------------------------------------------------------------------------- */
+.floating-dock-nav {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 30px);
+  margin-bottom: 8px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: calc(100% - 32px);
+  max-width: 440px;
+  z-index: 9999;
+  background: #161B22 !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #30363D !important;
+  box-shadow: 0 12px 28px rgba(1, 4, 9, 0.6), 0 0 1px 1px rgba(0, 0, 0, 0.4) !important;
+  border-radius: 12px !important;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  pointer-events: auto !important;
+  opacity: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease !important;
+}
+
+.floating-dock-nav.nav-hidden {
+  transform: translate(-50%, 150%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease !important;
+}
+
+.bottom-nav-btn {
+  color: #8B949E !important;
+  border-radius: 6px !important;
+  transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  border: 1px solid transparent;
+}
+
+.bottom-nav-btn:hover {
+  background-color: #21262D !important;
+  color: #F0F6FC !important;
+}
+
+.bottom-nav-btn:active {
+  transform: scale(0.94);
+}
+
+.bottom-nav-btn.active,
+.bottom-nav-btn[data-active="true"] {
+  background-color: #21262D !important;
+  color: #58A6FF !important;
+  border-color: #30363D !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. MODALS & BOTTOM-SHEETS
+   -------------------------------------------------------------------------- */
+#quickEditModal,
+#editQuotaModal,
+#coupleNameModal,
+#roleModal,
+.modal-backdrop,
+[id$="Modal"] {
+  background: rgba(1, 4, 9, 0.75) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+[id$="Modal"] > div,
+[id$="Modal"] .glass-card {
+  background-color: #161B22 !important;
+  border: 1px solid #30363D !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 32px rgba(1, 4, 9, 0.85) !important;
+  color: #C9D1D9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. TYPOGRAPHY & TEXT HIERARCHY OVERRIDES
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.text-slate-900,
+.text-slate-800,
+.text-white {
+  color: #F0F6FC !important;
+}
+
+.text-slate-700,
+.text-slate-600,
+.text-slate-200,
+.text-slate-300 {
+  color: #C9D1D9 !important;
+}
+
+.text-slate-500,
+.text-slate-400 {
+  color: #8B949E !important;
+}
+
+/* Link and Accents */
+a, .text-blue-500, .text-sky-500 {
+  color: #58A6FF !important;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Gradients Replacement (Replaced with Solid Clean GitHub Dark tones) */
+.coral-gradient,
+.violet-gradient,
+.teal-gradient,
+.burgundy-gradient {
+  background: #21262D !important;
+  border: 1px solid #30363D !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. SCROLLBARS, SHIMMER & SKELETON
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D1117;
+}
+::-webkit-scrollbar-thumb {
+  background: #30363D;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8B949E;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Skeleton Shimmer Dark */
+@keyframes shimmerAnim {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #161B22 25%,
+    #21262D 50%,
+    #161B22 75%
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: shimmerAnim 1.6s infinite !important;
+}
+
+/* Pulsing Sync Animation */
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+}
+
+.pulsing-dot {
+  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Netlify Injected Drawer Suppressor */
+netlify-drawer,
+netlify-toolbar,
+netlify-feedback,
+[data-netlify-drawer],
+[class*="netlify"],
+[id*="netlify"],
+iframe[src*="netlify"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
