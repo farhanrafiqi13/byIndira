@@ -396,14 +396,23 @@
       const row = mhRows[r];
       if (!row || !row[2]) continue;
       const rowIndex = r + 1;
+      const instrumen = String(row[2] || '').trim();
+      let targetJumlah = Number(row[4]) || 0;
+      let satuan = String(row[5] || '').trim();
+      let spesifikasi = String(row[3] || '').trim();
+      if (/emas|logam\s*mulia/i.test(instrumen)) {
+        if (targetJumlah === 3 || !targetJumlah) targetJumlah = 6;
+        satuan = 'Gram';
+        spesifikasi = 'Akumulasi ' + targetJumlah + ' Gram Emas Hartadinata / Logam Mulia';
+      }
       maharTargets.push({
         id: 'MT-R' + rowIndex,
         rowIndex: rowIndex,
         no: parseInt(row[1], 10) || (maharTargets.length + 1),
-        instrumen: String(row[2] || '').trim(),
-        spesifikasi: String(row[3] || '').trim(),
-        targetJumlah: Number(row[4]) || 0,
-        satuan: String(row[5] || '').trim(),
+        instrumen: instrumen,
+        spesifikasi: spesifikasi,
+        targetJumlah: targetJumlah,
+        satuan: satuan,
         hargaSatuan: parseCurrency(row[6]),
         totalEstimasi: parseCurrency(row[7]),
         realisasi: parseCurrency(row[8]),
@@ -421,7 +430,13 @@
       if (!row || (!row[2] && !row[3])) continue;
       const tgl = String(row[2] || '').trim();
       const komp = String(row[3] || '').trim();
-      if (/target\s*kuantitas/i.test(komp) || /target\s*kuantitas/i.test(tgl)) continue;
+      if (/target\s*kuantitas/i.test(komp) || /target\s*kuantitas/i.test(tgl) || /target\s*kuantitas/i.test(String(row[10] || ''))) continue;
+      let satuan = String(row[5] || '').trim();
+      if (!satuan || satuan.toLowerCase() === 'keping') {
+        if (/emas|logam\s*mulia/i.test(komp)) satuan = 'Gram';
+        else if (/saham|bssr/i.test(komp)) satuan = 'Lot';
+        else satuan = 'Paket';
+      }
       maharLogs.push({
         id: 'ML-R' + rowIndex,
         rowIndex: rowIndex,
@@ -429,7 +444,7 @@
         tanggal: formatDateIso(row[2]),
         komponen: komp,
         volume: Number(row[4]) || 0,
-        satuan: String(row[5] || 'Lot').trim(),
+        satuan: satuan,
         hargaSatuan: parseCurrency(row[6]),
         status: String(row[7] || 'Selesai').trim(),
         totalRealisasi: parseCurrency(row[8]),

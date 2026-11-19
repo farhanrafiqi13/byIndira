@@ -52,8 +52,37 @@ function doPost(e) {
     const action = body.action || '';
     const item = body.item || {};
 
+    // GENERIC ACTIONS FROM SheetApi: append, updateRow, deleteRow
+    if (action === 'append') {
+      const sheetName = body.sheet || body.sheetName;
+      const ws = ss.getSheetByName(sheetName);
+      if (!ws) throw new Error('Sheet ' + sheetName + ' tidak ditemukan.');
+      const rowValues = body.rowValues || [];
+      ws.appendRow(rowValues);
+    }
+    else if (action === 'updateRow') {
+      const sheetName = body.sheet || body.sheetName;
+      const ws = ss.getSheetByName(sheetName);
+      if (!ws) throw new Error('Sheet ' + sheetName + ' tidak ditemukan.');
+      const rowIndex = Number(body.rowIndex);
+      const startCol = Number(body.startCol) || 1;
+      const rowValues = body.rowValues || [];
+      if (rowIndex && rowValues.length > 0) {
+        ws.getRange(rowIndex, startCol, 1, rowValues.length).setValues([rowValues]);
+      }
+    }
+    else if (action === 'deleteRow') {
+      const sheetName = body.sheet || body.sheetName;
+      const ws = ss.getSheetByName(sheetName);
+      if (!ws) throw new Error('Sheet ' + sheetName + ' tidak ditemukan.');
+      const rowIndex = Number(body.rowIndex);
+      if (rowIndex) {
+        ws.deleteRow(rowIndex);
+      }
+    }
+
     // 0. UPDATE MASTER META (Nama Mempelai D5/H5, Tanggal Akad D6, Venue H6, Target L6)
-    if (action === 'update_master_meta') {
+    else if (action === 'update_master_meta') {
       const ws = ss.getSheetByName('MASTER');
       if (item.cpp !== undefined) ws.getRange('D5').setValue(String(item.cpp).trim());
       if (item.cpw !== undefined) ws.getRange('H5').setValue(String(item.cpw).trim());
@@ -166,6 +195,7 @@ function doPost(e) {
       if (item.satuan) ws.getRange(targetRow, 6).setValue(String(item.satuan).trim());
       if (item.hargaSatuan !== undefined) ws.getRange(targetRow, 7).setValue(Number(item.hargaSatuan) || 0);
       if (item.status) ws.getRange(targetRow, 8).setValue(String(item.status).trim());
+      if (item.totalRealisasi !== undefined) ws.getRange(targetRow, 9).setValue(Number(item.totalRealisasi) || 0);
       if (item.sumberDana !== undefined) ws.getRange(targetRow, 10).setValue(String(item.sumberDana).trim());
       if (item.catatan !== undefined) ws.getRange(targetRow, 11).setValue(String(item.catatan).trim());
     }
@@ -180,6 +210,9 @@ function doPost(e) {
         if (r === 10) {
           const lembar = Math.round(qty * 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
           ws.getRange(r, 4).setValue(qty + ' Lot Saham Dividen (' + lembar + ' Lembar)');
+        } else if (r === 11) {
+          ws.getRange(r, 4).setValue('Akumulasi ' + qty + ' Gram Emas Hartadinata / Logam Mulia');
+          ws.getRange(r, 6).setValue('Gram');
         }
       }
     }
@@ -417,11 +450,16 @@ function readAllWeddingModules(ss) {
   const maharTargets = mhTargetVals.map(function(row, idx) {
     const r = 10 + idx;
     const instrumen = String(row[1] || '').trim();
-    const targetJumlah = Number(row[3]) || 0;
+    let targetJumlah = Number(row[3]) || 0;
     let spesifikasi = String(row[2] || '').trim();
+    let satuan = String(row[4] || '').trim();
     if (instrumen.indexOf('Saham BSSR') !== -1 && targetJumlah > 0) {
       const lembar = Math.round(targetJumlah * 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       spesifikasi = targetJumlah + ' Lot Saham Dividen (' + lembar + ' Lembar)';
+    } else if (instrumen.indexOf('Logam Mulia') !== -1 || instrumen.indexOf('Emas') !== -1) {
+      if (targetJumlah === 3 || !targetJumlah) targetJumlah = 6;
+      satuan = 'Gram';
+      spesifikasi = 'Akumulasi ' + targetJumlah + ' Gram Emas Hartadinata / Logam Mulia';
     }
     return {
       id: 'MT-R' + r,
@@ -430,7 +468,7 @@ function readAllWeddingModules(ss) {
       instrumen: instrumen,
       spesifikasi: spesifikasi,
       targetJumlah: targetJumlah,
-      satuan: String(row[4] || '').trim(),
+      satuan: satuan,
       hargaSatuan: Math.round(Number(row[5]) || 0),
       totalEstimasi: Math.round(Number(row[6]) || 0),
       realisasi: Math.round(Number(row[7]) || 0),
@@ -443,15 +481,24 @@ function readAllWeddingModules(ss) {
   const maharLogs = [];
   mhLogVals.forEach(function(row, idx) {
     const r = 16 + idx;
+    if (r === 29 || r === 30) return;
     if (!row[2]) return;
+    if (/target\s*kuantitas/i.test(String(row[2])) || /target\s*kuantitas/i.test(String(row[1])) || /target\s*kuantitas/i.test(String(row[9]))) return;
+    const komp = String(row[2] || '').trim();
+    let satuan = String(row[4] || 'Lot').trim();
+    if (!satuan || satuan.toLowerCase() === 'keping') {
+      if (/emas|logam\s*mulia/i.test(komp)) satuan = 'Gram';
+      else if (/saham|bssr/i.test(komp)) satuan = 'Lot';
+      else satuan = 'Paket';
+    }
     maharLogs.push({
       id: 'ML-R' + r,
       rowIndex: r,
       no: Number(row[0]) || (idx + 1),
       tanggal: fmtDate(row[1]),
-      komponen: String(row[2] || '').trim(),
+      komponen: komp,
       volume: Number(row[3]) || 0,
-      satuan: String(row[4] || 'Lot').trim(),
+      satuan: satuan,
       hargaSatuan: Math.round(Number(row[5]) || 0),
       status: String(row[6] || 'Selesai').trim(),
       totalRealisasi: Math.round(Number(row[7]) || 0),
