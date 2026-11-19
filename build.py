@@ -11,7 +11,9 @@ def run_build():
         "app.js",
         "manifest.json",
         "logo.png",
-        "sw.js"
+        "sw.js",
+        "icons/icon-192.png",
+        "icons/icon-512.png"
     ]
     
     for f in required_files:

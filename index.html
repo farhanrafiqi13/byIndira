@@ -6,7 +6,12 @@
   <meta name="theme-color" content="#0D1117" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="byIndira" />
+  <meta name="apple-mobile-web-app-title" content="Farhan & Indira" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
   <title>Farhan &amp; Indira — Wedding Tracker &amp; Command Center</title>
   <link rel="manifest" href="./manifest.json" />
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -575,6 +580,32 @@
     </section>
 
   </main>
+
+  <!-- ==================== SMART IOS PWA INSTALL BANNER ==================== -->
+  <aside id="iosInstallBanner" class="hidden fixed left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-md z-[9998] transition-all duration-300 ease-out opacity-0 translate-y-4" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);" aria-label="Panduan Install iOS">
+    <div class="relative bg-[#161B22] border border-[#30363D] rounded-xl p-3 shadow-2xl flex items-start gap-3 backdrop-blur-md">
+      <img src="./icons/icon-192.png" alt="Farhan & Indira App" class="w-10 h-10 rounded-lg border border-[#30363D] shrink-0 object-cover mt-0.5 shadow-sm" />
+      <div class="flex-1 min-w-0 pr-6">
+        <div class="flex items-center gap-1.5 mb-1">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#3FB950] animate-pulse"></span>
+          <span class="text-xs font-bold text-[#F0F6FC]">Pasang di iPhone / iPad</span>
+        </div>
+        <p class="text-[11px] leading-relaxed text-[#C9D1D9]">
+          Pasang di iPhone: Ketuk tombol <strong class="text-[#F0F6FC]">Bagikan (Share <span class="text-[#58A6FF]">⎋</span>)</strong> di bawah, lalu pilih <strong class="text-[#F0F6FC]">'Tambah ke Layar Utama' (Add to Home Screen)</strong>.
+        </p>
+      </div>
+      <button type="button" id="btnCloseIosPrompt" class="absolute top-2.5 right-2.5 p-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-[#F0F6FC] transition border border-[#30363D]/60" aria-label="Tutup panduan">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <!-- Arrow pointer to bottom Safari toolbar -->
+    <div class="flex justify-center -mt-1 pointer-events-none">
+      <div class="w-2.5 h-2.5 bg-[#161B22] border-r border-b border-[#30363D] transform rotate-45 shadow-sm"></div>
+    </div>
+  </aside>
 
   <!-- ==================== MODERN FLOATING NAVIGATION DOCK ==================== -->
   <!-- Left Side: Hidden Popup Menu for backwards compatibility -->

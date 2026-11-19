@@ -9,6 +9,7 @@ node_modules/
 # Build and temporary files
 dist/
 build/
+scratch/
 *.zip
 *.tar.gz
 *.log

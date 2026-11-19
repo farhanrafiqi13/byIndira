@@ -1,18 +1,6 @@
 (function() {
   'use strict';
 
-  // Auto-remove Netlify Drawer & Badge
-  function removeNetlifyBadge() {
-    const selectors = ['netlify-drawer', 'netlify-toolbar', 'netlify-feedback', '[data-netlify-drawer]', '[class*="netlify-badge"]', '[id*="netlify"]'];
-    selectors.forEach(function(sel) {
-      document.querySelectorAll(sel).forEach(function(el) {
-        try { el.remove(); } catch(e) { el.style.display = 'none'; }
-      });
-    });
-  }
-  removeNetlifyBadge();
-  setInterval(removeNetlifyBadge, 300);
-
   // Gunakan STORAGE_KEY_DATA v3 agar cache lama (26 Juni / 26 Lot / 18 Prewed) otomatis digantikan data terbaru
   const STORAGE_KEY_DATA = 'farhan_indira_wedding_data_v3';
   const STORAGE_KEY_CFG = 'farhan_indira_wedding_cfg_v1';
@@ -1251,11 +1239,13 @@
 
   function updateFloatingNavVisibility() {
     const nav = document.querySelector('.floating-dock-nav');
-    if (!nav) return;
+    const iosBanner = document.getElementById('iosInstallBanner');
     if (isAnyModalOpen()) {
-      nav.classList.add('nav-hidden');
+      if (nav) nav.classList.add('nav-hidden');
+      if (iosBanner) iosBanner.classList.add('nav-hidden');
     } else {
-      nav.classList.remove('nav-hidden');
+      if (nav) nav.classList.remove('nav-hidden');
+      if (iosBanner) iosBanner.classList.remove('nav-hidden');
     }
   }
 
@@ -3108,5 +3098,62 @@
         navigator.serviceWorker.register('./sw.js').catch(function() {});
       }
     } catch (eSw) {}
+
+    // === SMART IOS PWA INSTALL PROMPT ===
+    try {
+      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase()) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+      const isTestIos = new URLSearchParams(window.location.search).get('test_ios') === 'true';
+
+      if ((isIos && !isStandalone) || isTestIos) {
+        const isDismissed = sessionStorage.getItem('ios_install_prompt_dismissed');
+        if (!isDismissed || isTestIos) {
+          setTimeout(function() {
+            const banner = document.getElementById('iosInstallBanner');
+            if (banner) {
+              banner.classList.remove('hidden');
+              requestAnimationFrame(function() {
+                banner.classList.remove('opacity-0', 'translate-y-4');
+              });
+            }
+          }, 1500);
+        }
+      }
+
+      const btnCloseIos = document.getElementById('btnCloseIosPrompt');
+      if (btnCloseIos) {
+        btnCloseIos.addEventListener('click', function() {
+          sessionStorage.setItem('ios_install_prompt_dismissed', 'true');
+          const banner = document.getElementById('iosInstallBanner');
+          if (banner) {
+            banner.classList.add('opacity-0', 'translate-y-4');
+            setTimeout(function() {
+              banner.classList.add('hidden');
+            }, 300);
+          }
+        });
+      }
+    } catch (eIosPrompt) {
+      console.warn('iOS prompt initialization notice:', eIosPrompt);
+    }
+
+    // === GITHUB PAGES SUBPATH MANIFEST AUTO-SYNC ===
+    try {
+      if (window.location.pathname.indexOf('/byIndira') !== -1) {
+        const mLink = document.querySelector('link[rel="manifest"]');
+        if (mLink) {
+          fetch(mLink.href)
+            .then(function(r) { return r.json(); })
+            .then(function(m) {
+              m.start_url = window.location.pathname;
+              m.scope = window.location.pathname;
+              const blob = new Blob([JSON.stringify(m)], { type: 'application/manifest+json' });
+              mLink.href = URL.createObjectURL(blob);
+            })
+            .catch(function() {});
+        }
+      }
+    } catch(eManifestSync) {}
   });
 })();

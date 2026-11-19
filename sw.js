@@ -1,4 +1,4 @@
-const CACHE_NAME = 'byindira-wedding-pwa-v7';
+const CACHE_NAME = 'byindira-wedding-pwa-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -6,7 +6,9 @@ const ASSETS = [
   './sheetApi.js',
   './app.js',
   './manifest.json',
-  './logo.png'
+  './logo.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', function(event) {

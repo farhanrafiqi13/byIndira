@@ -395,7 +395,8 @@ select option {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease !important;
 }
 
-.floating-dock-nav.nav-hidden {
+.floating-dock-nav.nav-hidden,
+#iosInstallBanner.nav-hidden {
   transform: translate(-50%, 150%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -557,23 +558,4 @@ a:hover {
 
 .animate-slide-up {
   animation: slideUp 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Netlify Injected Drawer Suppressor */
-netlify-drawer,
-netlify-toolbar,
-netlify-feedback,
-[data-netlify-drawer],
-[class*="netlify"],
-[id*="netlify"],
-iframe[src*="netlify"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
 }
