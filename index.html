@@ -84,26 +84,42 @@
   </div>
 
   <script>
-    // CRITICAL FAILSAFE TIMEOUT: UNSTUCK SPLASH SCREEN (MAKSIMAL 2.5 DETIK)
+    // CRITICAL FAILSAFE TIMEOUT: UNSTUCK SPLASH SCREEN (MAKSIMAL 2 DETIK)
     const dismissSplash = () => {
       const splashEl = document.getElementById('splash-screen') || document.getElementById('appSplashScreen') || document.querySelector('.splash-overlay');
       if (splashEl && splashEl.dataset.hidden !== 'true') {
         splashEl.dataset.hidden = 'true';
-        splashEl.style.transition = 'opacity 0.4s ease-out';
+        splashEl.style.setProperty('pointer-events', 'none', 'important');
+        splashEl.style.transition = 'opacity 0.25s ease-out';
         splashEl.style.opacity = '0';
-        splashEl.style.pointerEvents = 'none';
         setTimeout(() => {
-          splashEl.style.display = 'none';
-          splashEl.classList.add('splash-hidden');
-        }, 400);
+          try {
+            if (splashEl.parentNode) splashEl.parentNode.removeChild(splashEl);
+            else splashEl.remove();
+          } catch(e) {
+            splashEl.style.setProperty('display', 'none', 'important');
+            splashEl.style.setProperty('pointer-events', 'none', 'important');
+            splashEl.classList.add('splash-hidden');
+          }
+        }, 250);
       }
     };
     window.dismissSplash = dismissSplash;
 
-    // PAKSA TUTUP SPLASH SETELAH 2.5 DETIK JIKA API BELUM MERESPON
+    // PAKSA TUTUP & HAPUS FISIK SPLASH SCREEN MAKSIMAL 2 DETIK
     setTimeout(() => {
       dismissSplash();
-    }, 2500);
+      const el = document.getElementById('splash-screen') || document.querySelector('.splash-overlay');
+      if (el) {
+        try {
+          if (el.parentNode) el.parentNode.removeChild(el);
+          else el.remove();
+        } catch(e) {
+          el.style.setProperty('display', 'none', 'important');
+          el.style.setProperty('pointer-events', 'none', 'important');
+        }
+      }
+    }, 2000);
   </script>
 
   <!-- ==================== STICKY TOP HEADER ==================== -->
@@ -171,9 +187,17 @@
               <span class="status-dot status-dot-teal"></span>
               <span>byIndira Digital Tracker</span>
             </span>
-            <span id="countdownBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#9E6A03] font-tabular shadow-[0_0_12px_rgba(226,199,153,0.15)]">
-              ⏳ Menghitung hari...
-            </span>
+            <span id="countdownBadge" data-countdown="true" class="px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#9E6A03] font-tabular shadow-[0_0_12px_rgba(226,199,153,0.15)]">⏳ 220 Hari Menuju Acara</span>
+            <script>
+              (function() {
+                try {
+                  const targetTime = new Date(2027, 5, 27).getTime();
+                  const diffDays = Math.max(0, Math.ceil((targetTime - Date.now()) / (1000 * 60 * 60 * 24)));
+                  const el = document.getElementById('countdownBadge');
+                  if (el) el.textContent = diffDays <= 0 ? '🎉 Hari Bahagia Telah Tiba!' : ('⏳ ' + diffDays + ' Hari Menuju Acara');
+                } catch(e) {}
+              })();
+            </script>
           </div>
 
           <!-- Middle Row: Couple Title & Edit Action -->
@@ -700,7 +724,7 @@
   </nav>
 
   <!-- ==================== MODAL UPDATE (2-STEP BOTTOM-SHEET POPUP) ==================== -->
-  <div id="quickEditModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="quickEditModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
     <div class="bg-[#161B22] border border-[#30363D] w-full sm:max-w-md rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-[0_16px_36px_rgba(1,4,9,0.7)] animate-slide-up max-h-[92vh] overflow-y-auto" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
 
       <!-- STEP 1: 3 POP UP KARTU PILIHAN UTAMA -->
@@ -993,7 +1017,7 @@
   </div>
 
   <!-- ==================== MODAL UBAH ALOKASI KUOTA TAMU ==================== -->
-  <div id="editQuotaModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="editQuotaModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
     <div class="glass-card bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3.5" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -1039,7 +1063,7 @@
   </div>
 
   <!-- ==================== MODAL EDIT NAMA MEMPELAI ==================== -->
-  <div id="coupleNameModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="coupleNameModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
     <div class="glass-card bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3.5" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -1075,7 +1099,7 @@
   </div>
 
   <!-- ==================== MODAL ROLE PIN SWITCHER ==================== -->
-  <div id="roleModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="roleModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
     <div class="bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-extrabold text-[#F0F6FC]">Akses &amp; Privasi</h3>

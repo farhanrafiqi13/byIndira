@@ -1,4 +1,4 @@
-const CACHE_NAME = 'byindira-wedding-pwa-v10';
+const CACHE_NAME = 'byindira-wedding-pwa-v11';
 const ASSETS = [
   './',
   './index.html',

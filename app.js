@@ -179,18 +179,21 @@
   function hideSplashScreen() {
     if (typeof window.dismissSplash === 'function') {
       window.dismissSplash();
-      return;
     }
     const splash = document.getElementById('splash-screen') || document.getElementById('appSplashScreen') || document.querySelector('.splash-overlay');
-    if (!splash || splash.dataset.hidden === 'true') return;
-    splash.dataset.hidden = 'true';
-    splash.style.transition = 'opacity 0.4s ease-out';
+    if (!splash) return;
+    splash.style.setProperty('pointer-events', 'none', 'important');
     splash.style.opacity = '0';
-    splash.style.pointerEvents = 'none';
     setTimeout(function() {
-      splash.style.display = 'none';
-      splash.classList.add('splash-hidden');
-    }, 400);
+      try {
+        if (splash.parentNode) splash.parentNode.removeChild(splash);
+        else splash.remove();
+      } catch (e) {
+        splash.style.setProperty('display', 'none', 'important');
+        splash.style.setProperty('pointer-events', 'none', 'important');
+        splash.classList.add('splash-hidden');
+      }
+    }, 200);
   }
 
   function recalculateMaharTargets() {
@@ -428,6 +431,41 @@
     }
   }
 
+  function updateCountdownDisplay(wDateIso) {
+    const cdEl = document.getElementById('countdownBadge') || document.getElementById('countdown-badge') || document.querySelector('[data-countdown]');
+    if (!cdEl) return;
+
+    try {
+      if (state.data.masterFormulas && state.data.masterFormulas.countdownText) {
+        cdEl.textContent = state.data.masterFormulas.countdownText;
+        return;
+      }
+
+      // Hitung langsung menggunakan numeric timestamp agar kebal Invalid Date di Safari/Mobile
+      let targetTime;
+      if (wDateIso) {
+        const dt = parseSafeWeddingDate(wDateIso);
+        targetTime = (dt && !isNaN(dt.getTime())) ? dt.getTime() : new Date(2027, 5, 27).getTime();
+      } else {
+        targetTime = new Date(2027, 5, 27).getTime();
+      }
+
+      const diffMs = targetTime - Date.now();
+      const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+
+      if (isNaN(diffDays)) {
+        cdEl.textContent = '⏳ Hari Bahagia Semakin Dekat';
+      } else if (diffDays <= 0) {
+        cdEl.textContent = '🎉 Hari Bahagia Telah Tiba!';
+      } else {
+        cdEl.textContent = '⏳ ' + diffDays + ' Hari Menuju Acara';
+      }
+    } catch (eCd) {
+      console.error('Countdown parsing error:', eCd);
+      cdEl.textContent = '⏳ Hari Bahagia Semakin Dekat';
+    }
+  }
+
   function renderMasterDashboard() {
     const meta = state.data.meta || {};
     const wDateIso = meta.weddingDate || '2027-06-27';
@@ -453,27 +491,9 @@
     if (rdSubtitle) rdSubtitle.textContent = wDateFormatted + ' • ' + venueStr;
 
     try {
-      const cdEl = document.getElementById('countdownBadge');
-      if (cdEl) {
-        if (state.data.masterFormulas && state.data.masterFormulas.countdownText) {
-          cdEl.textContent = state.data.masterFormulas.countdownText;
-        } else {
-          const weddingDt = parseSafeWeddingDate(wDateIso);
-          const diffMs = weddingDt.getTime() - Date.now();
-          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-          if (isNaN(diffDays)) {
-            cdEl.textContent = '⏳ Hari Bahagia Semakin Dekat';
-          } else if (diffDays <= 0) {
-            cdEl.textContent = '🎉 Hari Bahagia Telah Tiba!';
-          } else {
-            cdEl.textContent = '⏳ ' + diffDays + ' Hari Menuju Akad';
-          }
-        }
-      }
+      updateCountdownDisplay(wDateIso);
     } catch (eCd) {
-      console.error('Countdown parsing error:', eCd);
-      const cdEl = document.getElementById('countdownBadge');
-      if (cdEl) cdEl.textContent = '⏳ Hari Bahagia Semakin Dekat';
+      console.error('Countdown render error:', eCd);
     }
 
     const m = computeMasterMetrics();
@@ -1320,12 +1340,29 @@
     }
   }
 
+  function setModalVisibility(modalIdOrEl, isVisible) {
+    const el = typeof modalIdOrEl === 'string' ? document.getElementById(modalIdOrEl) : modalIdOrEl;
+    if (!el) return;
+    if (isVisible) {
+      el.classList.remove('hidden', 'pointer-events-none');
+      el.style.setProperty('display', 'flex', 'important');
+      el.style.setProperty('pointer-events', 'auto', 'important');
+      el.style.setProperty('visibility', 'visible', 'important');
+      el.style.setProperty('opacity', '1', 'important');
+    } else {
+      el.classList.add('hidden', 'pointer-events-none');
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+    }
+  }
+
   let quickModalOpenedFrom = 'update_menu';
 
   function openQuickStep1(skipHistory) {
     quickModalOpenedFrom = 'update_menu';
-    const qModal = document.getElementById('quickEditModal');
-    if (qModal) qModal.classList.remove('hidden', 'pointer-events-none');
+    setModalVisibility('quickEditModal', true);
     const qStep1 = document.getElementById('quickStep1Selection');
     if (qStep1) qStep1.classList.remove('hidden');
     const qStep2 = document.getElementById('quickStep2Detail');
@@ -1338,8 +1375,7 @@
 
   function openQuickStep2Form(actionType, modKey, itemId, fromSource, skipHistory) {
     quickModalOpenedFrom = fromSource || 'update_menu';
-    const qModal = document.getElementById('quickEditModal');
-    if (qModal) qModal.classList.remove('hidden', 'pointer-events-none');
+    setModalVisibility('quickEditModal', true);
     const qStep1 = document.getElementById('quickStep1Selection');
     if (qStep1) qStep1.classList.add('hidden');
     const qStep2 = document.getElementById('quickStep2Detail');
@@ -1450,8 +1486,7 @@
   }
 
   function closeQuickModal(fromPopState) {
-    const qModal = document.getElementById('quickEditModal');
-    if (qModal) qModal.classList.add('hidden', 'pointer-events-none');
+    setModalVisibility('quickEditModal', false);
     updateFloatingNavVisibility();
     if (!fromPopState) {
       dismissModalHistory();
@@ -1464,8 +1499,7 @@
     const inpCpwQuota = document.getElementById('quotaInputCpw');
     if (inpCppQuota) inpCppQuota.value = Number(meta.targetPaxCpp) || 200;
     if (inpCpwQuota) inpCpwQuota.value = Number(meta.targetPaxCpw) || 200;
-    const quotaModal = document.getElementById('editQuotaModal');
-    if (quotaModal) quotaModal.classList.remove('hidden', 'pointer-events-none');
+    setModalVisibility('editQuotaModal', true);
     updateFloatingNavVisibility();
     if (!skipHistory) {
       pushModalHistory('editQuotaModal', 'root');
@@ -1473,8 +1507,7 @@
   }
 
   function closeQuotaModal(fromPopState) {
-    const quotaModal = document.getElementById('editQuotaModal');
-    if (quotaModal) quotaModal.classList.add('hidden', 'pointer-events-none');
+    setModalVisibility('editQuotaModal', false);
     updateFloatingNavVisibility();
     if (!fromPopState) {
       dismissModalHistory();
@@ -1487,8 +1520,7 @@
     const inpCpw = document.getElementById('inpNameCpw');
     if (inpCpp) inpCpp.value = meta.cpp || 'FARHAN RAFIQI';
     if (inpCpw) inpCpw.value = meta.cpw || 'INDIRA GUSTI';
-    const coupleModal = document.getElementById('coupleNameModal');
-    if (coupleModal) coupleModal.classList.remove('hidden', 'pointer-events-none');
+    setModalVisibility('coupleNameModal', true);
     updateFloatingNavVisibility();
     if (!skipHistory) {
       pushModalHistory('coupleNameModal', 'root');
@@ -1496,8 +1528,7 @@
   }
 
   function closeCoupleNameModal(fromPopState) {
-    const coupleModal = document.getElementById('coupleNameModal');
-    if (coupleModal) coupleModal.classList.add('hidden', 'pointer-events-none');
+    setModalVisibility('coupleNameModal', false);
     updateFloatingNavVisibility();
     if (!fromPopState) {
       dismissModalHistory();
@@ -1509,8 +1540,7 @@
     if (pinErr) pinErr.classList.add('hidden');
     const pinInp = document.getElementById('pinUnlockInput');
     if (pinInp) pinInp.value = '';
-    const rModal = document.getElementById('roleModal');
-    if (rModal) rModal.classList.remove('hidden', 'pointer-events-none');
+    setModalVisibility('roleModal', true);
     updateFloatingNavVisibility();
     setTimeout(function() {
       if (pinInp) pinInp.focus();
@@ -1521,8 +1551,7 @@
   }
 
   function closeRoleModal(fromPopState) {
-    const rModal = document.getElementById('roleModal');
-    if (rModal) rModal.classList.add('hidden', 'pointer-events-none');
+    setModalVisibility('roleModal', false);
     updateFloatingNavVisibility();
     if (!fromPopState) {
       dismissModalHistory();
@@ -1530,10 +1559,14 @@
   }
 
   function closeAllModals(fromPopState) {
-    closeQuickModal(fromPopState);
-    closeQuotaModal(fromPopState);
-    closeCoupleNameModal(fromPopState);
-    closeRoleModal(fromPopState);
+    setModalVisibility('quickEditModal', false);
+    setModalVisibility('editQuotaModal', false);
+    setModalVisibility('coupleNameModal', false);
+    setModalVisibility('roleModal', false);
+    updateFloatingNavVisibility();
+    if (!fromPopState) {
+      dismissModalHistory();
+    }
   }
 
   function populateAddCategoryDropdown(modKey) {
@@ -2039,6 +2072,17 @@
   }
 
   function initEvents() {
+    function safeOn(idOrEl, evt, handler) {
+      try {
+        const el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (el && typeof el.addEventListener === 'function') {
+          el.addEventListener(evt, handler);
+        }
+      } catch (err) {
+        console.warn('safeOn error for', idOrEl, err);
+      }
+    }
+
     // Toggle Floating Left Navigation Menu
     const btnToggleNav = document.getElementById('btnToggleNavMenu');
     const navPopup = document.getElementById('floatingNavMenuPopup');
@@ -2198,16 +2242,18 @@
     setupCollapsibleSection('btnToggleSectionPaguChart', 'wrapperSectionPaguChart', 'labelToggleSectionPaguChart', 'iconToggleSectionPaguChart');
     setupCollapsibleSection('btnToggleSectionShareChart', 'wrapperSectionShareChart', 'labelToggleSectionShareChart', 'iconToggleSectionShareChart');
 
-    document.getElementById('masterModuleCardsGrid').addEventListener('click', function(e) {
+    safeOn('masterModuleCardsGrid', 'click', function(e) {
       const card = e.target.closest('.jump-card-btn');
       if (!card) return;
       const key = card.getAttribute('data-jump');
       if (key === 'tamu') {
         switchMainTab('guests');
-        document.getElementById('btnSubTamu').click();
+        const b = document.getElementById('btnSubTamu');
+        if (b) b.click();
       } else if (key === 'kua') {
         switchMainTab('guests');
-        document.getElementById('btnSubAdminKua').click();
+        const b = document.getElementById('btnSubAdminKua');
+        if (b) b.click();
       } else {
         state.activeSubMod = key;
         switchMainTab('modules');
@@ -2246,9 +2292,9 @@
       });
     }
 
-    document.getElementById('moduleSearchInput').addEventListener('input', renderModuleView);
-    document.getElementById('moduleCategoryFilter').addEventListener('change', renderModuleView);
-    document.getElementById('moduleStatusFilter').addEventListener('change', renderModuleView);
+    safeOn('moduleSearchInput', 'input', renderModuleView);
+    safeOn('moduleCategoryFilter', 'change', renderModuleView);
+    safeOn('moduleStatusFilter', 'change', renderModuleView);
 
     const btnAddModItem = document.getElementById('btnAddNewModuleItem');
     if (btnAddModItem) {
@@ -2258,7 +2304,7 @@
       });
     }
 
-    document.getElementById('moduleItemsContainer').addEventListener('click', async function(e) {
+    safeOn('moduleItemsContainer', 'click', async function(e) {
       // Toggle Cepat Status Log Mahar (Terencana <-> Selesai)
       const toggleMaharBtn = e.target.closest('button[data-togglemaharstatus]');
       if (toggleMaharBtn) {
@@ -2303,17 +2349,26 @@
       }
     });
 
-    document.getElementById('btnSubTamu').addEventListener('click', function() {
-      document.getElementById('subview-tamu').classList.remove('hidden');
-      document.getElementById('subview-adminkua').classList.add('hidden');
-      document.getElementById('btnSubTamu').className = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]';
-      document.getElementById('btnSubAdminKua').className = 'px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200';
+    safeOn('btnSubTamu', 'click', function() {
+      const vTamu = document.getElementById('subview-tamu');
+      if (vTamu) vTamu.classList.remove('hidden');
+      const vKua = document.getElementById('subview-adminkua');
+      if (vKua) vKua.classList.add('hidden');
+      const bTamu = document.getElementById('btnSubTamu');
+      if (bTamu) bTamu.className = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]';
+      const bKua = document.getElementById('btnSubAdminKua');
+      if (bKua) bKua.className = 'px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200';
     });
-    document.getElementById('btnSubAdminKua').addEventListener('click', function() {
-      document.getElementById('subview-adminkua').classList.remove('hidden');
-      document.getElementById('subview-tamu').classList.add('hidden');
-      document.getElementById('btnSubAdminKua').className = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]';
-      document.getElementById('btnSubTamu').className = 'px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200';
+
+    safeOn('btnSubAdminKua', 'click', function() {
+      const vKua = document.getElementById('subview-adminkua');
+      if (vKua) vKua.classList.remove('hidden');
+      const vTamu = document.getElementById('subview-tamu');
+      if (vTamu) vTamu.classList.add('hidden');
+      const bKua = document.getElementById('btnSubAdminKua');
+      if (bKua) bKua.className = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]';
+      const bTamu = document.getElementById('btnSubTamu');
+      if (bTamu) bTamu.className = 'px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200';
     });
 
     document.querySelectorAll('.guest-tab-btn').forEach(function(btn) {
@@ -2330,12 +2385,10 @@
       });
     });
 
-    document.getElementById('guestSearchInput').addEventListener('input', renderGuestsAndKua);
-    document.getElementById('guestRsvpFilter').addEventListener('change', renderGuestsAndKua);
-    if (document.getElementById('guestCategoryFilter')) {
-      document.getElementById('guestCategoryFilter').addEventListener('change', renderGuestsAndKua);
-    }
-    document.getElementById('btnAddGuestSlot').addEventListener('click', function() {
+    safeOn('guestSearchInput', 'input', renderGuestsAndKua);
+    safeOn('guestRsvpFilter', 'change', renderGuestsAndKua);
+    safeOn('guestCategoryFilter', 'change', renderGuestsAndKua);
+    safeOn('btnAddGuestSlot', 'click', function() {
       openQuickStep2Form('guest', null, null);
     });
 
@@ -2498,7 +2551,7 @@
       }
     });
 
-    document.getElementById('adminKuaContainer').addEventListener('click', async function(e) {
+    safeOn('adminKuaContainer', 'click', async function(e) {
       const chkBtn = e.target.closest('button[data-kuacheck]');
       if (!chkBtn) return;
       const id = chkBtn.getAttribute('data-kuacheck');
@@ -2537,11 +2590,11 @@
       if (bTimeline) bTimeline.className = (v === 'timeline' ? actCls : inactCls);
     }
 
-    document.getElementById('btnSubRundown').addEventListener('click', function() { setVendorSubView('rundown'); });
-    document.getElementById('btnSubVendors').addEventListener('click', function() { setVendorSubView('vendors'); });
-    document.getElementById('btnSubTimeline').addEventListener('click', function() { setVendorSubView('timeline'); });
+    safeOn('btnSubRundown', 'click', function() { setVendorSubView('rundown'); });
+    safeOn('btnSubVendors', 'click', function() { setVendorSubView('vendors'); });
+    safeOn('btnSubTimeline', 'click', function() { setVendorSubView('timeline'); });
 
-    document.getElementById('subview-rundown').addEventListener('click', async function(e) {
+    safeOn('subview-rundown', 'click', async function(e) {
       const editBtn = e.target.closest('button[data-editrundown]');
       if (editBtn) {
         const id = editBtn.getAttribute('data-editrundown');
@@ -2561,14 +2614,14 @@
       await pushToAppsScript('update_rundown', Object.assign({ tableType: 'rundown' }, r));
     });
 
-    document.getElementById('vendorListContainer').addEventListener('click', function(e) {
+    safeOn('vendorListContainer', 'click', function(e) {
       const btn = e.target.closest('button[data-editmod="vendors"]') || e.target.closest('button[data-editid]') || e.target.closest('button[data-editvendor]');
       if (!btn) return;
       const id = btn.getAttribute('data-editid') || btn.getAttribute('data-editvendor');
       openQuickStep2Form('item', 'vendors', id, 'direct_edit');
     });
 
-    document.getElementById('subview-timeline').addEventListener('click', async function(e) {
+    safeOn('subview-timeline', 'click', async function(e) {
       const editBtn = e.target.closest('button[data-edittimeline]');
       if (editBtn) {
         const id = editBtn.getAttribute('data-edittimeline');
@@ -2588,9 +2641,9 @@
       await pushToAppsScript('update_rundown', Object.assign({ tableType: 'timeline' }, t));
     });
 
-    document.getElementById('btnFabQuickAction').addEventListener('click', openQuickStep1);
-    document.getElementById('btnCloseQuickStep1').addEventListener('click', closeQuickModal);
-    document.getElementById('btnBackToQuickStep1').addEventListener('click', function() {
+    safeOn('btnFabQuickAction', 'click', openQuickStep1);
+    safeOn('btnCloseQuickStep1', 'click', closeQuickModal);
+    safeOn('btnBackToQuickStep1', 'click', function() {
       if (quickModalOpenedFrom === 'direct_edit') {
         closeQuickModal();
       } else {
@@ -2601,8 +2654,7 @@
         }
       }
     });
-    const btnCloseStep2 = document.getElementById('btnCloseQuickStep2');
-    if (btnCloseStep2) btnCloseStep2.addEventListener('click', closeQuickModal);
+    safeOn('btnCloseQuickStep2', 'click', closeQuickModal);
 
     document.querySelectorAll('.action-card-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -2617,7 +2669,7 @@
       });
     });
 
-    document.getElementById('editModuleSelect').addEventListener('change', function(e) {
+    safeOn('editModuleSelect', 'change', function(e) {
       const mode = document.getElementById('editItemMode').value;
       if (mode === 'add') {
         populateAddCategoryDropdown(e.target.value);
@@ -2626,7 +2678,7 @@
         populateEditItemDropdown(e.target.value, null);
       }
     });
-    document.getElementById('editItemSelect').addEventListener('change', loadSelectedEditItemFields);
+    safeOn('editItemSelect', 'change', loadSelectedEditItemFields);
     const pSelect = document.getElementById('editPicSelect');
     const pInput = document.getElementById('editPicInput');
     if (pSelect && pInput) {
@@ -2651,16 +2703,14 @@
       });
     });
 
-    document.getElementById('maharKomponenSelect').addEventListener('change', function(e) {
+    safeOn('maharKomponenSelect', 'change', function(e) {
       syncMaharTargetField();
       updateMaharPreview();
     });
-    document.getElementById('maharVolumeInput').addEventListener('input', updateMaharPreview);
-    if (document.getElementById('maharTargetQtyInput')) {
-      document.getElementById('maharTargetQtyInput').addEventListener('input', updateMaharPreview);
-    }
+    safeOn('maharVolumeInput', 'input', updateMaharPreview);
+    safeOn('maharTargetQtyInput', 'input', updateMaharPreview);
 
-    document.getElementById('formEditItem').addEventListener('submit', async function(e) {
+    safeOn('formEditItem', 'submit', async function(e) {
       e.preventDefault();
       const formMode = document.getElementById('editItemMode').value;
       const modKey = document.getElementById('editModuleSelect').value;
@@ -2845,7 +2895,7 @@
       await pushToAppsScript(actionName, it);
     });
 
-    document.getElementById('formAddMahar').addEventListener('submit', async function(e) {
+    safeOn('formAddMahar', 'submit', async function(e) {
       e.preventDefault();
       const komp = document.getElementById('maharKomponenSelect').value;
       const targetQty = Math.max(0.01, Number(document.getElementById('maharTargetQtyInput').value) || 1);
@@ -2932,7 +2982,7 @@
       }
     });
 
-    document.getElementById('formGuestModal').addEventListener('submit', async function(e) {
+    safeOn('formGuestModal', 'submit', async function(e) {
       e.preventDefault();
       const editId = document.getElementById('guestEditId').value;
       const side = document.getElementById('guestSideSelect').value;
@@ -2999,42 +3049,40 @@
     const inpCpp = document.getElementById('inpNameCpp');
     const inpCpw = document.getElementById('inpNameCpw');
 
-    if (btnEditCouple && coupleModal && inpCpp && inpCpw) {
-      btnEditCouple.addEventListener('click', function() {
-        openCoupleNameModal();
-      });
+    safeOn('btnEditCoupleNames', 'click', function() {
+      openCoupleNameModal();
+    });
 
-      document.getElementById('btnCloseCoupleNameModal').addEventListener('click', function() {
-        closeCoupleNameModal();
-      });
+    safeOn('btnCloseCoupleNameModal', 'click', function() {
+      closeCoupleNameModal();
+    });
 
-      document.getElementById('formEditCoupleNames').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const newCpp = (inpCpp.value || 'FARHAN RAFIQI').trim();
-        const newCpw = (inpCpw.value || 'INDIRA GUSTI').trim();
+    safeOn('formEditCoupleNames', 'submit', async function(e) {
+      e.preventDefault();
+      const newCpp = (inpCpp ? inpCpp.value : 'FARHAN RAFIQI') || 'FARHAN RAFIQI';
+      const newCpw = (inpCpw ? inpCpw.value : 'INDIRA GUSTI') || 'INDIRA GUSTI';
 
-        if (!state.data.meta) state.data.meta = {};
-        state.data.meta.cpp = newCpp;
-        state.data.meta.cpw = newCpw;
+      if (!state.data.meta) state.data.meta = {};
+      state.data.meta.cpp = newCpp.trim();
+      state.data.meta.cpw = newCpw.trim();
 
-        const heroNames = document.getElementById('heroCoupleNames');
-        if (heroNames) heroNames.textContent = newCpp + ' & ' + newCpw;
-        const titleHdr = document.getElementById('headerCoupleTitle');
-        if (titleHdr) titleHdr.textContent = newCpp + ' & ' + newCpw;
+      const heroNames = document.getElementById('heroCoupleNames');
+      if (heroNames) heroNames.textContent = state.data.meta.cpp + ' & ' + state.data.meta.cpw;
+      const titleHdr = document.getElementById('headerCoupleTitle');
+      if (titleHdr) titleHdr.textContent = state.data.meta.cpp + ' & ' + state.data.meta.cpw;
 
-        saveLocalState();
-        closeCoupleNameModal();
-        refreshAll();
-        showToast('Nama mempelai berhasil diperbarui: ' + newCpp + ' & ' + newCpw);
-        await pushToAppsScript('update_master_meta', { cpp: newCpp, cpw: newCpw });
-      });
-    }
+      saveLocalState();
+      closeCoupleNameModal();
+      refreshAll();
+      showToast('Nama mempelai berhasil diperbarui: ' + state.data.meta.cpp + ' & ' + state.data.meta.cpw);
+      await pushToAppsScript('update_master_meta', { cpp: state.data.meta.cpp, cpw: state.data.meta.cpw });
+    });
 
-    document.getElementById('btnSwitchRole').addEventListener('click', function() { openRoleUnlockModal(); });
-    document.getElementById('btnUnlockHero').addEventListener('click', function() { openRoleUnlockModal(); });
-    document.getElementById('btnCloseRoleModal').addEventListener('click', function() { closeRoleModal(); });
+    safeOn('btnSwitchRole', 'click', function() { openRoleUnlockModal(); });
+    safeOn('btnUnlockHero', 'click', function() { openRoleUnlockModal(); });
+    safeOn('btnCloseRoleModal', 'click', function() { closeRoleModal(); });
 
-    document.getElementById('btnActivateCommittee').addEventListener('click', function() {
+    safeOn('btnActivateCommittee', 'click', function() {
       state.role = 'committee';
       state.config.pin = '2027';
       saveLocalState();
@@ -3043,7 +3091,7 @@
       showToast('Mode Panitia & Tamu aktif (Anggaran disembunyikan).');
     });
 
-    document.getElementById('btnUnlockCouple').addEventListener('click', function() {
+    safeOn('btnUnlockCouple', 'click', function() {
       const pinVal = (document.getElementById('pinUnlockInput').value || '').trim();
       if (pinVal === '270627') {
         state.role = 'couple';
@@ -3053,7 +3101,8 @@
         refreshAll();
         showToast('Mode Mempelai aktif: Seluruh anggaran ditampilkan.');
       } else {
-        document.getElementById('pinErrorText').classList.remove('hidden');
+        const errEl = document.getElementById('pinErrorText');
+        if (errEl) errEl.classList.remove('hidden');
       }
     });
 
@@ -3097,10 +3146,10 @@
       });
     }
 
-    document.getElementById('btnSyncSheets').addEventListener('click', function() {
+    safeOn('btnSyncSheets', 'click', function() {
       syncFromAppsScript(false);
     });
-    document.getElementById('btnOpenSetup').addEventListener('click', function() {
+    safeOn('btnOpenSetup', 'click', function() {
       if (state.activeTab === 'setup') {
         switchMainTab(state.previousTab || 'master');
       } else {
@@ -3108,7 +3157,7 @@
       }
     });
 
-    document.getElementById('btnSaveSyncConfig').addEventListener('click', function() {
+    safeOn('btnSaveSyncConfig', 'click', function() {
       state.config.scriptUrl = (document.getElementById('cfgScriptUrl').value || '').trim();
       state.config.pin = (document.getElementById('cfgPinInput').value || '2027').trim();
       if (state.config.pin === '270627') state.role = 'couple';
@@ -3121,22 +3170,19 @@
       }
     });
 
-    const btnSaveMasterMeta = document.getElementById('btnSaveMasterMeta');
-    if (btnSaveMasterMeta) {
-      btnSaveMasterMeta.addEventListener('click', async function() {
-        const newDate = (document.getElementById('cfgWeddingDateInput').value || '2027-06-27').trim();
-        const newVenue = (document.getElementById('cfgVenueInput').value || 'Venue Intimate').trim();
-        if (!state.data.meta) state.data.meta = {};
-        state.data.meta.weddingDate = newDate;
-        state.data.meta.venue = newVenue;
-        saveLocalState();
-        refreshAll();
-        showToast('Jadwal Master diperbarui menjadi: ' + formatTanggalIndo(newDate));
-        await pushToAppsScript('update_master_meta', { weddingDate: newDate, venue: newVenue });
-      });
-    }
+    safeOn('btnSaveMasterMeta', 'click', async function() {
+      const newDate = (document.getElementById('cfgWeddingDateInput').value || '2027-06-27').trim();
+      const newVenue = (document.getElementById('cfgVenueInput').value || 'Venue Intimate').trim();
+      if (!state.data.meta) state.data.meta = {};
+      state.data.meta.weddingDate = newDate;
+      state.data.meta.venue = newVenue;
+      saveLocalState();
+      refreshAll();
+      showToast('Jadwal Master diperbarui menjadi: ' + formatTanggalIndo(newDate));
+      await pushToAppsScript('update_master_meta', { weddingDate: newDate, venue: newVenue });
+    });
 
-    document.getElementById('weddingTestingChecklist').addEventListener('change', function(e) {
+    safeOn('weddingTestingChecklist', 'change', function(e) {
       const chk = e.target.closest('input[data-wchk]');
       if (!chk) return;
       state.checklist[chk.getAttribute('data-wchk')] = chk.checked;
@@ -3147,10 +3193,20 @@
 
   function initApp() {
     try {
+      closeAllModals(true);
+    } catch (eClose) {
+      console.error('closeAllModals init error:', eClose);
+    }
+
+    try {
       loadLocalState();
     } catch (e) {
       console.error('loadLocalState error:', e);
     }
+
+    try {
+      updateCountdownDisplay();
+    } catch (eCd) {}
 
     try {
       const elUrl = document.getElementById('cfgScriptUrl');
@@ -3181,7 +3237,7 @@
     }
 
     // Graceful fallback: render data lokal segera & tutup splash screen
-    setTimeout(hideSplashScreen, 500);
+    setTimeout(hideSplashScreen, 400);
 
     // 4. Auto-sync background tanpa memblokir interaksi pengguna
     try {
@@ -3192,8 +3248,8 @@
       console.error('syncFromAppsScript error:', eSync);
     }
 
-    // 5. Hard timeout failsafe (maksimal 2.5 detik)
-    setTimeout(hideSplashScreen, 2500);
+    // 5. Hard timeout failsafe (maksimal 2 detik)
+    setTimeout(hideSplashScreen, 2000);
 
     try {
       document.addEventListener('visibilitychange', function() {
