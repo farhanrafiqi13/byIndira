@@ -15,22 +15,8 @@
   <title>Farhan &amp; Indira — Wedding Tracker &amp; Command Center</title>
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- CRITICAL: ON-SCREEN RUNTIME ERROR LOGGER & SW FORCE UPDATE -->
+  <!-- SERVICE WORKER PWA UPDATE LISTENER -->
   <script>
-    window.onerror = function(msg, url, line) {
-      const errDiv = document.createElement('div');
-      errDiv.style = "position:fixed; bottom:0; left:0; width:100%; background:red; color:white; font-size:11px; padding:8px; z-index:9999999; word-break:break-all;";
-      errDiv.innerText = `JS ERROR: ${msg} at line ${line}`;
-      document.body.appendChild(errDiv);
-      return false;
-    };
-    window.addEventListener('unhandledrejection', function(event) {
-      const errDiv = document.createElement('div');
-      errDiv.style = "position:fixed; bottom:32px; left:0; width:100%; background:#b91c1c; color:white; font-size:11px; padding:8px; z-index:9999999; word-break:break-all;";
-      errDiv.innerText = `PROMISE ERROR: ${event.reason}`;
-      document.body.appendChild(errDiv);
-    });
-
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for (var reg of registrations) {
@@ -75,8 +61,6 @@
   <link rel="stylesheet" href="./styles.css?v=2.1-unfrozen" />
 </head>
 <body class="min-h-screen antialiased bg-[#0D1117] text-[#C9D1D9] selection:bg-[#58A6FF]/30 selection:text-[#F0F6FC]">
-
-  <div style="position:fixed; top:4px; left:4px; font-size:10px; color:#10B981; z-index:999999; background:rgba(13,17,23,0.85); padding:2px 6px; border-radius:4px; border:1px solid #10B981; pointer-events:none; font-family:monospace; font-weight:bold;">BUILD: v2.1-UNFROZEN</div>
 
   <!-- ==================== FUTURISTIC PWA SPLASH SCREEN ==================== -->
   <div id="splash-screen" class="splash-overlay fixed inset-0 z-[99999] bg-[#0D1117] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-400 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
@@ -227,7 +211,7 @@
                   const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
                   const countdownElement = document.getElementById('countdownBadge') || document.getElementById('countdown-text') || document.querySelector('.countdown');
                   if (countdownElement) {
-                    countdownElement.textContent = `⏳ ${diffDays > 0 ? diffDays : 0} Hari Menuju Acara`;
+                    countdownElement.textContent = '⏳ ' + (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
                   }
                 } catch(e) {}
               })();

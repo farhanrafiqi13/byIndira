@@ -442,7 +442,7 @@
                                document.querySelector('.countdown') ||
                                document.querySelector('[data-countdown]');
       if (countdownElement) {
-        countdownElement.textContent = `⏳ ${diffDays > 0 ? diffDays : 0} Hari Menuju Acara`;
+        countdownElement.textContent = '⏳ ' + (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
       }
     } catch (eCd) {
       console.error('Countdown parsing error:', eCd);
@@ -1177,7 +1177,6 @@
           '</div>' +
         '</div>'
       );
-    }).join('');
     }).join('');
   }
 
