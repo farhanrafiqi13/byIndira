@@ -47,6 +47,42 @@
 </head>
 <body class="min-h-screen antialiased bg-[#0D1117] text-[#C9D1D9] selection:bg-[#58A6FF]/30 selection:text-[#F0F6FC]">
 
+  <!-- ==================== FUTURISTIC PWA SPLASH SCREEN ==================== -->
+  <div id="appSplashScreen" class="fixed inset-0 z-[99999] bg-[#0D1117] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-400 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
+    <div class="relative flex flex-col items-center max-w-xs w-full text-center space-y-6">
+      <!-- Centerpiece: Monogram with subtle breathing glow -->
+      <div class="relative w-20 h-20 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#58A6FF]/25 via-teal-500/15 to-[#238636]/25 blur-xl animate-pulse"></div>
+        <div class="relative w-20 h-20 rounded-2xl bg-[#161B22] border border-[#30363D] shadow-[0_0_30px_rgba(88,166,255,0.18)] flex items-center justify-center">
+          <img src="./logo.png" alt="Farhan & Indira" class="w-11 h-11 object-contain drop-shadow-[0_0_10px_rgba(88,166,255,0.4)]" />
+        </div>
+      </div>
+
+      <!-- App Title -->
+      <div class="space-y-1">
+        <h1 class="text-xs sm:text-sm font-black tracking-[0.25em] text-[#F0F6FC] uppercase font-mono">
+          FARHAN &amp; INDIRA
+        </h1>
+        <p class="text-[9px] tracking-[0.2em] text-[#8B949E] uppercase font-mono">
+          COMMAND CENTER
+        </p>
+      </div>
+
+      <!-- Ultra-thin gradient progress line & status -->
+      <div class="w-44 space-y-2.5">
+        <div class="w-full h-[2px] bg-[#21262D] rounded-full overflow-hidden relative">
+          <div id="splashProgressBar" class="h-full bg-gradient-to-r from-[#58A6FF] via-[#388BFD] to-[#238636] rounded-full transition-all duration-300 ease-out" style="width: 35%;"></div>
+        </div>
+        <div class="flex items-center justify-center gap-1.5">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#3FB950] animate-ping"></span>
+          <span id="splashStatusText" class="font-mono text-[9px] text-[#8B949E] tracking-widest uppercase">
+            INITIALIZING SYSTEM...
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== STICKY TOP HEADER ==================== -->
   <header class="sticky top-0 z-30 sticky top-0 z-30 bg-[#161B22]/95 border-b border-[#30363D] px-3.5 py-2.5 backdrop-blur-md">
     <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
@@ -73,20 +109,20 @@
       <!-- Right: Controls (Mode, Live Sync, Setup) -->
       <div class="flex items-center gap-1.5 shrink-0">
         <!-- Mode Switcher -->
-        <button type="button" id="btnSwitchRole" class="relative z-50 pointer-events-auto cursor-pointer px-2.5 py-1.5 rounded-xl bg-white hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Akses PIN">
+        <button type="button" id="btnSwitchRole" class="relative z-50 pointer-events-auto cursor-pointer px-2.5 py-1.5 rounded-xl bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Akses PIN">
           <i data-lucide="shield" class="w-3.5 h-3.5 text-[#58A6FF]"></i>
           <span id="btnSwitchRoleLabel" class="hidden sm:inline text-[11px]">Akses PIN</span>
         </button>
 
         <!-- Live Sync Status & Trigger -->
-        <button type="button" id="btnSyncSheets" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Sinkronkan Data Spreadsheet">
+        <button type="button" id="btnSyncSheets" class="px-2.5 py-1.5 rounded-xl bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Sinkronkan Data Spreadsheet">
           <span class="status-dot status-confirmed pulsing-dot"></span>
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-600" id="syncSpinner"></i>
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-400" id="syncSpinner"></i>
           <span class="hidden sm:inline text-[11px] font-semibold text-[#C9D1D9]">Cloud Active</span>
         </button>
 
         <!-- Connection Settings -->
-        <button type="button" id="btnOpenSetup" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Pengaturan Spreadsheet">
+        <button type="button" id="btnOpenSetup" class="px-2.5 py-1.5 rounded-xl bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Pengaturan Spreadsheet">
           <i data-lucide="settings" class="w-3.5 h-3.5 text-[#8B949E]" id="btnSetupIcon"></i>
           <span id="btnSetupLabel" class="text-[11px]">Koneksi</span>
         </button>
@@ -285,13 +321,13 @@
         <button type="button" data-submod="tracker" id="btnSubmodTracker" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[#58A6FF] border border-[#30363D] shadow-[0_0_12px_rgba(6,182,212,0.2)]">
           💍 Akad &amp; Resepsi
         </button>
-        <button type="button" data-submod="prewed" id="btnSubmodPrewed" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">
+        <button type="button" data-submod="prewed" id="btnSubmodPrewed" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
           📷 Pre-Wedding
         </button>
-        <button type="button" data-submod="seserahan" id="btnSubmodSeserahan" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">
+        <button type="button" data-submod="seserahan" id="btnSubmodSeserahan" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
           🎁 Seserahan
         </button>
-        <button type="button" data-submod="mahar" id="btnSubmodMahar" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">
+        <button type="button" data-submod="mahar" id="btnSubmodMahar" class="submod-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
           🪙 Mahar
         </button>
       </div>
@@ -337,7 +373,7 @@
         <button type="button" id="btnSubTamu" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[#58A6FF] border border-[#30363D] shadow-[0_0_12px_rgba(6,182,212,0.2)]">
           👥 Daftar Tamu &amp; RSVP
         </button>
-        <button type="button" id="btnSubAdminKua" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">
+        <button type="button" id="btnSubAdminKua" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
           📋 Berkas KUA &amp; Legal
         </button>
       </div>
@@ -408,8 +444,8 @@
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             <button type="button" data-guesttab="all" class="guest-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[#58A6FF] border border-[#30363D]">Semua</button>
-            <button type="button" data-guesttab="CPP" class="guest-tab-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">🤵 Pihak CPP</button>
-            <button type="button" data-guesttab="CPW" class="guest-tab-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">👰 Pihak CPW</button>
+            <button type="button" data-guesttab="CPP" class="guest-tab-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">🤵 Pihak CPP</button>
+            <button type="button" data-guesttab="CPW" class="guest-tab-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">👰 Pihak CPW</button>
           </div>
           <button type="button" id="btnAddGuestSlot" class="px-3 py-1.5 rounded-xl bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.1)] shadow-xs text-white text-xs font-bold flex items-center gap-1 shadow-xs">
             <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
@@ -451,7 +487,6 @@
         <div class="glass-card rounded-xl p-4 flex items-center justify-between flex-wrap gap-2 border border-[#30363D]">
           <div>
             <h3 class="text-xs sm:text-sm font-bold text-[#F0F6FC]">Checklist Kelengkapan Berkas KUA</h3>
-            <p class="text-[11px] text-[#8B949E]">Dokumen legalitas, kelurahan, dan puskesmas</p>
           </div>
           <span id="kuaProgressBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#9E6A03] font-tabular">
             0 / 48 Berkas Selesai
@@ -467,10 +502,10 @@
         <button type="button" id="btnSubRundown" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[#58A6FF] border border-[#30363D] shadow-[0_0_12px_rgba(6,182,212,0.2)]">
           ⏱️ Rundown Hari H
         </button>
-        <button type="button" id="btnSubVendors" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">
+        <button type="button" id="btnSubVendors" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
           🏢 Direktori Vendor
         </button>
-        <button type="button" id="btnSubTimeline" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-white text-[#8B949E] border border-[#21262D] hover:text-[#C9D1D9]">
+        <button type="button" id="btnSubTimeline" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-[#21262D] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
           🗓️ Timeline
         </button>
       </div>
@@ -523,9 +558,6 @@
             Two-Way Sync Engine v3
           </span>
           <h2 class="text-sm sm:text-base font-bold text-white mt-1">Integrasi Google Apps Script</h2>
-          <p class="text-xs text-[#8B949E]">
-            Sinkronisasi formula dan spreadsheet 9 tab
-          </p>
         </div>
 
         <div class="space-y-3">
@@ -645,68 +677,56 @@
   </nav>
 
   <!-- ==================== MODAL UPDATE (2-STEP BOTTOM-SHEET POPUP) ==================== -->
-  <div id="quickEditModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-black/50 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white border border-[#30363D]/90 w-full sm:max-w-md rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up max-h-[92vh] overflow-y-auto" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
+  <div id="quickEditModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-[#161B22] border border-[#30363D] w-full sm:max-w-md rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-[0_16px_36px_rgba(1,4,9,0.7)] animate-slide-up max-h-[92vh] overflow-y-auto" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
 
       <!-- STEP 1: 3 POP UP KARTU PILIHAN UTAMA -->
-      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-4"></div>
-      <div id="quickStep1Selection" class="space-y-3.5">
+      <div class="w-12 h-1 bg-[#30363D] rounded-full mx-auto mb-4"></div>
+      <div id="quickStep1Selection" class="space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-xl coral-gradient flex items-center justify-center text-white font-bold">
+            <div class="w-7 h-7 rounded-lg bg-[#238636]/20 border border-[#238636]/40 flex items-center justify-center text-[#3FB950] font-bold text-xs">
               ⚡
             </div>
-            <div>
-              <h3 class="text-sm font-extrabold text-[#F0F6FC]">Pilih Aksi Update</h3>
-              <p class="text-[11px] text-[#8B949E]">Pilih modul yang akan diperbarui</p>
-            </div>
+            <h3 class="text-sm font-bold text-[#F0F6FC]">Pilih Aksi Update</h3>
           </div>
-          <button type="button" id="btnCloseQuickStep1" class="p-1.5 rounded-full bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white transition">
+          <button type="button" id="btnCloseQuickStep1" class="p-1.5 rounded-lg bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-[#F0F6FC] transition border border-[#30363D]/60">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
 
         <div class="space-y-2 pt-1">
           <!-- Card 1: Biaya & Realisasi -->
-          <button type="button" data-actionchoice="item" class="action-card-btn w-full p-3.5 rounded-lg bento-surface hover:border-[#30363D] transition flex items-center justify-between text-left group">
+          <button type="button" data-actionchoice="item" class="action-card-btn w-full p-3 rounded-lg bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left group">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-xl bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[#58A6FF] flex items-center justify-center shrink-0 border border-[#30363D]">
+              <div class="w-9 h-9 rounded-lg bg-[#161B22] text-[#58A6FF] flex items-center justify-center shrink-0 border border-[#30363D]">
                 <i data-lucide="receipt" class="w-4 h-4"></i>
               </div>
-              <div class="min-w-0">
-                <h4 class="text-xs sm:text-sm font-extrabold text-white group-hover:text-[#58A6FF] transition">Biaya &amp; Realisasi</h4>
-                <p class="text-[11px] text-[#8B949E] truncate">Akad, Resepsi, Pre-Wed, Seserahan</p>
-              </div>
+              <h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] transition">Biaya &amp; Realisasi</h4>
             </div>
             <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-[#58A6FF] shrink-0"></i>
           </button>
 
           <!-- Card 2: Mahar & Saham BSSR -->
-          <button type="button" id="btnActionChoiceMahar" data-actionchoice="mahar" class="action-card-btn w-full p-3.5 rounded-lg bento-surface hover:border-amber-500/40 transition flex items-center justify-between text-left group">
+          <button type="button" id="btnActionChoiceMahar" data-actionchoice="mahar" class="action-card-btn w-full p-3 rounded-lg bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left group">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 border border-amber-500/30">
-                <i data-lucide="coins" class="w-4 h-4 text-amber-300"></i>
+              <div class="w-9 h-9 rounded-lg bg-[#161B22] text-[#D29922] flex items-center justify-center shrink-0 border border-[#30363D]">
+                <i data-lucide="coins" class="w-4 h-4 text-[#D29922]"></i>
               </div>
-              <div class="min-w-0">
-                <h4 class="text-xs sm:text-sm font-extrabold text-white group-hover:text-amber-300 transition">Mahar &amp; Cicilan</h4>
-                <p class="text-[11px] text-[#8B949E] truncate">Saham BSSR, Logam Mulia, Tunai</p>
-              </div>
+              <h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#D29922] transition">Mahar &amp; Cicilan</h4>
             </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-amber-400 shrink-0"></i>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-[#D29922] shrink-0"></i>
           </button>
 
           <!-- Card 3: Tamu & RSVP -->
-          <button type="button" data-actionchoice="guest" class="action-card-btn w-full p-3.5 rounded-lg bento-surface hover:border-violet-500/40 transition flex items-center justify-between text-left group">
+          <button type="button" data-actionchoice="guest" class="action-card-btn w-full p-3 rounded-lg bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left group">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-xl bg-violet-500/20 text-violet-300 flex items-center justify-center shrink-0 border border-violet-500/30">
-                <i data-lucide="user-check" class="w-4 h-4"></i>
+              <div class="w-9 h-9 rounded-lg bg-[#161B22] text-[#A371F7] flex items-center justify-center shrink-0 border border-[#30363D]">
+                <i data-lucide="user-check" class="w-4 h-4 text-[#A371F7]"></i>
               </div>
-              <div class="min-w-0">
-                <h4 class="text-xs sm:text-sm font-extrabold text-white group-hover:text-violet-300 transition">Tamu &amp; RSVP</h4>
-                <p class="text-[11px] text-[#8B949E] truncate">Tambah undangan, update RSVP</p>
-              </div>
+              <h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#A371F7] transition">Tamu &amp; RSVP</h4>
             </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-violet-400 shrink-0"></i>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-[#A371F7] shrink-0"></i>
           </button>
         </div>
       </div>
@@ -876,14 +896,14 @@
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="guestSideSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Alokasi</label>
-              <select id="guestSideSelect" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30">
+              <select id="guestSideSelect" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]">
                 <option value="CPP">🤵 Pihak CPP (Farhan)</option>
                 <option value="CPW">👰 Pihak CPW (Indira)</option>
               </select>
             </div>
             <div>
               <label for="guestCircleSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Circle</label>
-              <select id="guestCircleSelect" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30">
+              <select id="guestCircleSelect" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]">
                 <option value="Keluarga Besar">Keluarga Besar</option>
                 <option value="👑 Keluarga Inti">👑 Keluarga Inti</option>
                 <option value="Rekan Kerja &amp; Kolega Kantor">Rekan Kerja &amp; Kolega Kantor</option>
@@ -901,29 +921,29 @@
           <div class="grid grid-cols-3 gap-2">
             <div class="col-span-2">
               <label for="guestNameInput" class="block text-xs font-bold text-[#8B949E] mb-1">Nama Tamu</label>
-              <input id="guestNameInput" type="text" placeholder="Bpk. Budi &amp; Ibu" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-slate-500 focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30" />
+              <input id="guestNameInput" type="text" placeholder="Bpk. Budi &amp; Ibu" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-slate-500 focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]" />
             </div>
             <div>
               <label for="guestPaxInput" class="block text-xs font-bold text-[#8B949E] mb-1">Pax</label>
-              <input id="guestPaxInput" type="number" min="1" max="20" value="2" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-tabular focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30" />
+              <input id="guestPaxInput" type="number" min="1" max="20" value="2" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-tabular focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="guestWaInput" class="block text-xs font-bold text-[#8B949E] mb-1">WhatsApp</label>
-              <input id="guestWaInput" type="tel" placeholder="08123456789" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-slate-500 focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30" />
+              <input id="guestWaInput" type="tel" placeholder="08123456789" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-slate-500 focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]" />
             </div>
             <div>
               <label for="guestIgInput" class="block text-xs font-bold text-[#8B949E] mb-1">Instagram</label>
-              <input id="guestIgInput" type="text" placeholder="@username" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-slate-500 focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30" />
+              <input id="guestIgInput" type="text" placeholder="@username" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-slate-500 focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="guestInviteStatus" class="block text-xs font-bold text-[#8B949E] mb-1">Undangan</label>
-              <select id="guestInviteStatus" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30">
+              <select id="guestInviteStatus" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]">
                 <option value="Draft">Draft</option>
                 <option value="Digital">Digital (WA/Web)</option>
                 <option value="Fisik">Fisik (Kartu VIP)</option>
@@ -931,7 +951,7 @@
             </div>
             <div>
               <label for="guestRsvpSelect" class="block text-xs font-bold text-[#8B949E] mb-1">RSVP</label>
-              <select id="guestRsvpSelect" class="w-full px-3 py-2 rounded-xl bg-[#21262D] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:bg-[#0D1117] focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/30">
+              <select id="guestRsvpSelect" class="w-full px-3 py-2 rounded-lg bg-[#0D1117] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-1 focus:ring-[#58A6FF]">
                 <option value="Hadir">Hadir</option>
                 <option value="Ragu-ragu">Ragu-ragu</option>
                 <option value="Tidak Hadir">Tidak Hadir</option>
@@ -940,7 +960,7 @@
             </div>
           </div>
 
-          <button type="submit" class="w-full py-3 rounded-lg bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.1)] shadow-xs text-white text-xs font-bold transition">
+          <button type="submit" class="w-full py-2.5 rounded-lg bg-[#238636] hover:bg-[#2EA043] active:bg-[#238636] text-white font-semibold border border-[rgba(240,246,252,0.1)] shadow-xs text-xs transition">
             Simpan Data Tamu
           </button>
         </form>
@@ -950,7 +970,7 @@
   </div>
 
   <!-- ==================== MODAL UBAH ALOKASI KUOTA TAMU ==================== -->
-  <div id="editQuotaModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-black/50 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="editQuotaModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="glass-card bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3.5" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -996,7 +1016,7 @@
   </div>
 
   <!-- ==================== MODAL EDIT NAMA MEMPELAI ==================== -->
-  <div id="coupleNameModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-black/50 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="coupleNameModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="glass-card bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3.5" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -1032,8 +1052,8 @@
   </div>
 
   <!-- ==================== MODAL ROLE PIN SWITCHER ==================== -->
-  <div id="roleModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-black/50 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white border border-[#30363D]/90 w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
+  <div id="roleModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-extrabold text-[#F0F6FC]">Akses &amp; Privasi</h3>
         <button type="button" id="btnCloseRoleModal" class="p-1 rounded-full bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white transition">

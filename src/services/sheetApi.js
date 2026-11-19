@@ -370,15 +370,20 @@
 
     const maharLogs = [];
     for (let r = 15; r < Math.min(30, mhRows.length); r++) {
+      const rowIndex = r + 1;
+      // Filter eksplisit baris #29 dan #30 ("Target Kuantitas")
+      if (rowIndex === 29 || rowIndex === 30) continue;
       const row = mhRows[r];
       if (!row || (!row[2] && !row[3])) continue;
-      const rowIndex = r + 1;
+      const tgl = String(row[2] || '').trim();
+      const komp = String(row[3] || '').trim();
+      if (/target\s*kuantitas/i.test(komp) || /target\s*kuantitas/i.test(tgl)) continue;
       maharLogs.push({
         id: 'ML-R' + rowIndex,
         rowIndex: rowIndex,
         no: parseInt(row[1], 10) || (maharLogs.length + 1),
         tanggal: formatDateIso(row[2]),
-        komponen: String(row[3] || '').trim(),
+        komponen: komp,
         volume: Number(row[4]) || 0,
         satuan: String(row[5] || 'Lot').trim(),
         hargaSatuan: parseCurrency(row[6]),

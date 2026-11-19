@@ -168,7 +168,7 @@
     if (!box) return;
     const el = document.createElement('div');
     el.className = 'px-4 py-3 rounded-2xl shadow-lg text-xs font-bold animate-slide-up ' +
-      (isError ? 'bg-rose-700 text-white' : 'bg-slate-900 text-amber-200');
+      (isError ? 'bg-[#DA3633] text-white' : 'bg-[#161B22] text-[#F0F6FC] border border-[#30363D]');
     el.textContent = msg;
     box.appendChild(el);
     setTimeout(function() {
@@ -176,11 +176,24 @@
     }, 3200);
   }
 
+  function hideSplashScreen() {
+    const splash = document.getElementById('appSplashScreen');
+    if (!splash || splash.dataset.hidden === 'true') return;
+    splash.dataset.hidden = 'true';
+    splash.style.opacity = '0';
+    splash.style.pointerEvents = 'none';
+    setTimeout(function() {
+      splash.classList.add('splash-hidden');
+    }, 450);
+  }
+
   function recalculateMaharTargets() {
     const totals = { 'Saham BSSR': 0, 'Emas Hartadinata': 0, 'Uang Tunai': 0 };
     const volumes = { 'Saham BSSR': 0, 'Emas Hartadinata': 0, 'Uang Tunai': 0 };
 
-    state.data.maharLogs.forEach(function(log) {
+    (state.data.maharLogs || []).forEach(function(log) {
+      if (log.rowIndex === 29 || log.rowIndex === 30) return;
+      if (/target\s*kuantitas/i.test(log.komponen || '') || /target\s*kuantitas/i.test(log.catatan || '') || /target\s*kuantitas/i.test(log.tanggal || '')) return;
       if (String(log.status || '').trim() === 'Selesai') {
         const k = String(log.komponen || '').trim();
         totals[k] = (totals[k] || 0) + Number(log.totalRealisasi || 0);
@@ -188,7 +201,7 @@
       }
     });
 
-    state.data.maharTargets.forEach(function(t) {
+    (state.data.maharTargets || []).forEach(function(t) {
       const qty = Number(t.targetJumlah || 1);
       const unitPrice = Number(t.hargaSatuan || 0);
       if (qty > 0 && unitPrice > 0) {
@@ -216,48 +229,56 @@
   }
 
   function updateSubmodTabCounts() {
-    const activeWT = state.data.weddingTracker.filter(function(i) { return !isItemUnused(i); });
-    const activePW = state.data.preWedding.filter(function(i) { return !isItemUnused(i); });
-    const activeSS = state.data.seserahan.filter(function(i) { return !isItemUnused(i); });
+    const activeWT = (state.data.weddingTracker || []).filter(function(i) { return !isItemUnused(i); });
+    const activePW = (state.data.preWedding || []).filter(function(i) { return !isItemUnused(i); });
+    const activeSS = (state.data.seserahan || []).filter(function(i) { return !isItemUnused(i); });
 
     const btnWT = document.getElementById('btnSubmodTracker');
     const btnPW = document.getElementById('btnSubmodPrewed');
     const btnSS = document.getElementById('btnSubmodSeserahan');
 
+    const validMaharLogs = (state.data.maharLogs || []).filter(function(l) {
+      if (l.rowIndex === 29 || l.rowIndex === 30) return false;
+      if (/target\s*kuantitas/i.test(l.komponen || '') || /target\s*kuantitas/i.test(l.catatan || '') || /target\s*kuantitas/i.test(l.tanggal || '')) return false;
+      return true;
+    });
+
     const btnMH = document.getElementById('btnSubmodMahar');
     if (btnWT) btnWT.textContent = '💍 Akad & Resepsi (' + activeWT.length + ')';
     if (btnPW) btnPW.textContent = '📷 Pre-Wedding (' + activePW.length + ')';
     if (btnSS) btnSS.textContent = '🎁 Seserahan (' + activeSS.length + ')';
-    if (btnMH) btnMH.textContent = '🪙 Mahar (' + (state.data.maharLogs ? state.data.maharLogs.length : 0) + ')';
+    if (btnMH) btnMH.textContent = '🪙 Mahar (' + validMaharLogs.length + ')';
   }
 
   function computeMasterMetrics() {
     recalculateMaharTargets();
     updateSubmodTabCounts();
 
-    const activeWT = state.data.weddingTracker.filter(function(i) { return !isItemUnused(i); });
+    const activeWT = (state.data.weddingTracker || []).filter(function(i) { return !isItemUnused(i); });
     const wtEst = activeWT.reduce(function(s, i) { return s + Number(i.estimasi || 0); }, 0);
     const wtReal = activeWT.reduce(function(s, i) { return s + Number(i.realisasi || 0); }, 0);
     const wtDone = activeWT.filter(function(i) { return String(i.status || '').indexOf('Selesai') === 0; }).length;
 
-    const activePW = state.data.preWedding.filter(function(i) { return !isItemUnused(i); });
+    const activePW = (state.data.preWedding || []).filter(function(i) { return !isItemUnused(i); });
     const pwEst = activePW.reduce(function(s, i) { return s + Number(i.estimasi || 0); }, 0);
     const pwReal = activePW.reduce(function(s, i) { return s + Number(i.realisasi || 0); }, 0);
     const pwDone = activePW.filter(function(i) { return String(i.status || '').indexOf('Selesai') === 0; }).length;
 
-    const activeSS = state.data.seserahan.filter(function(i) { return !isItemUnused(i); });
+    const activeSS = (state.data.seserahan || []).filter(function(i) { return !isItemUnused(i); });
     const ssPagu = 20000000;
     const ssReal = activeSS.reduce(function(s, i) { return s + Number(i.harga || 0); }, 0);
     const ssDone = activeSS.filter(function(i) { return String(i.status || '').indexOf('Selesai') === 0; }).length;
 
-    const mhEst = state.data.maharTargets.reduce(function(s, i) { return s + Number(i.totalEstimasi || 0); }, 0);
-    const mhReal = state.data.maharTargets.reduce(function(s, i) { return s + Number(i.realisasi || 0); }, 0);
+    const maharTargetsList = state.data.maharTargets || [];
+    const mhEst = maharTargetsList.reduce(function(s, i) { return s + Number(i.totalEstimasi || 0); }, 0);
+    const mhReal = maharTargetsList.reduce(function(s, i) { return s + Number(i.realisasi || 0); }, 0);
 
-    const adEst = state.data.administrasi.reduce(function(s, i) { return s + Number(i.estimasi || 0); }, 0);
-    const adReal = state.data.administrasi.reduce(function(s, i) { return s + Number(i.realisasi || 0); }, 0);
+    const adminList = state.data.administrasi || [];
+    const adEst = adminList.reduce(function(s, i) { return s + Number(i.estimasi || 0); }, 0);
+    const adReal = adminList.reduce(function(s, i) { return s + Number(i.realisasi || 0); }, 0);
     let kuaTotalSlots = 0;
     let kuaCheckedSlots = 0;
-    state.data.administrasi.forEach(function(a) {
+    adminList.forEach(function(a) {
       if (a.cppCheck !== 'NA') {
         kuaTotalSlots += 1;
         if (a.cppCheck === true) kuaCheckedSlots += 1;
@@ -271,7 +292,7 @@
     let cppPax = 0;
     let cpwPax = 0;
     let hadirPax = 0;
-    state.data.tamu.forEach(function(g) {
+    (state.data.tamu || []).forEach(function(g) {
       const p = Number(g.pax || 0);
       if (g.side === 'CPP') cppPax += p;
       else cpwPax += p;
@@ -469,18 +490,18 @@
         : (state.role === 'committee' ? '' : 'Pagu: ' + formatRp(p.pagu));
 
       return (
-        '<button type="button" data-jump="' + p.key + '" class="jump-card-btn bento-surface rounded-2xl p-3.5 text-left border border-slate-200/80 hover:border-rose-300 hover:shadow-md transition flex flex-col justify-between group bg-white shadow-xs">' +
+        '<button type="button" data-jump="' + p.key + '" class="jump-card-btn bento-surface rounded-xl p-3.5 text-left border border-[#30363D] hover:border-[#8B949E] transition flex flex-col justify-between group bg-[#161B22] shadow-xs">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-1 mb-1">' +
-              '<span class="text-xs font-black text-slate-900 group-hover:text-rose-600 truncate transition">' + escapeHtml(p.name) + '</span>' +
-              '<span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-slate-200 hover:bg-slate-50 font-tabular">' + p.pct + '%</span>' +
+              '<span class="text-xs font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] truncate transition">' + escapeHtml(p.name) + '</span>' +
+              '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] font-tabular">' + p.pct + '%</span>' +
             '</div>' +
-            '<p class="text-[11px] font-semibold text-slate-600">' + escapeHtml(p.statusText) + '</p>' +
-            '<p class="text-[11px] text-slate-500 mt-1 font-tabular">' + subText + '</p>' +
-            (paguText ? '<p class="text-[10px] text-slate-400 font-tabular">' + paguText + '</p>' : '') +
+            '<p class="text-[11px] font-semibold text-[#8B949E]">' + escapeHtml(p.statusText) + '</p>' +
+            '<p class="text-[11px] text-[#8B949E] mt-1 font-tabular">' + subText + '</p>' +
+            (paguText ? '<p class="text-[10px] text-[#8B949E] font-tabular">' + paguText + '</p>' : '') +
           '</div>' +
-          '<div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mt-2.5 border border-slate-200/50">' +
-            '<div class="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full transition-all duration-500" style="width:' + Math.max(4, p.pct) + '%"></div>' +
+          '<div class="w-full h-1.5 rounded-full bg-[#21262D] overflow-hidden mt-2.5 border border-[#30363D]">' +
+            '<div class="h-full bg-gradient-to-r from-[#58A6FF] to-[#238636] rounded-full transition-all duration-500" style="width:' + Math.max(4, p.pct) + '%"></div>' +
           '</div>' +
         '</button>'
       );
@@ -694,7 +715,7 @@
     });
 
     if (filtered.length === 0) {
-      container.innerHTML = '<div class="bento-surface rounded-3xl p-8 text-center text-xs text-slate-500 bg-white border border-slate-200">Tidak ada item yang cocok dengan filter.</div>';
+      container.innerHTML = '<div class="bento-surface rounded-xl p-8 text-center text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D]">Tidak ada item yang cocok dengan filter.</div>';
       return;
     }
 
@@ -712,33 +733,33 @@
         : 'bg-slate-100 text-slate-700 border-slate-200';
 
       const priceHtml = isSeserahan
-        ? '<p class="text-xs sm:text-sm font-black text-rose-600 font-tabular">' + formatRp(item.harga) + '</p>' +
-          '<p class="text-[10px] text-slate-500 font-medium">Brand: ' + escapeHtml(item.brand || '-') + '</p>'
-        : '<p class="text-xs sm:text-sm font-black text-rose-600 font-tabular">' + formatRp(item.realisasi) + '</p>' +
-          '<p class="text-[10px] text-slate-400 font-tabular">Estimasi: ' + formatRp(item.estimasi) + '</p>';
+        ? '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-tabular">' + formatRp(item.harga) + '</p>' +
+          '<p class="text-[10px] text-[#8B949E] font-medium">' + escapeHtml(item.brand || '-') + '</p>'
+        : '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-tabular">' + formatRp(item.realisasi) + '</p>' +
+          '<p class="text-[10px] text-[#8B949E] font-tabular">Est: ' + formatRp(item.estimasi) + '</p>';
 
       return (
-        '<div class="bento-surface rounded-2xl p-3.5 flex items-start justify-between gap-3 border border-slate-200/80 bg-white hover:border-rose-300 transition shadow-xs ' + (isInactive ? 'opacity-60 bg-slate-50/70' : '') + '">' +
+        '<div class="bento-surface rounded-xl p-3.5 flex items-start justify-between gap-3 border border-[#30363D] bg-[#161B22] hover:border-[#8B949E] transition shadow-xs ' + (isInactive ? 'opacity-50' : '') + '">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold">' + escapeHtml(item.kategori) + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(item.kategori) + '</span>' +
               '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + badgeCls + '"><span class="status-dot ' + badgeDot + '"></span>' + escapeHtml(item.status) + '</span>' +
-              '<span class="text-[10px] text-slate-400 font-tabular">#' + item.rowIndex + '</span>' +
+              '<span class="text-[10px] text-[#8B949E] font-tabular">#' + item.rowIndex + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">' + escapeHtml(item.item) + '</p>' +
-            '<p class="text-[11px] text-slate-500 mt-0.5">' +
+            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + escapeHtml(item.item) + '</p>' +
+            '<p class="text-[11px] text-[#8B949E] mt-0.5">' +
               (isSeserahan
-                ? (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="text-rose-600 font-bold underline">Link Toko</a>' : 'Belum ada link')
-                : 'PIC: <strong class="text-slate-800">' + escapeHtml(item.pic || '-') + '</strong>' + (item.target ? ' &bull; ' + escapeHtml(item.target) : '') + (item.catatan ? ' &bull; ' + escapeHtml(item.catatan) : '')) +
+                ? (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="text-[#58A6FF] font-bold hover:underline">Link Toko</a>' : 'Belum ada link')
+                : 'PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(item.pic || '-') + '</strong>' + (item.target ? ' &bull; Target: ' + escapeHtml(item.target) : '')) +
             '</p>' +
           '</div>' +
           '<div class="text-right shrink-0 flex flex-col items-end gap-1.5">' +
             priceHtml +
             '<div class="flex items-center gap-1">' +
               (isSeserahan
-                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="px-2.5 py-1 rounded-xl text-[11px] font-bold ' + (item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
+                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="px-2.5 py-1 rounded-md text-[11px] font-bold ' + (item.status === 'Selesai' ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
                 : '') +
-              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold border border-slate-200 transition">Edit</button>' +
+              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -761,54 +782,59 @@
     const targetsHtml = state.data.maharTargets.map(function(t) {
       const p = t.totalEstimasi > 0 ? Math.min(100, Math.round((t.realisasi / t.totalEstimasi) * 100)) : 0;
       const volProgress = t.collectedVolume !== undefined
-        ? 'Terkumpul: <strong class="text-slate-900">' + t.collectedVolume + ' / ' + t.targetJumlah + ' ' + escapeHtml(t.satuan) + '</strong>'
-        : 'Target: <strong class="text-slate-900">' + t.targetJumlah + ' ' + escapeHtml(t.satuan) + '</strong>';
+        ? 'Terkumpul: <strong class="text-[#C9D1D9]">' + t.collectedVolume + ' / ' + t.targetJumlah + ' ' + escapeHtml(t.satuan) + '</strong>'
+        : 'Target: <strong class="text-[#C9D1D9]">' + t.targetJumlah + ' ' + escapeHtml(t.satuan) + '</strong>';
       return (
-        '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 space-y-2.5 shadow-xs">' +
+        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] space-y-2.5 shadow-xs">' +
           '<div class="flex items-start justify-between gap-2">' +
             '<div>' +
               '<div class="flex items-center gap-1.5 flex-wrap">' +
-                '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (t.status === 'Selesai' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200') + '">' + escapeHtml(t.status) + '</span>' +
-                '<span class="text-[10px] text-slate-500 font-medium">Batas: ' + escapeHtml(t.batasWaktu || 'Hari H') + '</span>' +
+                '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (t.status === 'Selesai' || String(t.status || '').indexOf('Lengkap') !== -1 ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#d29922]/15 text-[#e3b341] border border-[#d29922]') + '">' + escapeHtml(t.status) + '</span>' +
+                '<span class="text-[10px] text-[#8B949E] font-medium">Batas: ' + escapeHtml(t.batasWaktu || 'Hari H') + '</span>' +
               '</div>' +
-              '<h4 class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">' + escapeHtml(t.instrumen) + '</h4>' +
-              '<p class="text-[11px] text-slate-500 mt-0.5">' + volProgress + ' &bull; PIC: <strong class="text-slate-800">' + escapeHtml(t.pic || 'CPP') + '</strong></p>' +
+              '<h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + escapeHtml(t.instrumen) + '</h4>' +
+              '<p class="text-[11px] text-[#8B949E] mt-0.5">' + volProgress + ' &bull; PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(t.pic || 'CPP') + '</strong></p>' +
             '</div>' +
             '<div class="text-right shrink-0 font-tabular">' +
-              '<p class="text-xs sm:text-sm font-black text-rose-600">' + formatRp(t.realisasi) + '</p>' +
-              '<p class="text-[11px] text-slate-400">Est: ' + formatRp(t.totalEstimasi) + '</p>' +
+              '<p class="text-xs sm:text-sm font-black text-[#58A6FF]">' + formatRp(t.realisasi) + '</p>' +
+              '<p class="text-[11px] text-[#8B949E]">Est: ' + formatRp(t.totalEstimasi) + '</p>' +
             '</div>' +
           '</div>' +
           '<div class="space-y-1">' +
-            '<div class="flex items-center justify-between text-[10px] text-slate-500 font-tabular font-bold">' +
+            '<div class="flex items-center justify-between text-[10px] text-[#8B949E] font-tabular font-bold">' +
               '<span>Progress Serapan Dana</span>' +
               '<span>' + p + '%</span>' +
             '</div>' +
-            '<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200/60">' +
-              '<div class="bg-gradient-to-r from-rose-500 to-amber-500 h-full rounded-full transition-all duration-500" style="width: ' + p + '%"></div>' +
+            '<div class="w-full bg-[#21262D] rounded-full h-2 overflow-hidden border border-[#30363D]">' +
+              '<div class="bg-gradient-to-r from-[#58A6FF] to-[#238636] h-full rounded-full transition-all duration-500" style="width: ' + p + '%"></div>' +
             '</div>' +
           '</div>' +
         '</div>'
       );
     }).join('');
 
-    const logsList = state.data.maharLogs || [];
+    const logsList = (state.data.maharLogs || []).filter(function(l) {
+      if (l.rowIndex === 29 || l.rowIndex === 30) return false;
+      if (/target\s*kuantitas/i.test(l.komponen || '') || /target\s*kuantitas/i.test(l.catatan || '') || /target\s*kuantitas/i.test(l.tanggal || '')) return false;
+      return true;
+    });
+
     const logsHtml = logsList.map(function(l) {
       const isSelesai = (String(l.status || '').trim() === 'Selesai');
       return (
-        '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 flex items-center justify-between gap-3 flex-wrap shadow-xs hover:border-rose-300 transition">' +
+        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] flex items-center justify-between gap-3 flex-wrap shadow-xs hover:border-[#8B949E] transition">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="text-xs sm:text-sm font-extrabold text-slate-900">' + escapeHtml(l.komponen) + ' (' + l.volume + ' ' + escapeHtml(l.satuan) + ')</span>' +
-              '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (isSelesai ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200') + '">' + escapeHtml(l.status) + '</span>' +
-              '<span class="text-[10px] text-slate-400 font-tabular">Baris #' + l.rowIndex + '</span>' +
+              '<span class="text-xs sm:text-sm font-bold text-[#F0F6FC]">' + escapeHtml(l.komponen) + ' (' + l.volume + ' ' + escapeHtml(l.satuan) + ')</span>' +
+              '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#d29922]/15 text-[#e3b341] border border-[#d29922]') + '">' + escapeHtml(l.status) + '</span>' +
+              '<span class="text-[10px] text-[#8B949E] font-tabular">Baris #' + l.rowIndex + '</span>' +
             '</div>' +
-            '<p class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(l.tanggal) + ' &bull; Sumber: ' + escapeHtml(l.sumberDana || '-') + (l.catatan ? ' &bull; ' + escapeHtml(l.catatan) : '') + '</p>' +
+            '<p class="text-[11px] text-[#8B949E] mt-0.5">' + escapeHtml(l.tanggal) + ' &bull; Sumber: ' + escapeHtml(l.sumberDana || '-') + '</p>' +
           '</div>' +
           '<div class="text-right shrink-0 flex items-center gap-2">' +
             '<div class="text-right font-tabular mr-1">' +
-              '<p class="text-xs sm:text-sm font-black text-rose-600">' + formatRp(l.totalRealisasi) + '</p>' +
-              '<p class="text-[10px] text-slate-400">@ ' + formatRp(l.hargaSatuan) + '</p>' +
+              '<p class="text-xs sm:text-sm font-black text-[#58A6FF]">' + formatRp(l.totalRealisasi) + '</p>' +
+              '<p class="text-[10px] text-[#8B949E]">@ ' + formatRp(l.hargaSatuan) + '</p>' +
             '</div>' +
             '<button type="button" data-togglemaharstatus="' + l.id + '" class="px-2.5 py-1 rounded-md text-[10px] font-bold border transition ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636] hover:bg-[#238636]/25' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (isSelesai ? '✓ Selesai' : 'Pending') + '</button>' +
             '<button type="button" data-editmaharlog="' + l.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[10px] font-bold border border-[#30363D] transition">Edit</button>' +
@@ -822,17 +848,17 @@
 
     container.innerHTML = (
       '<div class="space-y-4">' +
-        '<div class="p-4 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs flex items-center justify-between gap-3 flex-wrap">' +
+        '<div class="p-4 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-center justify-between gap-3 flex-wrap">' +
           '<div>' +
             '<div class="flex items-center gap-2">' +
               '<span class="text-lg">💍</span>' +
-              '<h3 class="text-sm font-extrabold text-slate-900">Komposisi Mahar Dinamis</h3>' +
-              '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-slate-200 hover:bg-slate-50">' + pct + '% Terkumpul</span>' +
+              '<h3 class="text-sm font-bold text-[#F0F6FC]">Komposisi Mahar Dinamis</h3>' +
+              '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#58A6FF]/15 text-[#58A6FF] border border-[#58A6FF]/30">' + pct + '% Terkumpul</span>' +
             '</div>' +
-            '<p class="text-xs text-slate-500 mt-1">' + escapeHtml(dynamicSubparts) + '</p>' +
+            '<p class="text-xs text-[#8B949E] mt-1">' + escapeHtml(dynamicSubparts) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-2">' +
-            '<button type="button" id="btnOpenMaharPurchaseModal" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs btn-shine flex items-center gap-1.5 transition">' +
+            '<button type="button" id="btnOpenMaharPurchaseModal" class="px-3 py-1.5 rounded-lg bg-[#238636] hover:bg-[#2EA043] text-white font-bold text-xs shadow-xs btn-shine flex items-center gap-1.5 transition">' +
               '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Log Pembelian' +
             '</button>' +
           '</div>' +
@@ -842,11 +868,11 @@
         '</div>' +
         '<div class="space-y-2.5">' +
           '<div class="flex items-center justify-between">' +
-            '<h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Riwayat Cicil & Akumulasi Mahar</h4>' +
-            '<span class="text-[11px] font-bold text-slate-500 font-tabular">' + logsList.length + ' Transaksi</span>' +
+            '<h4 class="text-xs font-bold text-[#F0F6FC] uppercase tracking-wider">Riwayat Cicil & Akumulasi Mahar</h4>' +
+            '<span class="text-[11px] font-bold text-[#8B949E] font-tabular">' + logsList.length + ' Transaksi</span>' +
           '</div>' +
           '<div class="space-y-2">' +
-            (logsHtml || '<div class="bento-surface rounded-2xl p-6 text-center text-xs text-slate-400 bg-white border border-slate-200">Belum ada catatan transaksi cicil mahar.</div>') +
+            (logsHtml || '<div class="bento-surface rounded-xl p-6 text-center text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D]">Belum ada catatan transaksi cicil mahar.</div>') +
           '</div>' +
         '</div>' +
       '</div>'
@@ -935,12 +961,12 @@
 
     const gContainer = document.getElementById('guestListContainer');
     if (filteredGuests.length === 0) {
-      gContainer.innerHTML = '<div class="bento-surface rounded-3xl p-6 text-center text-xs text-slate-500 bg-white border border-slate-200">Tidak ada tamu yang cocok dengan filter ini.</div>';
+      gContainer.innerHTML = '<div class="bento-surface rounded-xl p-6 text-center text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D]">Tidak ada tamu yang cocok dengan filter ini.</div>';
     } else {
       gContainer.innerHTML = filteredGuests.map(function(g) {
         const sideBadge = g.side === 'CPP'
-          ? 'bg-sky-50 text-sky-800 border-sky-200'
-          : 'bg-rose-50 text-rose-800 border-rose-200';
+          ? 'bg-[#58A6FF]/15 text-[#58A6FF] border-[#58A6FF]/30'
+          : 'bg-[#f778ba]/15 text-[#f778ba] border-[#f778ba]/30';
         return (
           (function() {
             const rawPhone = String(g.whatsapp || '').replace(/[^0-9]/g, '');
@@ -949,28 +975,28 @@
             const contactSub = (g.whatsapp ? '📱 WA: ' + escapeHtml(g.whatsapp) + ' ' : '') + (g.instagram ? '📸 IG: @' + escapeHtml(rawIg) : '');
 
             return (
-              '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs space-y-2.5 transition hover:border-rose-300">' +
+              '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs space-y-2.5 transition hover:border-[#8B949E]">' +
                 '<div class="flex items-start justify-between gap-2">' +
                   '<div class="min-w-0">' +
                     '<div class="flex items-center gap-1.5 flex-wrap">' +
                       '<span class="px-2 py-0.5 rounded-md border text-[10px] font-bold ' + sideBadge + '">' + g.side + '</span>' +
-                      '<span class="text-xs sm:text-sm font-extrabold text-slate-900">' + escapeHtml(g.nama) + '</span>' +
-                      '<span class="px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold font-tabular border border-slate-200">' + g.pax + ' Pax</span>' +
+                      '<span class="text-xs sm:text-sm font-bold text-[#F0F6FC]">' + escapeHtml(g.nama) + '</span>' +
+                      '<span class="px-1.5 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold font-tabular border border-[#30363D]">' + g.pax + ' Pax</span>' +
                     '</div>' +
-                    '<p class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(g.kelompok) + ' &bull; ' + (g.kategori || '-') + '</p>' +
-                    (contactSub ? '<p class="text-[11px] text-slate-400 mt-0.5">' + contactSub + '</p>' : '') +
+                    '<p class="text-[11px] text-[#8B949E] mt-0.5">' + escapeHtml(g.kelompok) + ' &bull; ' + (g.kategori || '-') + '</p>' +
+                    (contactSub ? '<p class="text-[11px] text-[#8B949E] mt-0.5">' + contactSub + '</p>' : '') +
                   '</div>' +
                   '<div class="flex items-center gap-1 shrink-0">' +
-                    (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="px-2 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-bold transition">WA</a>' : '') +
-                    '<button type="button" data-editguest="' + g.id + '" class="px-2 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold border border-slate-200 transition">Edit</button>' +
+                    (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="px-2 py-1 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition">WA</a>' : '') +
+                    '<button type="button" data-editguest="' + g.id + '" class="px-2 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
                   '</div>' +
                 '</div>' +
-                '<div class="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">' +
-                  '<span class="text-[11px] font-bold text-slate-500">Konfirmasi RSVP:</span>' +
+                '<div class="flex items-center justify-between pt-1 border-t border-[#30363D] text-xs">' +
+                  '<span class="text-[11px] font-bold text-[#8B949E]">RSVP:</span>' +
                   '<div class="flex items-center gap-1">' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Hadir" class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition ' + (g.rsvp === 'Hadir' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200') + '">Hadir</button>' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Ragu-ragu" class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition ' + (g.rsvp === 'Ragu-ragu' ? 'bg-amber-500 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200') + '">Ragu</button>' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Tidak Hadir" class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition ' + (g.rsvp === 'Tidak Hadir' ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200') + '">Tidak</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Hadir" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition ' + (g.rsvp === 'Hadir' ? 'bg-[#238636] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Hadir</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Ragu-ragu" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition ' + (g.rsvp === 'Ragu-ragu' ? 'bg-[#d29922] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Ragu</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Tidak Hadir" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition ' + (g.rsvp === 'Tidak Hadir' ? 'bg-[#da3633] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Tidak</button>' +
                   '</div>' +
                 '</div>' +
               '</div>'
@@ -984,22 +1010,21 @@
     const kuaContainer = document.getElementById('adminKuaContainer');
     kuaContainer.innerHTML = state.data.administrasi.map(function(a) {
       const cppBtn = a.cppCheck === 'NA'
-        ? '<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400 text-[10px] font-bold">CPP: —</span>'
-        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpp" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border transition ' + (a.cppCheck ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200') + '">' + (a.cppCheck ? '✓ CPP Siap' : '☐ Ceklis CPP') + '</button>';
+        ? '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D]">CPP: —</span>'
+        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpp" class="px-2.5 py-1 rounded-md text-[10px] font-bold border transition ' + (a.cppCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cppCheck ? '✓ CPP Siap' : '☐ Ceklis CPP') + '</button>';
 
       const cpwBtn = a.cpwCheck === 'NA'
-        ? '<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400 text-[10px] font-bold">CPW: —</span>'
-        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpw" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border transition ' + (a.cpwCheck ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200') + '">' + (a.cpwCheck ? '✓ CPW Siap' : '☐ Ceklis CPW') + '</button>';
+        ? '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D]">CPW: —</span>'
+        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpw" class="px-2.5 py-1 rounded-md text-[10px] font-bold border transition ' + (a.cpwCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cpwCheck ? '✓ CPW Siap' : '☐ Ceklis CPW') + '</button>';
 
       return (
-        '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs flex items-start justify-between gap-3 flex-wrap">' +
+        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 flex-wrap">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5">' +
-              '<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">' + escapeHtml(a.instansi) + '</span>' +
-              '<span class="text-[10px] text-slate-400 font-medium">Target: ' + escapeHtml(a.target || '-') + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D]">' + escapeHtml(a.instansi) + '</span>' +
+              '<span class="text-[10px] text-[#8B949E] font-medium">Target: ' + escapeHtml(a.target || '-') + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">' + a.no + '. ' + escapeHtml(a.dokumen) + '</p>' +
-            '<p class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(a.catatan) + '</p>' +
+            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + a.no + '. ' + escapeHtml(a.dokumen) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-1.5 shrink-0">' +
             cppBtn +
@@ -1012,28 +1037,27 @@
 
   function renderVendorsAndRundown() {
     const rdContainer = document.getElementById('subview-rundown');
-    rdContainer.innerHTML = state.data.rundown.map(function(r) {
+    rdContainer.innerHTML = (state.data.rundown || []).map(function(r) {
       const stDot = r.status === 'Siap' || r.status === 'Selesai' ? 'status-dot-emerald' : (r.status === 'Dalam Proses' ? 'status-dot-amber' : 'status-dot-slate');
       const stCls = r.status === 'Siap' || r.status === 'Selesai'
-        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+        ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]'
         : r.status === 'Dalam Proses'
-        ? 'bg-amber-50 text-amber-800 border-amber-200'
-        : 'bg-slate-100 text-slate-600 border-slate-200';
+        ? 'bg-[#d29922]/15 text-[#e3b341] border-[#d29922]'
+        : 'bg-[#21262D] text-[#8B949E] border-[#30363D]';
       return (
-        '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs flex items-start justify-between gap-3 hover:border-rose-300 transition">' +
+        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 hover:border-[#8B949E] transition">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 border border-slate-200 hover:bg-slate-50 text-[10px] font-bold font-tabular">⏰ ' + escapeHtml(r.waktu) + ' (' + escapeHtml(r.durasi) + ')</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[10px] font-bold font-tabular">⏰ ' + escapeHtml(r.waktu) + ' (' + escapeHtml(r.durasi) + ')</span>' +
               '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + stCls + '"><span class="status-dot ' + stDot + '"></span>' + escapeHtml(r.status) + '</span>' +
-              '<span class="text-[10px] font-semibold text-slate-500">📍 ' + escapeHtml(r.lokasi) + '</span>' +
+              '<span class="text-[10px] font-semibold text-[#8B949E]">📍 ' + escapeHtml(r.lokasi) + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">' + r.no + '. ' + escapeHtml(r.sesi) + '</p>' +
-            '<p class="text-xs text-slate-600 mt-0.5">' + escapeHtml(r.deskripsi) + '</p>' +
-            '<p class="text-[11px] text-slate-500 mt-1">👤 PIC: <strong class="text-slate-800">' + escapeHtml(r.pic) + '</strong> &bull; Vendor: ' + escapeHtml(r.vendor) + (r.catatan ? ' &bull; ' + escapeHtml(r.catatan) : '') + '</p>' +
+            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + r.no + '. ' + escapeHtml(r.sesi) + '</p>' +
+            '<p class="text-[11px] text-[#8B949E] mt-1">👤 PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(r.pic) + '</strong> &bull; Vendor: ' + escapeHtml(r.vendor) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-1 shrink-0">' +
-            '<button type="button" data-togglerundown="' + r.id + '" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold border border-slate-200 transition">Status</button>' +
-            '<button type="button" data-editrundown="' + r.id + '" class="px-2.5 py-1 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs">Edit</button>' +
+            '<button type="button" data-togglerundown="' + r.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Status</button>' +
+            '<button type="button" data-editrundown="' + r.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
           '</div>' +
         '</div>'
       );
@@ -1041,47 +1065,47 @@
 
     const tlContainer = document.getElementById('subview-timeline');
     if (tlContainer && state.data.timeline) {
-      tlContainer.innerHTML = state.data.timeline.map(function(t) {
+      tlContainer.innerHTML = (state.data.timeline || []).map(function(t) {
         const isSelesai = t.status === 'Selesai';
         const isProses = t.status === 'Dalam Proses';
         const stDot = isSelesai ? 'status-dot-emerald' : (isProses ? 'status-dot-amber' : 'status-dot-slate');
         const stCls = isSelesai
-          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+          ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]'
           : isProses
-          ? 'bg-amber-50 text-amber-800 border-amber-200'
-          : 'bg-slate-100 text-slate-600 border-slate-200';
+          ? 'bg-[#d29922]/15 text-[#e3b341] border-[#d29922]'
+          : 'bg-[#21262D] text-[#8B949E] border-[#30363D]';
         return (
-          '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs flex items-start justify-between gap-3 hover:border-rose-300 transition">' +
+          '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 hover:border-[#8B949E] transition">' +
             '<div class="min-w-0 flex-1">' +
               '<div class="flex items-center gap-1.5 flex-wrap">' +
-                '<span class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 border border-slate-200 hover:bg-slate-50 text-[10px] font-bold font-tabular">📅 ' + escapeHtml(t.fase) + '</span>' +
-                '<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold">' + escapeHtml(t.kategori) + '</span>' +
+                '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[10px] font-bold font-tabular">📅 ' + escapeHtml(t.fase) + '</span>' +
+                '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(t.kategori) + '</span>' +
                 '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + stCls + '"><span class="status-dot ' + stDot + '"></span>' + escapeHtml(t.status) + '</span>' +
               '</div>' +
-              '<p class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">' + t.no + '. ' + escapeHtml(t.agenda) + '</p>' +
-              '<p class="text-xs text-slate-600 mt-0.5">' + escapeHtml(t.rincian) + '</p>' +
-              '<p class="text-[11px] text-slate-500 mt-1">👤 PIC: <strong class="text-slate-800">' + escapeHtml(t.pic) + '</strong>' + (t.target ? ' &bull; Target: ' + escapeHtml(t.target) : '') + '</p>' +
+              '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + t.no + '. ' + escapeHtml(t.agenda) + '</p>' +
+              '<p class="text-[11px] text-[#8B949E] mt-1">👤 PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(t.pic) + '</strong>' + (t.target ? ' &bull; Target: ' + escapeHtml(t.target) : '') + '</p>' +
             '</div>' +
             '<div class="flex items-center gap-1 shrink-0">' +
-              '<button type="button" data-toggletimeline="' + t.id + '" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold border border-slate-200 transition">Status</button>' +
-              '<button type="button" data-edittimeline="' + t.id + '" class="px-2.5 py-1 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs">Edit</button>' +
+              '<button type="button" data-toggletimeline="' + t.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Status</button>' +
+              '<button type="button" data-edittimeline="' + t.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
             '</div>' +
           '</div>'
         );
       }).join('');
     }
 
-    const totalKontrak = state.data.vendors.reduce(function(s, v) { return s + Number(v.nilaiKontrak || 0); }, 0);
-    const totalSisa = state.data.vendors.reduce(function(s, v) { return s + Number(v.sisaPembayaran || 0); }, 0);
-    const dealCount = state.data.vendors.filter(function(v) { return v.statusKerjasama.indexOf('Deal') !== -1 || v.statusPembayaran.indexOf('Lunas') !== -1 || v.statusPembayaran.indexOf('DP') !== -1; }).length;
+    const vendorsList = state.data.vendors || [];
+    const totalKontrak = vendorsList.reduce(function(s, v) { return s + Number(v.nilaiKontrak || 0); }, 0);
+    const totalSisa = vendorsList.reduce(function(s, v) { return s + Number(v.sisaPembayaran || 0); }, 0);
+    const dealCount = vendorsList.filter(function(v) { return (v.statusKerjasama || '').indexOf('Deal') !== -1 || (v.statusPembayaran || '').indexOf('Lunas') !== -1 || (v.statusPembayaran || '').indexOf('DP') !== -1; }).length;
 
-    document.getElementById('vendorCountText').textContent = state.data.vendors.length + ' Vendor';
+    document.getElementById('vendorCountText').textContent = vendorsList.length + ' Vendor';
     document.getElementById('vendorDealCount').textContent = dealCount + ' Deal / Aktif';
     document.getElementById('vendorTotalContract').textContent = formatRp(totalKontrak);
     document.getElementById('vendorTotalRemaining').textContent = formatRp(totalSisa);
 
     const vdContainer = document.getElementById('vendorListContainer');
-    vdContainer.innerHTML = state.data.vendors.map(function(v) {
+    vdContainer.innerHTML = vendorsList.map(function(v) {
       const digitsMatch = String(v.kontak || '').match(/08[0-9\s\-\(\)]{8,15}/);
       let phoneDigits = '';
       let waDigits = '';
@@ -1097,31 +1121,31 @@
       v.waDigits = waDigits;
 
       return (
-        '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs flex items-start justify-between gap-3 flex-wrap hover:border-rose-300 transition">' +
+        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 flex-wrap hover:border-[#8B949E] transition">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold">' + escapeHtml(v.kategori) + '</span>' +
-              '<span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold">' + escapeHtml(v.statusKerjasama) + '</span>' +
-              '<span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200 text-[10px] font-bold">' + escapeHtml(v.statusPembayaran) + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(v.kategori) + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(v.statusKerjasama) + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#D29922] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(v.statusPembayaran) + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">' + v.no + '. ' + escapeHtml(v.nama) + '</p>' +
-            '<p class="text-xs text-rose-600 font-bold mt-0.5">📞 ' + escapeHtml(v.kontak) + '</p>' +
-            '<p class="text-[11px] text-slate-500 mt-0.5">📦 ' + escapeHtml(v.layanan) + '</p>' +
-            (v.catatan ? '<p class="text-[11px] text-slate-400 mt-0.5">📝 ' + escapeHtml(v.catatan) + '</p>' : '') +
+            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + v.no + '. ' + escapeHtml(v.nama) + '</p>' +
+            '<p class="text-xs text-[#58A6FF] font-bold mt-0.5">📞 ' + escapeHtml(v.kontak) + '</p>' +
+            '<p class="text-[11px] text-[#8B949E] mt-0.5">📦 ' + escapeHtml(v.layanan) + '</p>' +
           '</div>' +
           '<div class="text-right shrink-0 flex flex-col items-end gap-1.5">' +
             (state.role === 'couple'
-              ? '<p class="text-xs font-black text-slate-900 font-tabular">Kontrak: ' + formatRp(v.nilaiKontrak) + '</p>' +
-                '<p class="text-[11px] font-bold text-rose-600 font-tabular">Sisa: ' + formatRp(v.sisaPembayaran) + '</p>'
-              : '<p class="text-xs font-bold text-slate-600">Akses Finansial Terbatas</p>') +
+              ? '<p class="text-xs font-bold text-[#F0F6FC] font-tabular">Kontrak: ' + formatRp(v.nilaiKontrak) + '</p>' +
+                '<p class="text-[11px] font-bold text-[#58A6FF] font-tabular">Sisa: ' + formatRp(v.sisaPembayaran) + '</p>'
+              : '<p class="text-xs font-bold text-[#8B949E]">Akses Finansial Terbatas</p>') +
             '<div class="flex items-center gap-1 mt-1">' +
-              (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-bold transition">WA</a>' : '') +
-              (phoneDigits ? '<a href="tel:' + phoneDigits + '" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-bold transition">Telp</a>' : '') +
-              (state.role === 'couple' ? '<button type="button" data-editmod="vendors" data-editid="' + v.id + '" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold border border-slate-200 transition">Edit</button>' : '') +
+              (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition">WA</a>' : '') +
+              (phoneDigits ? '<a href="tel:' + phoneDigits + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-[11px] font-bold transition">Telp</a>' : '') +
+              (state.role === 'couple' ? '<button type="button" data-editmod="vendors" data-editid="' + v.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' : '') +
             '</div>' +
           '</div>' +
         '</div>'
       );
+    }).join('');
     }).join('');
   }
 
@@ -1137,15 +1161,15 @@
 
     if (allDone && CHECKLIST_ITEMS.length > 0) {
       chkContainer.innerHTML =
-        '<div class="p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center justify-between gap-3">' +
+        '<div class="p-4 rounded-xl bg-[#238636]/15 border border-[#238636] flex items-center justify-between gap-3">' +
           '<div class="flex items-center gap-2.5">' +
-            '<span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shrink-0">✓</span>' +
+            '<span class="w-8 h-8 rounded-lg bg-[#238636] text-white flex items-center justify-center font-bold text-sm shrink-0">✓</span>' +
             '<div>' +
-              '<h4 class="text-xs font-extrabold text-emerald-950">Semua Pengujian Tuntas! (6/6)</h4>' +
-              '<p class="text-[11px] text-emerald-800">Checklist disembunyikan agar tampilan bersih. Aplikasi siap digunakan.</p>' +
+              '<h4 class="text-xs font-bold text-[#F0F6FC]">Semua Pengujian Tuntas! (6/6)</h4>' +
+              '<p class="text-[11px] text-[#8B949E]">Aplikasi siap digunakan.</p>' +
             '</div>' +
           '</div>' +
-          '<button type="button" id="btnResetChecklist" class="px-2.5 py-1 rounded-lg bg-white text-emerald-900 border border-emerald-200 text-[10px] font-bold hover:bg-emerald-100 transition shrink-0">Buka Lagi</button>' +
+          '<button type="button" id="btnResetChecklist" class="px-2.5 py-1 rounded-md bg-[#21262D] text-[#3FB950] border border-[#238636] text-[10px] font-bold hover:bg-[#30363D] transition shrink-0">Buka Lagi</button>' +
         '</div>';
       const btnReset = document.getElementById('btnResetChecklist');
       if (btnReset) {
@@ -1214,7 +1238,7 @@
         icnSetup.setAttribute('data-lucide', 'arrow-left');
       } else {
         lblSetup.textContent = 'Koneksi';
-        btnSetup.className = 'px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 transition shadow-xs';
+        btnSetup.className = 'px-2.5 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition shadow-xs';
         icnSetup.setAttribute('data-lucide', 'settings');
       }
     }
@@ -1441,7 +1465,7 @@
 
   function closeCoupleNameModal(fromPopState) {
     const coupleModal = document.getElementById('coupleNameModal');
-    if (coupleModal) closeCoupleNameModal();
+    if (coupleModal) coupleModal.classList.add('hidden', 'pointer-events-none');
     updateFloatingNavVisibility();
     if (!fromPopState) {
       dismissModalHistory();
@@ -1873,7 +1897,7 @@
     const items = [];
     for (let i = 0; i < (count || 3); i++) {
       items.push(
-        '<div class="p-3.5 rounded-2xl bento-surface bg-white border border-slate-200/80 shadow-xs space-y-2.5">' +
+        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs space-y-2.5">' +
           '<div class="flex items-center justify-between">' +
             '<div class="w-20 h-4 rounded-md skeleton-shimmer"></div>' +
             '<div class="w-14 h-4 rounded-md skeleton-shimmer"></div>' +
@@ -1926,6 +1950,7 @@
       }
     } finally {
       if (sp) sp.classList.remove('animate-spin');
+      hideSplashScreen();
     }
   }
 
@@ -3084,6 +3109,9 @@
     } catch (eSync) {
       console.error('syncFromAppsScript error:', eSync);
     }
+
+    // 5. Fallback timeout agar splash screen selalu tertutup maksimal 1.8 detik jika network lambat/offline
+    setTimeout(hideSplashScreen, 1800);
 
     try {
       document.addEventListener('visibilitychange', function() {

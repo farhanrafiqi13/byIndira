@@ -447,8 +447,44 @@ select option {
   background-color: #161B22 !important;
   border: 1px solid #30363D !important;
   border-radius: 12px !important;
-  box-shadow: 0 16px 32px rgba(1, 4, 9, 0.85) !important;
+  box-shadow: 0 16px 36px rgba(1, 4, 9, 0.7) !important;
   color: #C9D1D9 !important;
+}
+
+[id$="Modal"] input,
+[id$="Modal"] select,
+[id$="Modal"] textarea {
+  background-color: #0D1117 !important;
+  border: 1px solid #30363D !important;
+  color: #F0F6FC !important;
+  border-radius: 8px !important;
+}
+
+[id$="Modal"] input:focus,
+[id$="Modal"] select:focus,
+[id$="Modal"] textarea:focus {
+  border-color: #58A6FF !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.25) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8b. FUTURISTIC SPLASH & SAFE AREA INSETS
+   -------------------------------------------------------------------------- */
+#appSplashScreen {
+  opacity: 1;
+  transition: opacity 0.4s ease-out;
+  pointer-events: auto;
+}
+
+#appSplashScreen.splash-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
+}
+
+header {
+  padding-top: max(10px, env(safe-area-inset-top, 0px)) !important;
 }
 
 /* --------------------------------------------------------------------------
