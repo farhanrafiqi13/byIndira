@@ -399,8 +399,8 @@
     const vRem = document.getElementById('vendorRemainingCard');
 
     if (isCommittee) {
-      badge.textContent = '🔒 Mode Panitia';
-      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-amber-200';
+      badge.textContent = '🔒 Otorisasi Panitia';
+      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D29922]/15 text-[#D29922] border border-[#D29922] font-mono';
       finHero.classList.add('hidden');
       privBanner.classList.remove('hidden');
       chartsSec.classList.add('hidden');
@@ -409,8 +409,8 @@
       vContract.classList.add('hidden');
       vRem.classList.add('hidden');
     } else {
-      badge.textContent = '💍 Mempelai (Full)';
-      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold gold-badge';
+      badge.textContent = '🔓 Otorisasi Mempelai';
+      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#3FB950]/15 text-[#3FB950] border border-[#238636] font-mono';
       finHero.classList.remove('hidden');
       privBanner.classList.add('hidden');
       chartsSec.classList.remove('hidden');
@@ -517,18 +517,18 @@
         : (state.role === 'committee' ? '' : 'Pagu: ' + formatRp(p.pagu));
 
       return (
-        '<button type="button" data-jump="' + p.key + '" class="jump-card-btn bento-surface rounded-xl p-3.5 text-left border border-[#30363D] hover:border-[#8B949E] transition flex flex-col justify-between group bg-[#161B22] shadow-xs">' +
+        '<button type="button" data-jump="' + p.key + '" class="jump-card-btn bento-surface rounded-md p-3.5 text-left border border-[#30363D] hover:border-[#8B949E] transition flex flex-col justify-between group bg-[#161B22] shadow-xs active:scale-95">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-1 mb-1">' +
               '<span class="text-xs font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] truncate transition">' + escapeHtml(p.name) + '</span>' +
-              '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] font-tabular">' + p.pct + '%</span>' +
+              '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] font-mono tabular-nums">' + p.pct + '%</span>' +
             '</div>' +
             '<p class="text-[11px] font-semibold text-[#8B949E]">' + escapeHtml(p.statusText) + '</p>' +
-            '<p class="text-[11px] text-[#8B949E] mt-1 font-tabular">' + subText + '</p>' +
-            (paguText ? '<p class="text-[10px] text-[#8B949E] font-tabular">' + paguText + '</p>' : '') +
+            '<p class="text-[11px] text-[#8B949E] mt-1 font-mono tabular-nums">' + subText + '</p>' +
+            (paguText ? '<p class="text-[10px] text-[#8B949E] font-mono tabular-nums">' + paguText + '</p>' : '') +
           '</div>' +
           '<div class="w-full h-1.5 rounded-full bg-[#21262D] overflow-hidden mt-2.5 border border-[#30363D]">' +
-            '<div class="h-full bg-gradient-to-r from-[#58A6FF] to-[#238636] rounded-full transition-all duration-500" style="width:' + Math.max(4, p.pct) + '%"></div>' +
+            '<div class="h-full bg-[#58A6FF] rounded-full transition-all duration-500" style="width:' + Math.max(4, p.pct) + '%"></div>' +
           '</div>' +
         '</button>'
       );
@@ -637,11 +637,11 @@
         listEl.innerHTML = finPillars.map(function(p) {
           const s = p.pagu - p.real;
           return (
-            '<div class="flex items-center justify-between text-xs py-2 border-b border-slate-100 last:border-0">' +
-              '<span class="font-bold text-slate-800 truncate">' + escapeHtml(p.name) + '</span>' +
-              '<div class="flex items-center gap-2 font-tabular shrink-0">' +
-                '<span class="text-rose-600 font-black">' + formatRp(p.real) + '</span>' +
-                '<span class="text-slate-400 font-semibold text-[10px]">(' + (p.pagu > 0 ? ((p.real / p.pagu) * 100).toFixed(0) : '0') + '%)</span>' +
+            '<div class="flex items-center justify-between text-xs py-2 border-b border-[#30363D] last:border-0">' +
+              '<span class="font-bold text-[#F0F6FC] truncate">' + escapeHtml(p.name) + '</span>' +
+              '<div class="flex items-center gap-2 font-mono tabular-nums shrink-0">' +
+                '<span class="text-[#58A6FF] font-black">' + formatRp(p.real) + '</span>' +
+                '<span class="text-[#8B949E] font-semibold text-[10px]">(' + (p.pagu > 0 ? ((p.real / p.pagu) * 100).toFixed(0) : '0') + '%)</span>' +
               '</div>' +
             '</div>'
           );
@@ -752,26 +752,26 @@
       const isDone = item.status === 'Selesai' || String(item.status || '').indexOf('Selesai') === 0 || item.status.indexOf('Deal') !== -1;
       const badgeDot = isInactive ? 'status-dot-slate' : (isDone ? 'status-dot-emerald' : (item.status.indexOf('Proses') !== -1 ? 'status-dot-amber' : 'status-dot-slate'));
       const badgeCls = isInactive
-        ? 'bg-slate-100 text-slate-600 border-slate-200'
+        ? 'bg-[#21262D] text-[#8B949E] border border-[#30363D]'
         : isDone
-        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+        ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]'
         : item.status.indexOf('Proses') !== -1
-        ? 'bg-amber-50 text-amber-800 border-amber-200'
-        : 'bg-slate-100 text-slate-700 border-slate-200';
+        ? 'bg-[#D29922]/15 text-[#D29922] border border-[#D29922]'
+        : 'bg-[#21262D] text-[#8B949E] border border-[#30363D]';
 
       const priceHtml = isSeserahan
-        ? '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-tabular">' + formatRp(item.harga) + '</p>' +
+        ? '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-mono tabular-nums">' + formatRp(item.harga) + '</p>' +
           '<p class="text-[10px] text-[#8B949E] font-medium">' + escapeHtml(item.brand || '-') + '</p>'
-        : '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-tabular">' + formatRp(item.realisasi) + '</p>' +
-          '<p class="text-[10px] text-[#8B949E] font-tabular">Est: ' + formatRp(item.estimasi) + '</p>';
+        : '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-mono tabular-nums">' + formatRp(item.realisasi) + '</p>' +
+          '<p class="text-[10px] text-[#8B949E] font-mono tabular-nums">Est: ' + formatRp(item.estimasi) + '</p>';
 
       return (
-        '<div class="bento-surface rounded-xl p-3.5 flex items-start justify-between gap-3 border border-[#30363D] bg-[#161B22] hover:border-[#8B949E] transition shadow-xs ' + (isInactive ? 'opacity-50' : '') + '">' +
+        '<div class="bento-surface rounded-md p-3.5 flex items-start justify-between gap-3 border border-[#30363D] bg-[#161B22] hover:border-[#8B949E] transition shadow-xs ' + (isInactive ? 'opacity-50' : '') + '">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
               '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(item.kategori) + '</span>' +
               '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + badgeCls + '"><span class="status-dot ' + badgeDot + '"></span>' + escapeHtml(item.status) + '</span>' +
-              '<span class="text-[10px] text-[#8B949E] font-tabular">#' + item.rowIndex + '</span>' +
+              '<span class="text-[10px] text-[#8B949E] font-mono tabular-nums">#' + item.rowIndex + '</span>' +
             '</div>' +
             '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + escapeHtml(item.item) + '</p>' +
             '<p class="text-[11px] text-[#8B949E] mt-0.5">' +
@@ -784,9 +784,9 @@
             priceHtml +
             '<div class="flex items-center gap-1">' +
               (isSeserahan
-                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="px-2.5 py-1 rounded-md text-[11px] font-bold ' + (item.status === 'Selesai' ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
+                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="px-2.5 py-1 rounded-md text-[11px] font-bold transition active:scale-95 ' + (item.status === 'Selesai' ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
                 : '') +
-              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
+              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition active:scale-95">Edit</button>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -1216,9 +1216,9 @@
     chkContainer.innerHTML = CHECKLIST_ITEMS.map(function(item) {
       const done = !!state.checklist[item.id];
       return (
-        '<label class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 hover:bg-rose-50/40 border border-slate-200 cursor-pointer">' +
-          '<input type="checkbox" data-wchk="' + item.id + '" ' + (done ? 'checked' : '') + ' class="mt-0.5 rounded text-rose-800" />' +
-          '<span class="text-xs ' + (done ? 'line-through text-slate-400' : 'text-slate-700 font-medium') + '">' + escapeHtml(item.text) + '</span>' +
+        '<label class="flex items-start gap-2.5 p-2.5 rounded-md bg-[#090D12] hover:bg-[#21262D] border border-[#30363D] cursor-pointer transition">' +
+          '<input type="checkbox" data-wchk="' + item.id + '" ' + (done ? 'checked' : '') + ' class="mt-0.5 rounded accent-[#238636]" />' +
+          '<span class="text-xs ' + (done ? 'line-through text-[#8B949E]' : 'text-[#C9D1D9] font-medium') + '">' + escapeHtml(item.text) + '</span>' +
         '</label>'
       );
     }).join('');
@@ -1242,7 +1242,7 @@
       modules: 'Modul',
       guests: 'Tamu & KUA',
       vendors: 'Acara & WO',
-      setup: 'Koneksi'
+      setup: 'Konfigurasi'
     };
     const lblCur = document.getElementById('labelCurrentNavTab');
     if (lblCur && tabLabels[tabName]) lblCur.textContent = tabLabels[tabName];
@@ -1250,9 +1250,9 @@
     document.querySelectorAll('.bottom-nav-btn').forEach(function(btn) {
       const bTab = btn.getAttribute('data-tab');
       if (bTab === tabName) {
-        btn.className = 'bottom-nav-btn px-3 py-1.5 rounded-md text-xs font-semibold transition flex flex-col sm:flex-row items-center gap-1 text-[#58A6FF] bg-[#21262D] border border-[#30363D] shadow-xs active-pill-indicator';
+        btn.className = 'bottom-nav-btn min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-semibold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#58A6FF] bg-[#21262D] border border-[#30363D] shadow-xs active-pill-indicator active:scale-95';
       } else {
-        btn.className = 'bottom-nav-btn px-3 py-1.5 rounded-md text-xs font-medium transition flex flex-col sm:flex-row items-center gap-1 text-[#8B949E] hover:text-[#F0F6FC] hover:bg-[#21262D] border border-transparent';
+        btn.className = 'bottom-nav-btn min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#8B949E] hover:text-[#F0F6FC] hover:bg-[#21262D] border border-transparent active:scale-95';
       }
     });
 
@@ -1265,11 +1265,11 @@
     if (btnSetup && lblSetup && icnSetup) {
       if (tabName === 'setup') {
         lblSetup.textContent = 'Kembali';
-        btnSetup.className = 'px-2.5 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#58A6FF] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition shadow-xs';
+        btnSetup.className = 'min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#58A6FF] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs';
         icnSetup.setAttribute('data-lucide', 'arrow-left');
       } else {
-        lblSetup.textContent = 'Koneksi';
-        btnSetup.className = 'px-2.5 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition shadow-xs';
+        lblSetup.textContent = 'Konfigurasi';
+        btnSetup.className = 'min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs';
         icnSetup.setAttribute('data-lucide', 'settings');
       }
     }
@@ -2241,9 +2241,9 @@
         switchMainTab('modules');
         document.querySelectorAll('.submod-btn').forEach(function(b) {
           if (b.getAttribute('data-submod') === key) {
-            b.className = 'submod-btn shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
           } else {
-            b.className = 'submod-btn shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
           }
         });
         populateModuleFilters();
@@ -2256,9 +2256,9 @@
         state.activeSubMod = btn.getAttribute('data-submod');
         document.querySelectorAll('.submod-btn').forEach(function(b) {
           if (b.getAttribute('data-submod') === state.activeSubMod) {
-            b.className = 'submod-btn shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
           } else {
-            b.className = 'submod-btn shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
           }
         });
         populateModuleFilters();
@@ -2337,9 +2337,9 @@
       const vKua = document.getElementById('subview-adminkua');
       if (vKua) vKua.classList.add('hidden');
       const bTamu = document.getElementById('btnSubTamu');
-      if (bTamu) bTamu.className = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]';
+      if (bTamu) bTamu.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
       const bKua = document.getElementById('btnSubAdminKua');
-      if (bKua) bKua.className = 'px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200';
+      if (bKua) bKua.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
     });
 
     safeOn('btnSubAdminKua', 'click', function() {
@@ -2348,9 +2348,9 @@
       const vTamu = document.getElementById('subview-tamu');
       if (vTamu) vTamu.classList.add('hidden');
       const bKua = document.getElementById('btnSubAdminKua');
-      if (bKua) bKua.className = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]';
+      if (bKua) bKua.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
       const bTamu = document.getElementById('btnSubTamu');
-      if (bTamu) bTamu.className = 'px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200';
+      if (bTamu) bTamu.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
     });
 
     document.querySelectorAll('.guest-tab-btn').forEach(function(btn) {
@@ -2358,9 +2358,9 @@
         state.activeGuestTab = btn.getAttribute('data-guesttab');
         document.querySelectorAll('.guest-tab-btn').forEach(function(b) {
           if (b.getAttribute('data-guesttab') === state.activeGuestTab) {
-            b.className = 'guest-tab-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+            b.className = 'guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
           } else {
-            b.className = 'guest-tab-btn px-3 py-1.5 rounded-md text-xs font-medium bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
+            b.className = 'guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-medium bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
           }
         });
         renderGuestsAndKua();

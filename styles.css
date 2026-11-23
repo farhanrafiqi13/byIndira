@@ -93,7 +93,7 @@ textarea,
 :root {
   --color-canvas-default: #0D1117;
   --color-canvas-subtle: #161B22;
-  --color-canvas-inset: #0D1117;
+  --color-canvas-inset: #090D12;
   --color-canvas-overlay: #161B22;
   --color-canvas-sub: #21262D;
 
@@ -114,11 +114,12 @@ textarea,
   --color-success-fg: #3FB950;
   --color-success-emphasis: #238636;
   --color-success-hover: #2EA043;
-  --color-success-muted: rgba(46, 160, 67, 0.15);
+  --color-success-active: #1A6328;
+  --color-success-muted: rgba(35, 134, 54, 0.15);
 
   --color-attention-fg: #D29922;
   --color-attention-emphasis: #9E6A03;
-  --color-attention-muted: rgba(187, 128, 9, 0.15);
+  --color-attention-muted: rgba(210, 153, 34, 0.15);
 
   --color-danger-fg: #F85149;
   --color-danger-emphasis: #DA3633;
@@ -141,7 +142,7 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Text", "Inter", Roboto, sans-serif !important;
   background-color: #0D1117 !important;
   color: #C9D1D9 !important;
   margin: 0;
@@ -173,7 +174,7 @@ body {
   background-color: #161B22 !important;
   border: 1px solid #30363D !important;
   border-radius: 8px !important;
-  box-shadow: 0 1px 0 rgba(1, 4, 9, 0.4) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
   color: #C9D1D9 !important;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
@@ -183,29 +184,41 @@ body {
   border-color: #8B949E !important;
 }
 
+/* GitHub Inset Surface */
+.gh-inset,
+.inset-surface {
+  background-color: #090D12 !important;
+  border: 1px solid #30363D !important;
+  border-radius: 6px !important;
+}
+
 /* Header Sticky Bar */
 header.glass-card {
   background: rgba(22, 27, 34, 0.95) !important;
   border-bottom: 1px solid #30363D !important;
   border-radius: 0 !important;
-  box-shadow: 0 1px 0 rgba(1, 4, 9, 0.6) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 /* --------------------------------------------------------------------------
-   4. GITHUB BUTTONS & CONTROLS
+   4. GITHUB BUTTONS & CONTROLS (Ergonomic Thumb-Zone, min 44x44px touch)
    -------------------------------------------------------------------------- */
 /* Primary GitHub Button (Green) */
 .btn-primary,
 .fab-burgundy,
 .bg-rose-600 {
+  min-height: 44px;
   background-color: #238636 !important;
-  border: 1px solid rgba(240, 246, 252, 0.1) !important;
+  border: 1px solid rgba(240, 246, 252, 0.15) !important;
   color: #FFFFFF !important;
   font-weight: 600 !important;
   border-radius: 6px !important;
-  box-shadow: 0 1px 0 rgba(1, 4, 9, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  box-shadow: 0 1px 2px rgba(1, 4, 9, 0.3) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
 }
 
@@ -213,16 +226,16 @@ header.glass-card {
 .fab-burgundy:hover,
 .bg-rose-600:hover {
   background-color: #2EA043 !important;
-  border-color: rgba(240, 246, 252, 0.1) !important;
+  border-color: rgba(240, 246, 252, 0.2) !important;
   color: #FFFFFF !important;
 }
 
 .btn-primary:active,
 .fab-burgundy:active,
 .bg-rose-600:active {
-  background-color: #1F7F32 !important;
-  box-shadow: inset 0 1px 0 rgba(0, 45, 17, 0.2) !important;
-  transform: none !important;
+  background-color: #1A6328 !important;
+  box-shadow: inset 0 1px 2px rgba(0, 45, 17, 0.3) !important;
+  transform: scale(0.95) !important;
 }
 
 /* Secondary / Subtle GitHub Button */
@@ -230,10 +243,14 @@ header.glass-card {
 .bg-slate-100,
 .bg-slate-50,
 .bg-white:not(header) {
+  min-height: 44px;
   background-color: #21262D !important;
   border: 1px solid #30363D !important;
   color: #C9D1D9 !important;
   border-radius: 6px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
 }
 
@@ -246,39 +263,50 @@ header.glass-card {
   color: #F0F6FC !important;
 }
 
+.btn-secondary:active {
+  background-color: #161B22 !important;
+  transform: scale(0.95) !important;
+}
+
 /* Subtle Action Card Button */
 .action-card-btn {
+  min-height: 44px;
   background-color: #161B22 !important;
   border: 1px solid #30363D !important;
   border-radius: 8px !important;
+  transition: all 0.15s ease;
 }
 .action-card-btn:hover {
   background-color: #21262D !important;
   border-color: #58A6FF !important;
 }
+.action-card-btn:active {
+  transform: scale(0.97);
+}
 
 /* --------------------------------------------------------------------------
-   5. INPUTS, SELECTS & TEXTAREAS (GitHub Inset)
+   5. INPUTS, SELECTS & TEXTAREAS (GitHub Inset: #090D12)
    -------------------------------------------------------------------------- */
 input,
 select,
 textarea {
-  background-color: #0D1117 !important;
+  min-height: 40px;
+  background-color: #090D12 !important;
   border: 1px solid #30363D !important;
-  color: #C9D1D9 !important;
+  color: #F0F6FC !important;
   border-radius: 6px !important;
   font-size: 13px !important;
-  padding: 6px 12px !important;
+  padding: 8px 12px !important;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  background-color: #0D1117 !important;
+  background-color: #090D12 !important;
   border-color: #58A6FF !important;
   outline: none !important;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.25) !important;
   color: #F0F6FC !important;
 }
 
@@ -334,34 +362,34 @@ select option {
   background: rgba(35, 134, 54, 0.15) !important;
   border: 1px solid #238636 !important;
   color: #3FB950 !important;
-  border-radius: 20px !important;
+  border-radius: 9999px !important;
 }
 
 .gold-badge,
 .bg-amber-50,
 .status-chip-pending {
-  background: rgba(187, 128, 9, 0.15) !important;
-  border: 1px solid #9E6A03 !important;
+  background: rgba(210, 153, 34, 0.15) !important;
+  border: 1px solid #D29922 !important;
   color: #D29922 !important;
-  border-radius: 20px !important;
+  border-radius: 9999px !important;
 }
 
 .coral-badge,
 .status-chip-danger {
   background: rgba(248, 81, 73, 0.15) !important;
-  border: 1px solid #DA3633 !important;
+  border: 1px solid #F85149 !important;
   color: #F85149 !important;
-  border-radius: 20px !important;
+  border-radius: 9999px !important;
 }
 
 .teal-badge,
 .bg-blue-50,
 .bg-sky-50,
 .status-chip-info {
-  background: rgba(56, 139, 253, 0.15) !important;
-  border: 1px solid #388BFD !important;
+  background: rgba(88, 166, 255, 0.15) !important;
+  border: 1px solid #58A6FF !important;
   color: #58A6FF !important;
-  border-radius: 20px !important;
+  border-radius: 9999px !important;
 }
 
 .neutral-badge,
@@ -369,28 +397,28 @@ select option {
   background: #21262D !important;
   border: 1px solid #30363D !important;
   color: #C9D1D9 !important;
-  border-radius: 20px !important;
+  border-radius: 9999px !important;
 }
 
 /* --------------------------------------------------------------------------
-   7. FLOATING DOCK NAVIGATION (GITHUB PRIMER DARK)
+   7. FLOATING DOCK NAVIGATION (GITHUB PRIMER DARK - ERGONOMIC THUMB-ZONE)
    -------------------------------------------------------------------------- */
 .floating-dock-nav {
   position: fixed;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 30px);
-  margin-bottom: 8px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  margin-bottom: 0;
   left: 50%;
   transform: translate(-50%, 0);
   width: calc(100% - 32px);
   max-width: 440px;
   z-index: 9999;
-  background: #161B22 !important;
+  background: rgba(22, 27, 34, 0.95) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid #30363D !important;
-  box-shadow: 0 12px 28px rgba(1, 4, 9, 0.6), 0 0 1px 1px rgba(0, 0, 0, 0.4) !important;
-  border-radius: 12px !important;
-  padding: 8px 12px;
+  box-shadow: 0 8px 24px rgba(1, 4, 9, 0.6) !important;
+  border-radius: 9999px !important;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -409,8 +437,15 @@ select option {
 }
 
 .bottom-nav-btn {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px !important;
   color: #8B949E !important;
-  border-radius: 6px !important;
+  border-radius: 9999px !important;
   transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
   user-select: none;
   -webkit-user-select: none;
@@ -423,19 +458,56 @@ select option {
 }
 
 .bottom-nav-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.95);
 }
 
 .bottom-nav-btn.active,
-.bottom-nav-btn[data-active="true"] {
+.bottom-nav-btn[data-active="true"],
+.bottom-nav-btn.active-pill-indicator {
   background-color: #21262D !important;
   color: #58A6FF !important;
   border-color: #30363D !important;
 }
 
+#btnFabQuickAction {
+  min-height: 44px;
+  min-width: 44px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 9999px !important;
+  background-color: #238636 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(240, 246, 252, 0.15) !important;
+  box-shadow: 0 1px 2px rgba(1, 4, 9, 0.3) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+#btnFabQuickAction:hover {
+  background-color: #2EA043 !important;
+  border-color: rgba(240, 246, 252, 0.25) !important;
+}
+
+#btnFabQuickAction:active {
+  background-color: #1A6328 !important;
+  transform: scale(0.95) !important;
+}
+
 /* --------------------------------------------------------------------------
    8. MODALS & BOTTOM-SHEETS
    -------------------------------------------------------------------------- */
+.modal-drag-handle {
+  width: 40px;
+  height: 4px;
+  background-color: #30363D;
+  border-radius: 9999px;
+  margin: 12px auto;
+}
+
 #quickEditModal,
 #editQuotaModal,
 #coupleNameModal,
@@ -459,10 +531,11 @@ select option {
 [id$="Modal"] input,
 [id$="Modal"] select,
 [id$="Modal"] textarea {
-  background-color: #0D1117 !important;
+  min-height: 40px;
+  background-color: #090D12 !important;
   border: 1px solid #30363D !important;
   color: #F0F6FC !important;
-  border-radius: 8px !important;
+  border-radius: 6px !important;
 }
 
 [id$="Modal"] input:focus,
