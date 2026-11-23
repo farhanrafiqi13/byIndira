@@ -58,7 +58,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="./styles.css?v=2.1-unfrozen" />
+  <link rel="stylesheet" href="./styles.css?v=2.2-primer" />
 </head>
 <body class="min-h-screen antialiased bg-[#0D1117] text-[#C9D1D9] selection:bg-[#58A6FF]/30 selection:text-[#F0F6FC]">
 
@@ -185,7 +185,7 @@
   </header>
 
   <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="max-w-4xl mx-auto px-3.5 pt-3.5" style="padding-bottom: 120px;">
+  <main class="max-w-4xl mx-auto px-3.5 pt-3.5" style="padding-bottom: calc(128px + env(safe-area-inset-bottom, 0px));">
 
     <!-- ==================== TAB 1: MASTER DASHBOARD ==================== -->
     <section id="tab-master" class="space-y-3.5">
@@ -221,8 +221,8 @@
                 <h2 id="heroCoupleNames" class="text-xl sm:text-2xl font-black tracking-tight text-[#F0F6FC]">
                   Farhan Rafiqi &amp; Indira Gusti
                 </h2>
-                <button type="button" id="btnEditCoupleNames" class="p-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white border border-[#30363D] transition active:scale-95" title="Ubah Nama Mempelai">
-                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                <button type="button" id="btnEditCoupleNames" class="min-h-[44px] min-w-[44px] p-2 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white border border-[#30363D] transition active:scale-95 flex items-center justify-center shrink-0" title="Ubah Nama Mempelai">
+                  <i data-lucide="edit-3" class="w-4 h-4"></i>
                 </button>
               </div>
 
@@ -311,7 +311,7 @@
 
       <!-- SECTION: Rekapitulasi 6 Modul Operasional -->
       <div class="glass-card rounded-lg p-3.5 sm:p-4 transition border border-[#30363D]">
-        <button type="button" id="btnToggleSectionModules" class="w-full flex items-center justify-between text-left group">
+        <button type="button" id="btnToggleSectionModules" class="w-full min-h-[44px] py-2 flex items-center justify-between text-left group transition active:scale-[0.99]">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-md bg-[#21262D] border border-[#30363D] text-[#58A6FF] flex items-center justify-center shrink-0">
               <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
@@ -332,7 +332,7 @@
       <div id="masterChartsSection" class="hidden space-y-3.5">
         <!-- Pagu vs Realisasi Chart -->
         <div class="glass-card rounded-lg p-4 transition border border-[#30363D]">
-          <button type="button" id="btnToggleSectionPaguChart" class="w-full flex items-center justify-between text-left group">
+          <button type="button" id="btnToggleSectionPaguChart" class="w-full min-h-[44px] py-2 flex items-center justify-between text-left group transition active:scale-[0.99]">
             <div class="flex items-center gap-2.5">
               <div class="w-7 h-7 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] flex items-center justify-center shrink-0">
                 <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
@@ -353,7 +353,7 @@
 
         <!-- Proporsi Realisasi Terpakai -->
         <div class="glass-card rounded-lg p-4 transition border border-[#30363D]">
-          <button type="button" id="btnToggleSectionShareChart" class="w-full flex items-center justify-between text-left group">
+          <button type="button" id="btnToggleSectionShareChart" class="w-full min-h-[44px] py-2 flex items-center justify-between text-left group transition active:scale-[0.99]">
             <div class="flex items-center gap-2.5">
               <div class="w-7 h-7 rounded-md bg-[#21262D] text-[#A371F7] border border-[#30363D] flex items-center justify-center shrink-0">
                 <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i>
@@ -688,8 +688,8 @@
           Pasang di iPhone: Ketuk tombol <strong class="text-[#F0F6FC]">Bagikan (Share <span class="text-[#58A6FF]">⎋</span>)</strong> di bawah, lalu pilih <strong class="text-[#F0F6FC]">'Tambah ke Layar Utama' (Add to Home Screen)</strong>.
         </p>
       </div>
-      <button type="button" id="btnCloseIosPrompt" class="absolute top-2.5 right-2.5 p-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-[#F0F6FC] transition border border-[#30363D]/60" aria-label="Tutup panduan">
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <button type="button" id="btnCloseIosPrompt" class="absolute top-2 right-2 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-[#F0F6FC] transition border border-[#30363D]/60 active:scale-95" aria-label="Tutup panduan">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -723,7 +723,7 @@
     <!-- Center Floating Action Button (FAB) -->
     <div class="px-0.5">
       <button type="button" id="btnFabQuickAction" class="min-h-[44px] min-w-[44px] px-3.5 rounded-full bg-[#238636] hover:bg-[#2EA043] active:bg-[#1A6328] text-white font-bold border border-[rgba(240,246,252,0.15)] shadow-xs flex items-center justify-center gap-1.5 transition active:scale-95" aria-label="Quick Action">
-        <i data-lucide="sparkles" class="w-4 h-4 text-amber-200"></i>
+        <i data-lucide="sparkles" class="w-4 h-4 text-[#D29922]"></i>
         <span class="text-[11px] font-black tracking-wide text-white uppercase">UPDATE</span>
       </button>
     </div>
@@ -1157,7 +1157,7 @@
   <!-- Toast Notification Container -->
   <div id="toastBox" class="fixed top-16 right-4 left-4 sm:left-auto sm:w-80 z-50 pointer-events-none space-y-2"></div>
 
-  <script src="./sheetApi.js?v=2.1-unfrozen"></script>
-  <script src="./app.js?v=2.1-unfrozen"></script>
+  <script src="./sheetApi.js?v=2.2-primer"></script>
+  <script src="./app.js?v=2.2-primer"></script>
 </body>
 </html>

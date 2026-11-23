@@ -78,9 +78,7 @@
         const dt = new Date(y, m, d, 8, 0, 0);
         if (!isNaN(dt.getTime())) return dt;
       }
-    } catch (e) {
-      console.warn('parseSafeWeddingDate fallback triggered:', e);
-    }
+    } catch (e) {}
     return fallback;
   }
 
@@ -433,7 +431,8 @@
 
   function updateCountdownDisplay() {
     try {
-      const targetDate = new Date(2027, 5, 27).getTime();
+      const metaDate = state.data && state.data.meta && state.data.meta.weddingDate;
+      const targetDate = parseSafeWeddingDate(metaDate).getTime();
       const today = new Date().getTime();
       const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
       const countdownElement = document.getElementById('countdownBadge') ||
@@ -444,9 +443,7 @@
       if (countdownElement) {
         countdownElement.textContent = '⏳ ' + (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
       }
-    } catch (eCd) {
-      console.error('Countdown parsing error:', eCd);
-    }
+    } catch (eCd) {}
   }
 
   function renderMasterDashboard() {
@@ -475,9 +472,7 @@
 
     try {
       updateCountdownDisplay();
-    } catch (eCd) {
-      console.error('Countdown render error:', eCd);
-    }
+    } catch (eCd) {}
 
     const m = computeMasterMetrics();
     const hasFormula = Boolean(state.data.masterFormulas);
@@ -782,11 +777,11 @@
           '</div>' +
           '<div class="text-right shrink-0 flex flex-col items-end gap-1.5">' +
             priceHtml +
-            '<div class="flex items-center gap-1">' +
+            '<div class="flex items-center gap-1.5">' +
               (isSeserahan
-                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="px-2.5 py-1 rounded-md text-[11px] font-bold transition active:scale-95 ' + (item.status === 'Selesai' ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
+                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (item.status === 'Selesai' ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
                 : '') +
-              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition active:scale-95">Edit</button>' +
+              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition active:scale-95 flex items-center justify-center">Edit</button>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -821,7 +816,7 @@
           '<div class="flex items-start justify-between gap-2">' +
             '<div>' +
               '<div class="flex items-center gap-1.5 flex-wrap">' +
-                '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (t.status === 'Selesai' || String(t.status || '').indexOf('Lengkap') !== -1 ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#d29922]/15 text-[#e3b341] border border-[#d29922]') + '">' + escapeHtml(t.status) + '</span>' +
+                '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (t.status === 'Selesai' || String(t.status || '').indexOf('Lengkap') !== -1 ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#D29922]/15 text-[#D29922] border border-[#D29922]') + '">' + escapeHtml(t.status) + '</span>' +
                 '<span class="text-[10px] text-[#8B949E] font-medium">Batas: ' + escapeHtml(t.batasWaktu || 'Hari H') + '</span>' +
               '</div>' +
               '<h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + escapeHtml(t.instrumen) + '</h4>' +
@@ -838,7 +833,7 @@
               '<span>' + p + '%</span>' +
             '</div>' +
             '<div class="w-full bg-[#21262D] rounded-full h-2 overflow-hidden border border-[#30363D]">' +
-              '<div class="bg-gradient-to-r from-[#58A6FF] to-[#238636] h-full rounded-full transition-all duration-500" style="width: ' + p + '%"></div>' +
+              '<div class="bg-[#58A6FF] h-full rounded-full transition-all duration-500" style="width: ' + p + '%"></div>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -858,7 +853,7 @@
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
               '<span class="text-xs sm:text-sm font-bold text-[#F0F6FC]">' + escapeHtml(l.komponen) + ' (' + l.volume + ' ' + escapeHtml(l.satuan) + ')</span>' +
-              '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#d29922]/15 text-[#e3b341] border border-[#d29922]') + '">' + escapeHtml(l.status) + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#D29922]/15 text-[#D29922] border border-[#D29922]') + '">' + escapeHtml(l.status) + '</span>' +
               '<span class="text-[10px] text-[#8B949E] font-tabular">Baris #' + l.rowIndex + '</span>' +
             '</div>' +
             '<p class="text-[11px] text-[#8B949E] mt-0.5">' + escapeHtml(l.tanggal) + ' &bull; Sumber: ' + escapeHtml(l.sumberDana || '-') + '</p>' +
@@ -868,9 +863,9 @@
               '<p class="text-xs sm:text-sm font-black text-[#58A6FF]">' + formatRp(l.totalRealisasi) + '</p>' +
               '<p class="text-[10px] text-[#8B949E]">@ ' + formatRp(l.hargaSatuan) + '</p>' +
             '</div>' +
-            '<button type="button" data-togglemaharstatus="' + l.id + '" class="px-2.5 py-1 rounded-md text-[10px] font-bold border transition ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636] hover:bg-[#238636]/25' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (isSelesai ? '✓ Selesai' : 'Pending') + '</button>' +
-            '<button type="button" data-editmaharlog="' + l.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[10px] font-bold border border-[#30363D] transition">Edit</button>' +
-            '<button type="button" data-deletemaharlog="' + l.id + '" class="p-1.5 rounded-md bg-[#21262D] hover:bg-[#DA3633]/25 text-[#F85149] hover:text-[#FF7B72] border border-[#30363D] hover:border-[#DA3633] transition active:scale-95 flex items-center justify-center shrink-0" title="Hapus Catatan Mahar">' +
+            '<button type="button" data-togglemaharstatus="' + l.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md text-[10px] font-bold border transition active:scale-95 flex items-center justify-center ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636] hover:bg-[#238636]/25' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (isSelesai ? '✓ Selesai' : 'Pending') + '</button>' +
+            '<button type="button" data-editmaharlog="' + l.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[10px] font-bold border border-[#30363D] transition active:scale-95 flex items-center justify-center">Edit</button>' +
+            '<button type="button" data-deletemaharlog="' + l.id + '" class="min-h-[38px] min-w-[38px] p-2 rounded-md bg-[#21262D] hover:bg-[#DA3633]/25 text-[#F85149] hover:text-[#F85149] border border-[#30363D] hover:border-[#DA3633] transition active:scale-95 flex items-center justify-center shrink-0" title="Hapus Catatan Mahar">' +
               '<i data-lucide="trash-2" class="w-3.5 h-3.5 text-[#F85149]"></i>' +
             '</button>' +
           '</div>' +
@@ -890,7 +885,7 @@
             '<p class="text-xs text-[#8B949E] mt-1">' + escapeHtml(dynamicSubparts) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-2">' +
-            '<button type="button" id="btnOpenMaharPurchaseModal" class="px-3 py-1.5 rounded-lg bg-[#238636] hover:bg-[#2EA043] text-white font-bold text-xs shadow-xs btn-shine flex items-center gap-1.5 transition">' +
+            '<button type="button" id="btnOpenMaharPurchaseModal" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-[#238636] hover:bg-[#2EA043] active:bg-[#1A6328] text-white font-bold text-xs shadow-xs btn-shine flex items-center gap-1.5 transition active:scale-95">' +
               '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Log Pembelian' +
             '</button>' +
           '</div>' +
@@ -998,7 +993,7 @@
       gContainer.innerHTML = filteredGuests.map(function(g) {
         const sideBadge = g.side === 'CPP'
           ? 'bg-[#58A6FF]/15 text-[#58A6FF] border-[#58A6FF]/30'
-          : 'bg-[#f778ba]/15 text-[#f778ba] border-[#f778ba]/30';
+          : 'bg-[#A371F7]/15 text-[#A371F7] border-[#A371F7]/30';
         return (
           (function() {
             const rawPhone = String(g.whatsapp || '').replace(/[^0-9]/g, '');
@@ -1018,17 +1013,17 @@
                     '<p class="text-[11px] text-[#8B949E] mt-0.5">' + escapeHtml(g.kelompok) + ' &bull; ' + (g.kategori || '-') + '</p>' +
                     (contactSub ? '<p class="text-[11px] text-[#8B949E] mt-0.5">' + contactSub + '</p>' : '') +
                   '</div>' +
-                  '<div class="flex items-center gap-1 shrink-0">' +
-                    (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="px-2 py-1 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition">WA</a>' : '') +
-                    '<button type="button" data-editguest="' + g.id + '" class="px-2 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
+                  '<div class="flex items-center gap-1.5 shrink-0">' +
+                    (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="min-h-[38px] px-2.5 py-1.5 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition flex items-center justify-center active:scale-95">WA</a>' : '') +
+                    '<button type="button" data-editguest="' + g.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' +
                   '</div>' +
                 '</div>' +
                 '<div class="flex items-center justify-between pt-1 border-t border-[#30363D] text-xs">' +
                   '<span class="text-[11px] font-bold text-[#8B949E]">RSVP:</span>' +
-                  '<div class="flex items-center gap-1">' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Hadir" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition ' + (g.rsvp === 'Hadir' ? 'bg-[#238636] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Hadir</button>' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Ragu-ragu" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition ' + (g.rsvp === 'Ragu-ragu' ? 'bg-[#d29922] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Ragu</button>' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Tidak Hadir" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition ' + (g.rsvp === 'Tidak Hadir' ? 'bg-[#da3633] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Tidak</button>' +
+                  '<div class="flex items-center gap-1.5">' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Hadir" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Hadir' ? 'bg-[#238636] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Hadir</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Ragu-ragu" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Ragu-ragu' ? 'bg-[#D29922] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Ragu</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Tidak Hadir" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Tidak Hadir' ? 'bg-[#DA3633] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Tidak</button>' +
                   '</div>' +
                 '</div>' +
               '</div>'
@@ -1042,12 +1037,12 @@
     const kuaContainer = document.getElementById('adminKuaContainer');
     kuaContainer.innerHTML = state.data.administrasi.map(function(a) {
       const cppBtn = a.cppCheck === 'NA'
-        ? '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D]">CPP: —</span>'
-        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpp" class="px-2.5 py-1 rounded-md text-[10px] font-bold border transition ' + (a.cppCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cppCheck ? '✓ CPP Siap' : '☐ Ceklis CPP') + '</button>';
+        ? '<span class="min-h-[38px] px-2.5 py-1.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D] flex items-center justify-center">CPP: —</span>'
+        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpp" class="min-h-[38px] px-3 py-1.5 rounded-md text-[10px] font-bold border transition active:scale-95 flex items-center justify-center ' + (a.cppCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cppCheck ? '✓ CPP Siap' : '☐ Ceklis CPP') + '</button>';
 
       const cpwBtn = a.cpwCheck === 'NA'
-        ? '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D]">CPW: —</span>'
-        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpw" class="px-2.5 py-1 rounded-md text-[10px] font-bold border transition ' + (a.cpwCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cpwCheck ? '✓ CPW Siap' : '☐ Ceklis CPW') + '</button>';
+        ? '<span class="min-h-[38px] px-2.5 py-1.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D] flex items-center justify-center">CPW: —</span>'
+        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpw" class="min-h-[38px] px-3 py-1.5 rounded-md text-[10px] font-bold border transition active:scale-95 flex items-center justify-center ' + (a.cpwCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cpwCheck ? '✓ CPW Siap' : '☐ Ceklis CPW') + '</button>';
 
       return (
         '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 flex-wrap">' +
@@ -1074,7 +1069,7 @@
       const stCls = r.status === 'Siap' || r.status === 'Selesai'
         ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]'
         : r.status === 'Dalam Proses'
-        ? 'bg-[#d29922]/15 text-[#e3b341] border-[#d29922]'
+        ? 'bg-[#D29922]/15 text-[#D29922] border-[#D29922]'
         : 'bg-[#21262D] text-[#8B949E] border-[#30363D]';
       return (
         '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 hover:border-[#8B949E] transition">' +
@@ -1087,9 +1082,9 @@
             '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + r.no + '. ' + escapeHtml(r.sesi) + '</p>' +
             '<p class="text-[11px] text-[#8B949E] mt-1">👤 PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(r.pic) + '</strong> &bull; Vendor: ' + escapeHtml(r.vendor) + '</p>' +
           '</div>' +
-          '<div class="flex items-center gap-1 shrink-0">' +
-            '<button type="button" data-togglerundown="' + r.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Status</button>' +
-            '<button type="button" data-editrundown="' + r.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
+          '<div class="flex items-center gap-1.5 shrink-0">' +
+            '<button type="button" data-togglerundown="' + r.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Status</button>' +
+            '<button type="button" data-editrundown="' + r.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' +
           '</div>' +
         '</div>'
       );
@@ -1104,7 +1099,7 @@
         const stCls = isSelesai
           ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]'
           : isProses
-          ? 'bg-[#d29922]/15 text-[#e3b341] border-[#d29922]'
+          ? 'bg-[#D29922]/15 text-[#D29922] border-[#D29922]'
           : 'bg-[#21262D] text-[#8B949E] border-[#30363D]';
         return (
           '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 hover:border-[#8B949E] transition">' +
@@ -1117,9 +1112,9 @@
               '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + t.no + '. ' + escapeHtml(t.agenda) + '</p>' +
               '<p class="text-[11px] text-[#8B949E] mt-1">👤 PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(t.pic) + '</strong>' + (t.target ? ' &bull; Target: ' + escapeHtml(t.target) : '') + '</p>' +
             '</div>' +
-            '<div class="flex items-center gap-1 shrink-0">' +
-              '<button type="button" data-toggletimeline="' + t.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Status</button>' +
-              '<button type="button" data-edittimeline="' + t.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' +
+            '<div class="flex items-center gap-1.5 shrink-0">' +
+              '<button type="button" data-toggletimeline="' + t.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Status</button>' +
+              '<button type="button" data-edittimeline="' + t.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' +
             '</div>' +
           '</div>'
         );
@@ -1169,10 +1164,10 @@
               ? '<p class="text-xs font-bold text-[#F0F6FC] font-tabular">Kontrak: ' + formatRp(v.nilaiKontrak) + '</p>' +
                 '<p class="text-[11px] font-bold text-[#58A6FF] font-tabular">Sisa: ' + formatRp(v.sisaPembayaran) + '</p>'
               : '<p class="text-xs font-bold text-[#8B949E]">Akses Finansial Terbatas</p>') +
-            '<div class="flex items-center gap-1 mt-1">' +
-              (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition">WA</a>' : '') +
-              (phoneDigits ? '<a href="tel:' + phoneDigits + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-[11px] font-bold transition">Telp</a>' : '') +
-              (state.role === 'couple' ? '<button type="button" data-editmod="vendors" data-editid="' + v.id + '" class="px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition">Edit</button>' : '') +
+            '<div class="flex items-center gap-1.5 mt-1">' +
+              (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition flex items-center justify-center active:scale-95">WA</a>' : '') +
+              (phoneDigits ? '<a href="tel:' + phoneDigits + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-[11px] font-bold transition flex items-center justify-center active:scale-95">Telp</a>' : '') +
+              (state.role === 'couple' ? '<button type="button" data-editmod="vendors" data-editid="' + v.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' : '') +
             '</div>' +
           '</div>' +
         '</div>'
@@ -1811,7 +1806,6 @@
       await syncFromAppsScript(true);
       showToast('✓ Sinkronisasi Berhasil: Data formula & spreadsheet telah diperbarui!');
     } catch (e) {
-      console.error('syncMutation error:', e);
       showToast('Gagal sinkronisasi: ' + (e.message || String(e)), true);
     } finally {
       if (sp) sp.classList.remove('animate-spin');
@@ -1976,9 +1970,7 @@
           }
         }
       }
-    } catch (e) {
-      console.error('pushToAppsScript error:', e);
-    }
+    } catch (e) {}
   }
 
   function renderSkeletonLoading(container, count) {
@@ -2060,9 +2052,7 @@
         if (el && typeof el.addEventListener === 'function') {
           el.addEventListener(evt, handler);
         }
-      } catch (err) {
-        console.warn('safeOn error for', idOrEl, err);
-      }
+      } catch (err) {}
     }
 
     // Toggle Floating Left Navigation Menu
@@ -2393,14 +2383,14 @@
         openQuotaModal();
       });
 
-      document.getElementById('btnCloseQuotaModal').addEventListener('click', function() {
+      safeOn('btnCloseQuotaModal', 'click', function() {
         closeQuotaModal();
       });
 
       inpCppQuota.addEventListener('input', updatePreviewQuotaSum);
       inpCpwQuota.addEventListener('input', updatePreviewQuotaSum);
 
-      document.getElementById('formEditQuota').addEventListener('submit', async function(e) {
+      safeOn('formEditQuota', 'submit', async function(e) {
         e.preventDefault();
         const newCpp = Math.max(1, Number(inpCppQuota.value) || 200);
         const newCpw = Math.max(1, Number(inpCpwQuota.value) || 200);
@@ -2420,7 +2410,7 @@
       });
     }
 
-    document.getElementById('guestListContainer').addEventListener('click', async function(e) {
+    safeOn('guestListContainer', 'click', async function(e) {
       const rsvpBtn = e.target.closest('button[data-rsvpid]');
       if (rsvpBtn) {
         const id = rsvpBtn.getAttribute('data-rsvpid');
@@ -3243,7 +3233,7 @@
 
     try {
       if ('serviceWorker' in navigator && window.location.protocol.indexOf('http') === 0) {
-        navigator.serviceWorker.register('./sw.js?v=2.1-unfrozen').catch(function() {});
+        navigator.serviceWorker.register('./sw.js').catch(function() {});
       }
     } catch (eSw) {}
 
