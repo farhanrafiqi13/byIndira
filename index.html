@@ -899,7 +899,7 @@
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="maharKomponenSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Instrumen</label>
-              <select id="maharKomponenSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <select id="maharKomponenSelect" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
                 <option value="Saham BSSR">Saham BSSR (Lot)</option>
                 <option value="Emas Hartadinata">Emas Hartadinata / Logam Mulia (Gram)</option>
                 <option value="Uang Tunai">Uang Tunai (Paket)</option>
@@ -907,29 +907,33 @@
             </div>
             <div>
               <label id="labelMaharTarget" for="maharTargetQtyInput" class="block text-xs font-bold text-[#D29922] mb-1">Target Akumulasi (Lot)</label>
-              <input id="maharTargetQtyInput" type="number" step="any" min="0.01" value="27" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <input id="maharTargetQtyInput" type="number" step="any" min="0.01" inputmode="decimal" value="27" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div id="maharQtyGrid" class="grid grid-cols-2 gap-2">
             <div>
               <label id="labelMaharVolume" for="maharVolumeInput" class="block text-xs font-bold text-[#8B949E] mb-1">Jumlah (Lot)</label>
-              <input id="maharVolumeInput" type="number" step="any" min="0.01" value="1" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <input id="maharVolumeInput" type="number" step="1" min="1" inputmode="numeric" value="1" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
             </div>
-            <div>
-              <label for="maharTotalRealisasiInput" class="block text-xs font-bold text-[#8B949E] mb-1">Total Biaya Realisasi (Rp)</label>
-              <input id="maharTotalRealisasiInput" type="text" inputmode="numeric" placeholder="Misal: 4.850.000 (sesuai nota/kuitansi)" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            <div id="maharMultiplierWrap" class="hidden">
+              <label id="labelMaharMultiplier" for="maharMultiplierInput" class="block text-xs font-bold text-[#8B949E] mb-1">Jumlah Keping / Pengali</label>
+              <input id="maharMultiplierInput" type="number" step="1" min="1" inputmode="numeric" value="1" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            </div>
+            <div id="maharPriceWrap" class="col-span-1">
+              <label id="labelMaharPrice" for="maharTotalRealisasiInput" class="block text-xs font-bold text-[#8B949E] mb-1">Harga Beli / Lembar (Rp)</label>
+              <input id="maharTotalRealisasiInput" type="text" inputmode="numeric" placeholder="Misal: 4.940" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="maharDateInput" class="block text-xs font-bold text-[#8B949E] mb-1">Tanggal</label>
-              <input id="maharDateInput" type="date" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <input id="maharDateInput" type="date" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
             </div>
             <div>
               <label for="maharStatusSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Status</label>
-              <select id="maharStatusSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <select id="maharStatusSelect" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
                 <option value="Terencana">Terencana</option>
                 <option value="Selesai">Selesai</option>
               </select>
@@ -939,11 +943,11 @@
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="maharAccountInput" class="block text-xs font-bold text-[#8B949E] mb-1">Sumber Dana</label>
-              <input id="maharAccountInput" type="text" value="RDN Indo Premier (IPOT)" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <input id="maharAccountInput" type="text" value="RDN Indo Premier (IPOT)" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
             </div>
             <div>
               <label for="maharNoteInput" class="block text-xs font-bold text-[#8B949E] mb-1">Catatan</label>
-              <input id="maharNoteInput" type="text" placeholder="Cicil lot saham..." class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <input id="maharNoteInput" type="text" placeholder="Cicil lot saham..." class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
             </div>
           </div>
 

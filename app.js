@@ -1433,21 +1433,35 @@
         document.getElementById('maharLogEditId').value = itemId || '';
         const logItem = state.data.maharLogs.find(function(x) { return x.id === itemId; });
         if (logItem) {
-          const kompVal = (/emas|logam\s*mulia/i.test(logItem.komponen || '') ? 'Emas Hartadinata' : (logItem.komponen || 'Saham BSSR'));
+          const kompVal = (/emas|logam\s*mulia/i.test(logItem.komponen || '') ? 'Emas Hartadinata' : (/uang|tunai/i.test(logItem.komponen || '') ? 'Uang Tunai' : (logItem.komponen || 'Saham BSSR')));
           document.getElementById('maharKomponenSelect').value = kompVal;
           document.getElementById('maharVolumeInput').value = logItem.volume || 1;
+          const multInp = document.getElementById('maharMultiplierInput');
+          if (multInp) multInp.value = '1';
           const realInp = document.getElementById('maharTotalRealisasiInput');
-          if (realInp) realInp.value = logItem.totalRealisasi ? formatDots(logItem.totalRealisasi) : '';
+          if (realInp) {
+            let inputPrice = 0;
+            if (kompVal === 'Saham BSSR') {
+              inputPrice = Number(logItem.hargaSatuan) || (Number(logItem.volume) > 0 && Number(logItem.totalRealisasi) > 0 ? Math.round(Number(logItem.totalRealisasi) / (Number(logItem.volume) * 100)) : 0);
+            } else if (kompVal === 'Emas Hartadinata') {
+              inputPrice = Number(logItem.totalRealisasi) || (Number(logItem.hargaSatuan) > 0 && Number(logItem.volume) > 0 ? Math.round(Number(logItem.hargaSatuan) * Number(logItem.volume)) : 0);
+            } else {
+              inputPrice = Number(logItem.hargaSatuan) || Number(logItem.totalRealisasi) || 0;
+            }
+            realInp.value = inputPrice > 0 ? formatDots(inputPrice) : '';
+          }
           document.getElementById('maharDateInput').value = logItem.tanggal || new Date().toISOString().split('T')[0];
           document.getElementById('maharStatusSelect').value = logItem.status || 'Selesai';
           document.getElementById('maharAccountInput').value = logItem.sumberDana || 'RDN Indo Premier (IPOT)';
           document.getElementById('maharNoteInput').value = logItem.catatan || '';
-          if (infoBanner) infoBanner.innerHTML = 'Mengedit log baris #' + logItem.rowIndex + ' (Status: <strong>' + logItem.status + '</strong>).';
+          if (infoBanner) infoBanner.innerHTML = 'Mengedit log baris #' + logItem.rowIndex + ' (Status: <strong>' + escapeHtml(logItem.status) + '</strong>).';
         }
       } else {
         document.getElementById('maharLogEditId').value = '';
         document.getElementById('maharDateInput').value = new Date().toISOString().split('T')[0];
         document.getElementById('maharVolumeInput').value = '1';
+        const multInp = document.getElementById('maharMultiplierInput');
+        if (multInp) multInp.value = '1';
         const realInp = document.getElementById('maharTotalRealisasiInput');
         if (realInp) realInp.value = '';
         document.getElementById('maharStatusSelect').value = 'Selesai';
@@ -1824,6 +1838,45 @@
     if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
   }
 
+  function computeMaharEntryValues(komp, volRaw, multRaw, priceInputNum) {
+    const qty = Math.max(0, Number(volRaw) || 0);
+    const price = Math.max(0, Math.round(Number(priceInputNum) || 0));
+    if (komp === 'Saham BSSR') {
+      const lot = Math.max(0, Math.round(qty));
+      const lembar = lot * 100;
+      const total = Math.round(lembar * price);
+      return {
+        satuan: 'Lot',
+        volume: lot,
+        pengali: 1,
+        lembar: lembar,
+        hargaSatuan: price,
+        totalRealisasi: total
+      };
+    }
+    if (komp === 'Emas Hartadinata') {
+      const pengali = Math.max(1, Math.round(Number(multRaw) || 1));
+      const totalGram = Math.round(qty * pengali * 10000) / 10000;
+      const total = Math.round(price * pengali);
+      return {
+        satuan: 'Gram',
+        beratPecahan: qty,
+        pengali: pengali,
+        volume: totalGram,
+        hargaSatuan: totalGram > 0 ? Math.round(total / totalGram) : price,
+        totalRealisasi: total
+      };
+    }
+    const totalTunai = Math.round(qty * price);
+    return {
+      satuan: 'Paket',
+      volume: qty,
+      pengali: 1,
+      hargaSatuan: price,
+      totalRealisasi: totalTunai
+    };
+  }
+
   function syncMaharTargetField() {
     const komp = document.getElementById('maharKomponenSelect').value;
     const isEditLog = !!document.getElementById('maharLogEditId').value;
@@ -1831,6 +1884,10 @@
     const vInp = document.getElementById('maharVolumeInput');
     const lblVol = document.getElementById('labelMaharVolume');
     const lblTgt = document.getElementById('labelMaharTarget');
+    const lblPrice = document.getElementById('labelMaharPrice');
+    const realInp = document.getElementById('maharTotalRealisasiInput');
+    const multWrap = document.getElementById('maharMultiplierWrap');
+    const priceWrap = document.getElementById('maharPriceWrap');
     const noteInp = document.getElementById('maharNoteInput');
     const accInp = document.getElementById('maharAccountInput');
 
@@ -1841,22 +1898,34 @@
     });
 
     if (komp === 'Emas Hartadinata') {
-      if (lblVol) lblVol.textContent = 'Berat (Gram)';
-      if (vInp) { vInp.step = 'any'; vInp.min = '0.01'; }
+      if (lblVol) lblVol.textContent = 'Berat / Pecahan (Gram)';
+      if (vInp) { vInp.step = 'any'; vInp.min = '0.01'; vInp.setAttribute('inputmode', 'decimal'); }
+      if (multWrap) multWrap.classList.remove('hidden');
+      if (priceWrap) { priceWrap.classList.remove('col-span-1'); priceWrap.classList.add('col-span-2'); }
+      if (lblPrice) lblPrice.textContent = 'Harga Beli / Biaya Realisasi (Rp)';
+      if (realInp) realInp.placeholder = 'Misal: 3.500.000 (harga per keping/nota)';
       if (lblTgt) lblTgt.textContent = 'Target Akumulasi (Gram)';
       if (tInp) { tInp.step = 'any'; tInp.value = tObj ? (tObj.targetJumlah || 6) : 6; }
       if (noteInp && !isEditLog) noteInp.placeholder = 'Misal: Logam Mulia Antam/Hartadinata, Toko Emas XYZ...';
       if (accInp && !isEditLog) accInp.value = 'Tabungan Emas / Kas Pribadi';
     } else if (komp === 'Saham BSSR') {
       if (lblVol) lblVol.textContent = 'Jumlah (Lot)';
-      if (vInp) { vInp.step = '1'; vInp.min = '1'; }
+      if (vInp) { vInp.step = '1'; vInp.min = '1'; vInp.setAttribute('inputmode', 'numeric'); }
+      if (multWrap) multWrap.classList.add('hidden');
+      if (priceWrap) { priceWrap.classList.remove('col-span-2'); priceWrap.classList.add('col-span-1'); }
+      if (lblPrice) lblPrice.textContent = 'Harga Beli / Lembar (Rp)';
+      if (realInp) realInp.placeholder = 'Misal: 4.940';
       if (lblTgt) lblTgt.textContent = 'Target Akumulasi (Lot)';
       if (tInp) { tInp.step = '1'; tInp.value = tObj ? (tObj.targetJumlah || 27) : 27; }
       if (noteInp && !isEditLog) noteInp.placeholder = 'Cicil lot saham...';
       if (accInp && !isEditLog) accInp.value = 'RDN Indo Premier (IPOT)';
     } else {
       if (lblVol) lblVol.textContent = 'Jumlah / Paket';
-      if (vInp) { vInp.step = '1'; vInp.min = '1'; }
+      if (vInp) { vInp.step = '1'; vInp.min = '1'; vInp.setAttribute('inputmode', 'numeric'); }
+      if (multWrap) multWrap.classList.add('hidden');
+      if (priceWrap) { priceWrap.classList.remove('col-span-2'); priceWrap.classList.add('col-span-1'); }
+      if (lblPrice) lblPrice.textContent = 'Nominal Realisasi (Rp)';
+      if (realInp) realInp.placeholder = 'Misal: 2.027.000';
       if (lblTgt) lblTgt.textContent = 'Target (Paket)';
       if (tInp) { tInp.step = '1'; tInp.value = tObj ? (tObj.targetJumlah || 1) : 1; }
       if (noteInp && !isEditLog) noteInp.placeholder = 'Misal: Uang Kertas Emisi Baru...';
@@ -1866,29 +1935,31 @@
 
   function updateMaharPreview() {
     const komp = document.getElementById('maharKomponenSelect').value;
-    const vol = Math.max(0, parseFloat(document.getElementById('maharVolumeInput').value) || 0);
+    const volRaw = Math.max(0, parseFloat(document.getElementById('maharVolumeInput').value) || 0);
+    const multInp = document.getElementById('maharMultiplierInput');
+    const multRaw = multInp ? Math.max(1, parseInt(multInp.value, 10) || 1) : 1;
     const realInp = document.getElementById('maharTotalRealisasiInput');
-    const total = realInp ? parseDigits(realInp.value) : 0;
+    const inputPrice = realInp ? parseDigits(realInp.value) : 0;
+    const calc = computeMaharEntryValues(komp, volRaw, multRaw, inputPrice);
     const previewEl = document.getElementById('maharCalcPreview');
     if (previewEl) {
-      if (total > 0 && vol > 0) {
-        let helperText = '';
+      if (inputPrice > 0 && volRaw > 0) {
         if (komp === 'Saham BSSR') {
-          const lembar = Math.round(vol * 100);
-          const perLembar = Math.round(total / (lembar || 1));
-          helperText = ' (rata-rata ~' + formatRp(perLembar) + ' / lembar)';
+          previewEl.textContent = 'Estimasi Realisasi: ' + formatRp(calc.totalRealisasi) + ' (' + calc.volume + ' Lot / ' + formatDots(calc.lembar) + ' lembar @ Rp ' + formatDots(calc.hargaSatuan) + ')';
         } else if (komp === 'Emas Hartadinata') {
-          const perGram = Math.round(total / vol);
-          helperText = ' (rata-rata ~' + formatRp(perGram) + ' / gram)';
+          previewEl.textContent = 'Total Realisasi: ' + formatRp(calc.totalRealisasi) + ' (' + calc.volume + ' gr — ' + calc.pengali + ' keping @ ' + calc.beratPecahan + ' gr)';
+        } else {
+          previewEl.textContent = 'Total Realisasi: ' + formatRp(calc.totalRealisasi) + ' (' + calc.volume + ' paket @ ' + formatRp(calc.hargaSatuan) + ')';
         }
-        previewEl.textContent = 'Total Realisasi Sesuai Nota: ' + formatRp(total) + helperText;
-      } else if (total > 0) {
-        previewEl.textContent = 'Total Realisasi Sesuai Nota: ' + formatRp(total);
+      } else if (komp === 'Saham BSSR') {
+        previewEl.textContent = 'Masukkan jumlah Lot dan Harga Beli / Lembar untuk melihat estimasi realisasi';
+      } else if (komp === 'Emas Hartadinata') {
+        previewEl.textContent = 'Masukkan berat pecahan, jumlah keping, dan harga per keping/nota';
       } else {
-        previewEl.textContent = 'Masukkan nominal biaya realisasi sesuai nota/kuitansi fisik';
+        previewEl.textContent = 'Masukkan jumlah paket dan nominal realisasi';
       }
     }
-    return total;
+    return calc.totalRealisasi;
   }
 
   function getSheetRowsSafe(sheetName) {
@@ -2149,6 +2220,20 @@
         }
         log.rowIndex = targetRow;
         const noVal = getExistingSheetRowNo('MAHAR', targetRow, 1, log.no || (targetRow - 15));
+        if (/saham|bssr/i.test(log.komponen || '')) {
+          // Proteksi rumus Kolom I (Total Biaya Realisasi): tulis kolom B..H lalu J..K
+          const headRes = await syncMutation('MAHAR', 'updateRow', {
+            rowIndex: targetRow,
+            startCol: 2,
+            rowValues: [noVal, log.tanggal, log.komponen, log.volume, log.satuan, log.hargaSatuan, log.status]
+          }, { skipPull: true, quietSuccessToast: true });
+          if (!headRes || !headRes.ok) return headRes;
+          return await syncMutation('MAHAR', 'updateRow', {
+            rowIndex: targetRow,
+            startCol: 10,
+            rowValues: [log.sumberDana || '', log.catatan || '']
+          });
+        }
         return await syncMutation('MAHAR', 'updateRow', {
           rowIndex: targetRow,
           startCol: 2,
@@ -2993,6 +3078,7 @@
       updateMaharPreview();
     });
     safeOn('maharVolumeInput', 'input', updateMaharPreview);
+    safeOn('maharMultiplierInput', 'input', updateMaharPreview);
     safeOn('maharTargetQtyInput', 'input', updateMaharPreview);
 
     safeOn('formEditItem', 'submit', async function(e) {
@@ -3220,7 +3306,11 @@
       const targetQty = Math.max(0.01, Number(document.getElementById('maharTargetQtyInput').value) || 1);
       const tgl = document.getElementById('maharDateInput').value || new Date().toISOString().split('T')[0];
       const vol = Math.max(0, parseFloat(document.getElementById('maharVolumeInput').value) || 0);
-      const totalRealisasi = parseDigits(document.getElementById('maharTotalRealisasiInput').value);
+      const multInp = document.getElementById('maharMultiplierInput');
+      const mult = multInp ? Math.max(1, parseInt(multInp.value, 10) || 1) : 1;
+      const inputPrice = parseDigits(document.getElementById('maharTotalRealisasiInput').value);
+      const calc = computeMaharEntryValues(komp, vol, mult, inputPrice);
+      const totalRealisasi = calc.totalRealisasi;
       const st = document.getElementById('maharStatusSelect').value;
       const acc = (document.getElementById('maharAccountInput').value || '').trim();
       const note = (document.getElementById('maharNoteInput').value || '').trim();
@@ -3232,7 +3322,7 @@
         return /uang|tunai/i.test(t.instrumen);
       });
       const targetChanged = Boolean(tObj && Number(tObj.targetJumlah) !== Number(targetQty));
-      const hasLogEntry = Boolean(vol > 0 && (totalRealisasi > 0 || st === 'Terencana'));
+      const hasLogEntry = Boolean(calc.volume > 0 && (inputPrice > 0 || st === 'Terencana'));
 
       let nextLogRow = 0;
       if (hasLogEntry && !editLogId) {
@@ -3255,20 +3345,15 @@
         }
 
         if (hasLogEntry) {
-          const satuan = komp === 'Saham BSSR' ? 'Lot' : (komp === 'Emas Hartadinata' ? 'Gram' : 'Paket');
-          let price = 0;
-          if (totalRealisasi > 0 && vol > 0) {
-            price = (komp === 'Saham BSSR')
-              ? Math.round(totalRealisasi / (vol * 100))
-              : Math.round(totalRealisasi / vol);
-          }
+          const satuan = calc.satuan;
+          const price = calc.hargaSatuan;
 
           if (editLogId) {
             const targetLog = state.data.maharLogs.find(function(x) { return x.id === editLogId; });
             if (targetLog) {
               targetLog.tanggal = tgl;
               targetLog.komponen = komp;
-              targetLog.volume = vol;
+              targetLog.volume = calc.volume;
               targetLog.satuan = satuan;
               targetLog.hargaSatuan = price;
               targetLog.status = st;
@@ -3297,7 +3382,7 @@
             no: noVal,
             tanggal: tgl,
             komponen: komp,
-            volume: vol,
+            volume: calc.volume,
             satuan: satuan,
             hargaSatuan: price,
             status: st,

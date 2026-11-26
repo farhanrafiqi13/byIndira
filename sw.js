@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v2.3-syncfix';
+const CACHE_NAME = 'v2.4-maharfix';
 const ASSETS = [
   './',
   './index.html',

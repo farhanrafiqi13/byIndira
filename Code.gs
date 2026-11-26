@@ -244,15 +244,28 @@ function doPost(e) {
         targetRow = findEmptySlotInRange(ws, 4, 16, 24, []);
       }
       if (!targetRow || targetRow > 24) throw new Error('Slot Log Mahar (baris 16-24) sudah penuh.');
+      const kompStr = String(item.komponen || '').trim();
+      const isSaham = /saham|bssr/i.test(kompStr);
       const noUrut = Number(ws.getRange(targetRow, 2).getValue()) || (targetRow - 15);
       ws.getRange(targetRow, 2).setValue(noUrut);
       if (item.tanggal) ws.getRange(targetRow, 3).setValue(item.tanggal);
-      if (item.komponen) ws.getRange(targetRow, 4).setValue(String(item.komponen).trim());
+      if (kompStr) ws.getRange(targetRow, 4).setValue(kompStr);
       if (item.volume !== undefined) ws.getRange(targetRow, 5).setValue(Number(item.volume) || 1);
       if (item.satuan) ws.getRange(targetRow, 6).setValue(String(item.satuan).trim());
       if (item.hargaSatuan !== undefined) ws.getRange(targetRow, 7).setValue(Number(item.hargaSatuan) || 0);
       if (item.status) ws.getRange(targetRow, 8).setValue(String(item.status).trim());
-      if (item.totalRealisasi !== undefined) ws.getRange(targetRow, 9).setValue(Number(item.totalRealisasi) || 0);
+      if (isSaham) {
+        // Jangan timpa rumus Kolom I pada baris Saham; jika tambah baris baru & Kolom I belum berformula, salin formula baris sebelumnya
+        if (action === 'add_mahar_log' && targetRow > 16) {
+          const colICell = ws.getRange(targetRow, 9);
+          if (!colICell.getFormula()) {
+            const prevFormula = ws.getRange(targetRow - 1, 9).getFormulaR1C1();
+            if (prevFormula) colICell.setFormulaR1C1(prevFormula);
+          }
+        }
+      } else if (item.totalRealisasi !== undefined) {
+        ws.getRange(targetRow, 9).setValue(Number(item.totalRealisasi) || 0);
+      }
       if (item.sumberDana !== undefined) ws.getRange(targetRow, 10).setValue(String(item.sumberDana).trim());
       if (item.catatan !== undefined) ws.getRange(targetRow, 11).setValue(String(item.catatan).trim());
     }
