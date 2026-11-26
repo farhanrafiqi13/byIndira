@@ -2,18 +2,22 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0D1117" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#F9F8F6" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Farhan & Indira" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png" />
   <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
-  <title>Farhan &amp; Indira — Wedding Tracker &amp; Command Center</title>
+  <title>Farhan &amp; Indira — Wedding Planner</title>
   <link rel="manifest" href="./manifest.json" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- GOOGLE APPS SCRIPT ENDPOINT (BUILT-IN) -->
   <script>
@@ -25,7 +29,7 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for (var reg of registrations) {
-          reg.update(); // Paksa periksa update ke server GitHub Pages
+          reg.update();
         }
       });
       navigator.serviceWorker.addEventListener('controllerchange', function() {
@@ -37,25 +41,27 @@
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+          },
           colors: {
-            gh: {
-              canvas: '#0D1117',
-              surface: '#161B22',
-              subtle: '#21262D',
-              border: '#30363D',
-              borderMuted: '#21262D',
-              text: '#F0F6FC',
-              body: '#C9D1D9',
-              muted: '#8B949E',
-              green: '#238636',
-              greenHover: '#2EA043',
-              blue: '#58A6FF',
-              yellow: '#D29922',
-              red: '#F85149'
-            }
+            alabaster: '#F9F8F6',
+            stone: '#F3F1EC',
+            charcoal: '#1C1917',
+            slatewarm: '#57534E',
+            stonegray: '#78716C',
+            sage: {
+              DEFAULT: '#2C4237',
+              hover: '#21332A',
+              tint: '#ECF3EF',
+              border: '#C6DDD0',
+              text: '#244233'
+            },
+            champagne: '#9A7B4F',
+            hairline: '#EAE6DF'
           }
         }
       }
@@ -63,48 +69,29 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="./styles.css?v=2.3-syncfix" />
+  <link rel="stylesheet" href="./styles.css?v=3.0-editorial" />
 </head>
-<body class="min-h-screen antialiased bg-[#0D1117] text-[#C9D1D9] selection:bg-[#58A6FF]/30 selection:text-[#F0F6FC]">
+<body class="min-h-screen antialiased bg-[#F9F8F6] text-[#1C1917] selection:bg-[#ECF3EF] selection:text-[#244233]">
 
-  <!-- ==================== FUTURISTIC PWA SPLASH SCREEN ==================== -->
-  <div id="splash-screen" class="splash-overlay fixed inset-0 z-[99999] bg-[#0D1117] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-400 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
+  <!-- ==================== EDITORIAL SPLASH SCREEN ==================== -->
+  <div id="splash-screen" class="splash-overlay fixed inset-0 z-[99999] bg-[#F9F8F6] flex flex-col items-center justify-center p-6 select-none transition-opacity duration-300 ease-out" style="padding-top: max(1.5rem, env(safe-area-inset-top, 0px)); padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));">
     <div class="relative flex flex-col items-center max-w-xs w-full text-center space-y-6">
-      <!-- Centerpiece: Monogram with subtle breathing glow -->
-      <div class="relative w-20 h-20 flex items-center justify-center">
-        <div class="absolute inset-0 rounded-2xl bg-[#58A6FF]/15 blur-xl animate-pulse"></div>
-        <div class="relative w-20 h-20 rounded-2xl bg-[#161B22] border border-[#30363D] shadow-[0_4px_16px_rgba(1,4,9,0.8)] flex items-center justify-center">
-          <img src="./logo.png" alt="Farhan & Indira" class="w-11 h-11 object-contain" />
-        </div>
+      <div class="w-16 h-16 rounded-full bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] flex items-center justify-center">
+        <span class="font-editorial text-2xl font-medium text-[#1C1917]">F<span class="italic text-[#9A7B4F]">&amp;</span>I</span>
       </div>
 
-      <!-- App Title -->
-      <div class="space-y-1">
-        <h1 class="text-xs sm:text-sm font-black tracking-[0.25em] text-[#F0F6FC] uppercase font-mono">
-          FARHAN &amp; INDIRA
-        </h1>
-        <p class="text-[9px] tracking-[0.2em] text-[#8B949E] uppercase font-mono">
-          COMMAND CENTER
+      <div class="w-40 space-y-3">
+        <div class="w-full h-[1.5px] bg-[#EAE6DF] rounded-full overflow-hidden relative">
+          <div id="splashProgressBar" class="h-full bg-[#2C4237] rounded-full transition-all duration-300 ease-out" style="width: 45%;"></div>
+        </div>
+        <p id="splashStatusText" class="text-[11px] font-medium text-[#78716C] tracking-[0.2em] uppercase">
+          Memuat Perencanaan
         </p>
-      </div>
-
-      <!-- Ultra-thin gradient progress line & status -->
-      <div class="w-44 space-y-2.5">
-        <div class="w-full h-[2px] bg-[#21262D] rounded-full overflow-hidden relative">
-          <div id="splashProgressBar" class="h-full bg-[#58A6FF] rounded-full transition-all duration-300 ease-out" style="width: 35%;"></div>
-        </div>
-        <div class="flex items-center justify-center gap-1.5">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#3FB950] animate-ping"></span>
-          <span id="splashStatusText" class="font-mono text-[9px] text-[#8B949E] tracking-widest uppercase">
-            INITIALIZING SYSTEM...
-          </span>
-        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // CRITICAL FAILSAFE TIMEOUT: UNSTUCK SPLASH SCREEN (MAKSIMAL 2 DETIK)
     const dismissSplash = () => {
       const splashEl = document.getElementById('splash-screen') || document.getElementById('appSplashScreen') || document.querySelector('.splash-overlay');
       if (splashEl && splashEl.dataset.hidden !== 'true') {
@@ -126,7 +113,6 @@
     };
     window.dismissSplash = dismissSplash;
 
-    // PAKSA TUTUP & HAPUS FISIK SPLASH SCREEN MAKSIMAL 2 DETIK
     setTimeout(() => {
       dismissSplash();
       const el = document.getElementById('splash-screen') || document.querySelector('.splash-overlay');
@@ -143,388 +129,353 @@
   </script>
 
   <!-- ==================== STICKY TOP HEADER ==================== -->
-  <header class="sticky top-0 z-30 bg-[#161B22]/95 border-b border-[#30363D] px-3.5 py-2.5 backdrop-blur-md">
-    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
-      <!-- Left: Brand Monogram + Dynamic Title -->
+  <header class="sticky top-0 z-30 bg-[#F9F8F6]/90 border-b border-[#EAE6DF] px-4 py-2.5 backdrop-blur-md">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2.5">
+      <!-- Left: Brand Monogram + Compact Status -->
       <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-8 h-8 rounded-lg bg-[#21262D] border border-[#30363D] flex items-center justify-center shrink-0">
-          <img src="./logo.png" alt="byIndira" class="w-5 h-5 object-contain" />
+        <div class="w-9 h-9 rounded-full bg-[#FFFFFF] border border-[#EAE6DF] flex items-center justify-center shrink-0 shadow-[0_1px_4px_rgba(28,25,23,0.04)]">
+          <span class="font-editorial text-sm font-semibold tracking-tight text-[#1C1917]">F<span class="italic text-[#9A7B4F]">&amp;</span>I</span>
         </div>
         <div class="min-w-0">
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <h1 id="headerCoupleTitle" class="text-xs sm:text-sm font-black text-[#F0F6FC] tracking-tight truncate">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 id="headerCoupleTitle" class="text-xs sm:text-sm font-semibold text-[#1C1917] tracking-tight truncate">
               FARHAN &amp; INDIRA
             </h1>
-            <span id="roleBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D29922]/15 text-[#D29922] border border-[#D29922] font-mono">
-              🔒 Otorisasi Panitia
+            <span id="roleBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC]">
+              Mode Panitia
             </span>
           </div>
-          <p class="text-[10px] text-[#8B949E] font-mono tabular-nums truncate">
+          <p class="text-[11px] text-[#78716C] font-tabular truncate">
             <span id="headerWeddingDateText">Minggu, 27 Juni 2027</span>
           </p>
         </div>
       </div>
 
-      <!-- Right: Controls (Mode, Live Sync, Setup) -->
+      <!-- Right: Minimal Pills -->
       <div class="flex items-center gap-1.5 shrink-0">
-        <!-- Mode Switcher -->
-        <button type="button" id="btnSwitchRole" class="relative z-50 pointer-events-auto cursor-pointer min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Otorisasi Akses">
-          <i data-lucide="shield" class="w-3.5 h-3.5 text-[#58A6FF]"></i>
-          <span id="btnSwitchRoleLabel" class="hidden sm:inline text-[11px]">Otorisasi Akses</span>
+        <button type="button" id="btnSwitchRole" class="relative z-50 pointer-events-auto cursor-pointer min-h-[44px] px-3 py-1.5 rounded-full bg-[#FFFFFF] hover:bg-[#EFECE6] text-[#57534E] border border-[#EAE6DF] text-xs font-medium flex items-center gap-1.5 transition active:scale-95" title="Otorisasi Akses">
+          <i data-lucide="shield" stroke-width="1.5" class="w-4 h-4 text-[#9A7B4F]"></i>
+          <span id="btnSwitchRoleLabel" class="hidden sm:inline text-xs">Akses</span>
         </button>
 
-        <!-- Live Sync Status & Trigger -->
-        <button type="button" id="btnSyncSheets" class="min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Sinkronisasi Basis Data">
+        <button type="button" id="btnSyncSheets" class="min-h-[44px] px-3 py-1.5 rounded-full bg-[#FFFFFF] hover:bg-[#EFECE6] text-[#57534E] border border-[#EAE6DF] text-xs font-medium flex items-center gap-1.5 transition active:scale-95" title="Sinkronisasi Basis Data">
           <span class="status-dot status-confirmed pulsing-dot"></span>
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-[#3FB950]" id="syncSpinner"></i>
-          <span class="hidden sm:inline text-[11px] font-semibold text-[#C9D1D9]">Tersinkronisasi</span>
+          <i data-lucide="refresh-cw" stroke-width="1.5" class="w-4 h-4 text-[#2C4237]" id="syncSpinner"></i>
+          <span class="hidden sm:inline text-xs font-medium text-[#57534E]">Tersinkron</span>
         </button>
 
-        <!-- Connection Settings -->
-        <button type="button" id="btnOpenSetup" class="min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs" title="Konfigurasi Basis Data">
-          <i data-lucide="settings" class="w-3.5 h-3.5 text-[#8B949E]" id="btnSetupIcon"></i>
-          <span id="btnSetupLabel" class="text-[11px]">Konfigurasi</span>
+        <button type="button" id="btnOpenSetup" class="min-h-[44px] px-3 py-1.5 rounded-full bg-[#FFFFFF] hover:bg-[#EFECE6] text-[#57534E] border border-[#EAE6DF] text-xs font-medium flex items-center gap-1.5 transition active:scale-95" title="Pengaturan">
+          <i data-lucide="sliders-horizontal" stroke-width="1.5" class="w-4 h-4 text-[#78716C]" id="btnSetupIcon"></i>
+          <span id="btnSetupLabel" class="hidden sm:inline text-xs">Pengaturan</span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="max-w-4xl mx-auto px-3.5 pt-3.5" style="padding-bottom: calc(128px + env(safe-area-inset-bottom, 0px));">
+  <main class="max-w-3xl mx-auto px-4 pt-5" style="padding-bottom: calc(128px + env(safe-area-inset-bottom, 0px));">
 
     <!-- ==================== TAB 1: MASTER DASHBOARD ==================== -->
-    <section id="tab-master" class="space-y-3.5">
-      <!-- HERO BENTO BLOCK -->
-      <div class="glass-card rounded-lg p-4 sm:p-5 relative overflow-hidden border border-[#30363D]">
-        <div class="relative z-10 space-y-3">
-          <!-- Top Row: Digital Badge + Countdown Pill -->
-          <div class="flex items-center justify-between gap-2 flex-wrap">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#21262D] border border-[#30363D] text-[#8B949E]">
-              <span class="status-dot status-dot-teal"></span>
-              <span>byIndira Digital Tracker</span>
-            </span>
-            <span id="countdownBadge" class="countdown px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#D29922] font-mono tabular-nums shadow-xs" data-countdown="true">⏳ 220 Hari Menuju Acara</span>
-            <script>
-              (function() {
-                try {
-                  const targetDate = new Date(2027, 5, 27).getTime();
-                  const today = new Date().getTime();
-                  const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-                  const countdownElement = document.getElementById('countdownBadge') || document.getElementById('countdown-text') || document.querySelector('.countdown');
-                  if (countdownElement) {
-                    countdownElement.textContent = '⏳ ' + (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
-                  }
-                } catch(e) {}
-              })();
-            </script>
-          </div>
+    <section id="tab-master" class="space-y-5">
+      <!-- HERO CARD EDITORIAL -->
+      <div class="editorial-card bg-[#FFFFFF] rounded-2xl p-5 sm:p-7 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] space-y-5">
+        <div class="flex items-center justify-between gap-2.5 flex-wrap">
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F3F1EC] border border-[#EAE6DF] text-[11px] font-medium tracking-wide uppercase text-[#57534E]">
+            Catatan Pernikahan
+          </span>
+          <span id="countdownBadge" class="countdown inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC] font-tabular" data-countdown="true">213 Hari Menuju Acara</span>
+          <script>
+            (function() {
+              try {
+                const targetDate = new Date(2027, 5, 27).getTime();
+                const today = new Date().getTime();
+                const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+                const countdownElement = document.getElementById('countdownBadge');
+                if (countdownElement) {
+                  countdownElement.textContent = (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
+                }
+              } catch(e) {}
+            })();
+          </script>
+        </div>
 
-          <!-- Middle Row: Couple Title & Edit Action -->
-          <div class="flex items-start justify-between gap-2 flex-wrap pt-1">
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h2 id="heroCoupleNames" class="text-xl sm:text-2xl font-black tracking-tight text-[#F0F6FC]">
-                  Farhan Rafiqi &amp; Indira Gusti
-                </h2>
-                <button type="button" id="btnEditCoupleNames" class="min-h-[44px] min-w-[44px] p-2 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white border border-[#30363D] transition active:scale-95 flex items-center justify-center shrink-0" title="Ubah Nama Mempelai">
-                  <i data-lucide="edit-3" class="w-4 h-4"></i>
-                </button>
-              </div>
-
-              <!-- Metadata Chips -->
-              <div class="flex items-center gap-2 flex-wrap text-[11px] text-[#8B949E] mt-1 font-mono tabular-nums">
-                <span class="flex items-center gap-1 bg-[#21262D] px-2 py-0.5 rounded-md border border-[#30363D]">
-                  <i data-lucide="calendar" class="w-3 h-3 text-[#58A6FF]"></i>
-                  <strong id="heroWeddingDateText" class="text-[#C9D1D9]">Minggu, 27 Juni 2027</strong>
-                </span>
-                <span class="flex items-center gap-1 bg-[#21262D] px-2 py-0.5 rounded-md border border-[#30363D]">
-                  <i data-lucide="map-pin" class="w-3 h-3 text-[#D29922]"></i>
-                  <span id="heroVenueText" class="text-[#C9D1D9]">Venue Intimate</span>
-                </span>
-                <span class="hidden sm:flex items-center gap-1 bg-[#21262D] px-2 py-0.5 rounded-md border border-[#30363D]">
-                  <i data-lucide="target" class="w-3 h-3 text-[#A371F7]"></i>
-                  <span id="heroTargetText" class="text-[#8B949E]">April 2027</span>
-                </span>
-              </div>
+        <div class="flex items-start justify-between gap-3 flex-wrap">
+          <div class="min-w-0 flex-1 space-y-3">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h2 id="heroCoupleNames" class="font-editorial text-2xl sm:text-4xl font-medium tracking-tight text-[#1C1917] leading-tight">
+                Farhan Rafiqi <span class="italic font-normal text-[#9A7B4F]">&amp;</span> Indira Gusti
+              </h2>
+              <button type="button" id="btnEditCoupleNames" class="min-h-[44px] min-w-[44px] p-2 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] border border-[#EAE6DF] transition active:scale-95 flex items-center justify-center shrink-0" title="Ubah Nama Mempelai">
+                <i data-lucide="edit-3" stroke-width="1.5" class="w-4 h-4"></i>
+              </button>
             </div>
 
-            <span id="lastSyncedBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-[#21262D] text-[#8B949E] border border-[#30363D] font-mono tabular-nums shrink-0">
-              Spreadsheet v3
-            </span>
-          </div>
-
-          <!-- BENTO FINANCIAL METRICS (Visible in Couple Mode) -->
-          <div id="masterFinanceHero" class="hidden mt-3 pt-3 border-t border-[#30363D] grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <!-- Pagu -->
-            <div class="bento-surface rounded-md p-3 flex flex-col justify-between">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-[#8B949E]">PAGU</span>
-              <p id="kpiTotalPagu" class="text-base sm:text-lg font-black text-[#F0F6FC] font-mono tabular-nums mt-0.5">Rp 143.557.516</p>
-              <span class="text-[10px] text-[#8B949E] font-medium mt-1">5 Pilar Master</span>
-            </div>
-
-            <!-- Realisasi -->
-            <div class="bento-surface rounded-md p-3 flex flex-col justify-between">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-[#58A6FF]">REALISASI</span>
-              <p id="kpiTotalRealisasi" class="text-base sm:text-lg font-black text-[#58A6FF] font-mono tabular-nums mt-0.5">Rp 23.710.301</p>
-              <span class="text-[10px] text-[#58A6FF] font-medium mt-1">Dana Terpakai</span>
-            </div>
-
-            <!-- Serapan % with Interactive SVG Ring -->
-            <div class="bento-surface rounded-md p-3 flex items-center justify-between gap-2">
-              <div class="min-w-0">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#D29922]">SERAPAN</span>
-                <p id="kpiSerapanPct" class="text-base sm:text-lg font-black text-[#D29922] font-mono tabular-nums mt-0.5">16,5%</p>
-                <span class="text-[10px] text-[#8B949E] font-medium">Anggaran</span>
-              </div>
-              <div class="relative w-11 h-11 shrink-0 flex items-center justify-center">
-                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                  <path class="text-[#21262D]" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                  <path id="budgetProgressCircle" class="text-[#58A6FF] transition-all duration-1000 ease-out" stroke-dasharray="16.5, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <span id="budgetProgressPercent" class="text-[9px] font-black text-[#F0F6FC] font-mono tabular-nums">16%</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sisa Saldo -->
-            <div class="bento-surface rounded-md p-3 flex flex-col justify-between">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-[#3FB950]">SISA ANGGARAN</span>
-              <p id="kpiSisaAnggaran" class="text-base sm:text-lg font-black text-[#3FB950] font-mono tabular-nums mt-0.5">Rp 119.847.215</p>
-              <span class="text-[10px] text-[#3FB950] font-medium mt-1">Saldo Tersedia</span>
-            </div>
-          </div>
-
-          <!-- Committee Privacy Lock Banner -->
-          <div id="committeePrivacyBanner" class="mt-3 pt-3 border-t border-[#30363D] flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-md bg-[#D29922]/15 border border-[#D29922] flex items-center justify-center text-[#D29922] shrink-0">
-                <i data-lucide="lock" class="w-4 h-4"></i>
+            <div class="flex items-center gap-2 flex-wrap text-xs text-[#57534E] font-tabular">
+              <span class="inline-flex items-center gap-1.5 bg-[#F9F8F6] px-3 py-1.5 rounded-full border border-[#EAE6DF]">
+                <i data-lucide="calendar" stroke-width="1.5" class="w-4 h-4 text-[#9A7B4F]"></i>
+                <strong id="heroWeddingDateText" class="font-medium text-[#1C1917]">Minggu, 27 Juni 2027</strong>
               </span>
-              <div>
-                <p class="text-xs font-bold text-[#D29922]">Otorisasi Panitia Aktif</p>
-                <p class="text-[11px] text-[#8B949E]">Nominal finansial disembunyikan demi privasi</p>
+              <span class="inline-flex items-center gap-1.5 bg-[#F9F8F6] px-3 py-1.5 rounded-full border border-[#EAE6DF]">
+                <i data-lucide="map-pin" stroke-width="1.5" class="w-4 h-4 text-[#9A7B4F]"></i>
+                <span id="heroVenueText">Venue Intimate</span>
+              </span>
+              <span class="hidden sm:inline-flex items-center gap-1.5 bg-[#F9F8F6] px-3 py-1.5 rounded-full border border-[#EAE6DF]">
+                <i data-lucide="target" stroke-width="1.5" class="w-4 h-4 text-[#9A7B4F]"></i>
+                <span id="heroTargetText">April 2027</span>
+              </span>
+            </div>
+          </div>
+
+          <span id="lastSyncedBadge" class="text-[11px] px-3 py-1 rounded-full bg-[#F3F1EC] text-[#78716C] border border-[#EAE6DF] font-tabular shrink-0">
+            Tersinkron
+          </span>
+        </div>
+
+        <!-- BENTO FINANCIAL METRICS (Visible in Couple Mode) -->
+        <div id="masterFinanceHero" class="hidden pt-5 border-t border-[#EAE6DF] grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-4 flex flex-col justify-between">
+            <span class="text-[11px] font-medium uppercase tracking-wider text-[#78716C]">Pagu Total</span>
+            <p id="kpiTotalPagu" class="text-base sm:text-lg font-bold text-[#1C1917] font-tabular mt-1">Rp 143.557.516</p>
+          </div>
+
+          <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-4 flex flex-col justify-between">
+            <span class="text-[11px] font-medium uppercase tracking-wider text-[#78716C]">Realisasi</span>
+            <p id="kpiTotalRealisasi" class="text-base sm:text-lg font-bold text-[#2C4237] font-tabular mt-1">Rp 23.710.301</p>
+          </div>
+
+          <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-4 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <span class="text-[11px] font-medium uppercase tracking-wider text-[#78716C]">Serapan</span>
+              <p id="kpiSerapanPct" class="text-base sm:text-lg font-bold text-[#8A5A19] font-tabular mt-1">16,5%</p>
+            </div>
+            <div class="relative w-11 h-11 shrink-0 flex items-center justify-center">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <path class="text-[#EAE6DF]" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path id="budgetProgressCircle" class="text-[#2C4237] transition-all duration-700 ease-out" stroke-dasharray="16.5, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span id="budgetProgressPercent" class="text-[9px] font-bold text-[#1C1917] font-tabular">16%</span>
               </div>
             </div>
-            <button type="button" id="btnUnlockHero" class="relative z-50 pointer-events-auto cursor-pointer min-h-[44px] px-3.5 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#58A6FF] border border-[#30363D] text-xs font-bold flex items-center gap-1.5 transition active:scale-95 shrink-0">
-              <i data-lucide="key-round" class="w-3.5 h-3.5 text-[#58A6FF]"></i>
-              <span>Buka Akses Mempelai</span>
-            </button>
           </div>
+
+          <div class="rounded-2xl bg-[#ECF3EF] border border-[#C6DDD0] p-4 flex flex-col justify-between">
+            <span class="text-[11px] font-medium uppercase tracking-wider text-[#244233]">Sisa Anggaran</span>
+            <p id="kpiSisaAnggaran" class="text-base sm:text-lg font-bold text-[#244233] font-tabular mt-1">Rp 119.847.215</p>
+          </div>
+        </div>
+
+        <!-- Committee Privacy Lock Banner -->
+        <div id="committeePrivacyBanner" class="pt-5 border-t border-[#EAE6DF] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 rounded-full bg-[#FBF5EB] border border-[#EBD9BC] flex items-center justify-center text-[#8A5A19] shrink-0">
+              <i data-lucide="lock" stroke-width="1.5" class="w-4 h-4"></i>
+            </span>
+            <p class="text-sm font-semibold text-[#1C1917]">Mode Panitia Aktif</p>
+          </div>
+          <button type="button" id="btnUnlockHero" class="relative z-50 pointer-events-auto cursor-pointer min-h-[44px] px-4 py-2.5 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95 shrink-0">
+            <i data-lucide="key-round" stroke-width="1.5" class="w-4 h-4 text-white"></i>
+            <span>Otorisasi Akses Mempelai</span>
+          </button>
         </div>
       </div>
 
-      <!-- SECTION: Rekapitulasi 6 Modul Operasional -->
-      <div class="glass-card rounded-lg p-3.5 sm:p-4 transition border border-[#30363D]">
-        <button type="button" id="btnToggleSectionModules" class="w-full min-h-[44px] py-2 flex items-center justify-between text-left group transition active:scale-[0.99]">
+      <!-- SECTION: Rekapitulasi 6 Modul -->
+      <div class="bg-[#FFFFFF] rounded-2xl p-5 sm:p-6 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+        <button type="button" id="btnToggleSectionModules" class="w-full min-h-[44px] py-1 flex items-center justify-between text-left group transition">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-md bg-[#21262D] border border-[#30363D] text-[#58A6FF] flex items-center justify-center shrink-0">
-              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+            <div class="w-8 h-8 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-[#2C4237] flex items-center justify-center shrink-0">
+              <i data-lucide="layout-grid" stroke-width="1.5" class="w-4 h-4"></i>
             </div>
-            <h3 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] transition">Rekapitulasi 6 Modul Operasional</h3>
+            <h3 class="font-editorial text-lg font-medium text-[#1C1917] group-hover:text-[#2C4237] transition">Ringkasan Modul</h3>
           </div>
-          <span id="badgeToggleModules" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#21262D] text-[#8B949E] border border-[#30363D] flex items-center gap-1">
-            <span id="labelToggleSectionModules">Hide</span>
-            <i data-lucide="chevron-up" class="w-3 h-3" id="iconToggleSectionModules"></i>
+          <span id="badgeToggleModules" class="px-3 py-1 rounded-full text-[11px] font-medium bg-[#F3F1EC] text-[#57534E] border border-[#EAE6DF] flex items-center gap-1">
+            <span id="labelToggleSectionModules">Sembunyikan</span>
+            <i data-lucide="chevron-up" stroke-width="1.5" class="w-3.5 h-3.5" id="iconToggleSectionModules"></i>
           </span>
         </button>
-        <div id="wrapperSectionModules" class="mt-3 pt-3 border-t border-[#30363D]">
-          <div id="masterModuleCardsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+        <div id="wrapperSectionModules" class="mt-4 pt-4 border-t border-[#EAE6DF]">
+          <div id="masterModuleCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
         </div>
       </div>
 
       <!-- SECTION: Charts Row (Couple Only) -->
-      <div id="masterChartsSection" class="hidden space-y-3.5">
-        <!-- Pagu vs Realisasi Chart -->
-        <div class="glass-card rounded-lg p-4 transition border border-[#30363D]">
-          <button type="button" id="btnToggleSectionPaguChart" class="w-full min-h-[44px] py-2 flex items-center justify-between text-left group transition active:scale-[0.99]">
+      <div id="masterChartsSection" class="hidden space-y-4">
+        <div class="bg-[#FFFFFF] rounded-2xl p-5 sm:p-6 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+          <button type="button" id="btnToggleSectionPaguChart" class="w-full min-h-[44px] py-1 flex items-center justify-between text-left group transition">
             <div class="flex items-center gap-2.5">
-              <div class="w-7 h-7 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] flex items-center justify-center shrink-0">
-                <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+              <div class="w-8 h-8 rounded-xl bg-[#F3F1EC] text-[#2C4237] border border-[#EAE6DF] flex items-center justify-center shrink-0">
+                <i data-lucide="bar-chart-3" stroke-width="1.5" class="w-4 h-4"></i>
               </div>
-              <h3 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] transition">Pagu vs Realisasi</h3>
+              <h3 class="font-editorial text-lg font-medium text-[#1C1917] group-hover:text-[#2C4237] transition">Pagu vs Realisasi</h3>
             </div>
-            <span id="badgeTogglePaguChart" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#21262D] text-[#8B949E] border border-[#30363D] flex items-center gap-1">
-              <span id="labelToggleSectionPaguChart">Hide</span>
-              <i data-lucide="chevron-up" class="w-3 h-3" id="iconToggleSectionPaguChart"></i>
+            <span id="badgeTogglePaguChart" class="px-3 py-1 rounded-full text-[11px] font-medium bg-[#F3F1EC] text-[#57534E] border border-[#EAE6DF] flex items-center gap-1">
+              <span id="labelToggleSectionPaguChart">Sembunyikan</span>
+              <i data-lucide="chevron-up" stroke-width="1.5" class="w-3.5 h-3.5" id="iconToggleSectionPaguChart"></i>
             </span>
           </button>
-          <div id="wrapperSectionPaguChart" class="mt-3 pt-3 border-t border-[#30363D]">
+          <div id="wrapperSectionPaguChart" class="mt-4 pt-4 border-t border-[#EAE6DF]">
             <div class="relative h-56">
               <canvas id="budgetPillarChart"></canvas>
             </div>
           </div>
         </div>
 
-        <!-- Proporsi Realisasi Terpakai -->
-        <div class="glass-card rounded-lg p-4 transition border border-[#30363D]">
-          <button type="button" id="btnToggleSectionShareChart" class="w-full min-h-[44px] py-2 flex items-center justify-between text-left group transition active:scale-[0.99]">
+        <div class="bg-[#FFFFFF] rounded-2xl p-5 sm:p-6 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+          <button type="button" id="btnToggleSectionShareChart" class="w-full min-h-[44px] py-1 flex items-center justify-between text-left group transition">
             <div class="flex items-center gap-2.5">
-              <div class="w-7 h-7 rounded-md bg-[#21262D] text-[#A371F7] border border-[#30363D] flex items-center justify-center shrink-0">
-                <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i>
+              <div class="w-8 h-8 rounded-xl bg-[#F3F1EC] text-[#9A7B4F] border border-[#EAE6DF] flex items-center justify-center shrink-0">
+                <i data-lucide="pie-chart" stroke-width="1.5" class="w-4 h-4"></i>
               </div>
-              <h3 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#A371F7] transition">Konsolidasi Finansial &amp; Distribusi</h3>
+              <h3 class="font-editorial text-lg font-medium text-[#1C1917] group-hover:text-[#2C4237] transition">Distribusi Realisasi</h3>
             </div>
-            <span id="badgeToggleShareChart" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#21262D] text-[#8B949E] border border-[#30363D] flex items-center gap-1">
-              <span id="labelToggleSectionShareChart">Hide</span>
-              <i data-lucide="chevron-up" class="w-3 h-3" id="iconToggleSectionShareChart"></i>
+            <span id="badgeToggleShareChart" class="px-3 py-1 rounded-full text-[11px] font-medium bg-[#F3F1EC] text-[#57534E] border border-[#EAE6DF] flex items-center gap-1">
+              <span id="labelToggleSectionShareChart">Sembunyikan</span>
+              <i data-lucide="chevron-up" stroke-width="1.5" class="w-3.5 h-3.5" id="iconToggleSectionShareChart"></i>
             </span>
           </button>
-          <div id="wrapperSectionShareChart" class="mt-3 pt-3 border-t border-[#30363D]">
+          <div id="wrapperSectionShareChart" class="mt-4 pt-4 border-t border-[#EAE6DF]">
             <div class="relative h-56">
               <canvas id="realisasiShareChart"></canvas>
             </div>
-            <div id="pillarConsolidationList" class="mt-3 space-y-1"></div>
+            <div id="pillarConsolidationList" class="mt-4 space-y-1"></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== TAB 2: MODUL PERSIAPAN & BIAYA ==================== -->
-    <section id="tab-modules" class="hidden space-y-3.5">
-      <!-- Sub-navigation pills -->
-      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-        <button type="button" data-submod="tracker" id="btnSubmodTracker" class="submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs">
-          💍 Akad &amp; Resepsi
+    <section id="tab-modules" class="hidden space-y-4">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
+        <button type="button" data-submod="tracker" id="btnSubmodTracker" class="submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]">
+          Akad &amp; Resepsi
         </button>
-        <button type="button" data-submod="prewed" id="btnSubmodPrewed" class="submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
-          📷 Pre-Wedding
+        <button type="button" data-submod="prewed" id="btnSubmodPrewed" class="submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">
+          Pre-Wedding
         </button>
-        <button type="button" data-submod="seserahan" id="btnSubmodSeserahan" class="submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
-          🎁 Seserahan
+        <button type="button" data-submod="seserahan" id="btnSubmodSeserahan" class="submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">
+          Seserahan
         </button>
-        <button type="button" data-submod="mahar" id="btnSubmodMahar" class="submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
-          🪙 Mahar
+        <button type="button" data-submod="mahar" id="btnSubmodMahar" class="submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">
+          Mahar
         </button>
       </div>
 
-      <!-- Filter & Search Bar -->
-      <div id="moduleFilterBar" class="glass-card rounded-lg p-3 space-y-2 border border-[#30363D]">
-        <div class="flex flex-col sm:flex-row gap-2">
+      <div id="moduleFilterBar" class="bg-[#FFFFFF] rounded-2xl p-4 space-y-3 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+        <div class="flex flex-col sm:flex-row gap-2.5">
           <div class="relative flex-1">
-            <i data-lucide="search" class="w-3.5 h-3.5 text-[#8B949E] absolute left-3 top-1/2 -translate-y-1/2"></i>
-            <input id="moduleSearchInput" type="text" placeholder="Cari item, seserahan, atau PIC..." class="w-full pl-8 pr-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            <i data-lucide="search" stroke-width="1.5" class="w-4 h-4 text-[#78716C] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input id="moduleSearchInput" type="text" placeholder="Cari item atau PIC..." class="w-full min-h-[44px] pl-10 pr-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
           </div>
-          <select id="moduleCategoryFilter" class="px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#C9D1D9] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+          <select id="moduleCategoryFilter" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
             <option value="all">Semua Kategori</option>
           </select>
-          <select id="moduleStatusFilter" class="px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#C9D1D9] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+          <select id="moduleStatusFilter" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
             <option value="all">Semua Status</option>
           </select>
         </div>
 
-        <!-- Unused Items Bar & Add Button -->
-        <div class="pt-2 border-t border-[#30363D] flex items-center justify-between gap-2 flex-wrap text-[11px]">
+        <div class="pt-3 border-t border-[#EAE6DF] flex items-center justify-between gap-2 flex-wrap text-xs">
           <div id="unusedItemsToggleBar" class="hidden flex items-center gap-2">
-            <span id="unusedItemsInfoText" class="text-[#8B949E] font-medium font-mono tabular-nums">16 item aktif</span>
-            <button type="button" id="btnToggleShowUnused" class="min-h-[44px] px-2.5 py-1 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] font-semibold border border-[#30363D] transition">
+            <span id="unusedItemsInfoText" class="text-[#78716C] font-medium font-tabular">16 item aktif</span>
+            <button type="button" id="btnToggleShowUnused" class="min-h-[44px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] font-medium border border-[#EAE6DF] transition">
               Tidak Digunakan
             </button>
           </div>
-          <button type="button" id="btnAddNewModuleItem" class="ml-auto min-h-[44px] px-3.5 py-2 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center gap-1.5 transition active:scale-95">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-            <span id="btnAddNewModuleItemLabel">+ Item Baru</span>
+          <button type="button" id="btnAddNewModuleItem" class="ml-auto min-h-[44px] px-4 py-2 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center gap-1.5 transition active:scale-95">
+            <i data-lucide="plus" stroke-width="1.5" class="w-4 h-4"></i>
+            <span id="btnAddNewModuleItemLabel">Item Baru</span>
           </button>
         </div>
       </div>
 
-      <!-- Module Items Container -->
-      <div id="moduleItemsContainer" class="space-y-2"></div>
+      <div id="moduleItemsContainer" class="space-y-3"></div>
     </section>
 
     <!-- ==================== TAB 3: TAMU & ADMINISTRASI KUA ==================== -->
-    <section id="tab-guests" class="hidden space-y-3.5">
-      <!-- Sub-view switcher -->
+    <section id="tab-guests" class="hidden space-y-4">
       <div class="flex items-center gap-2">
-        <button type="button" id="btnSubTamu" class="min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs">
-          👥 Daftar Tamu &amp; RSVP
+        <button type="button" id="btnSubTamu" class="min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]">
+          Daftar Tamu &amp; RSVP
         </button>
-        <button type="button" id="btnSubAdminKua" class="min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
-          📋 Berkas KUA &amp; Legal
+        <button type="button" id="btnSubAdminKua" class="min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">
+          Berkas KUA &amp; Legal
         </button>
       </div>
 
       <!-- Sub-view: TAMU -->
-      <div id="subview-tamu" class="space-y-3">
-        <!-- Quota Bento Card -->
-        <div class="glass-card rounded-lg p-4 space-y-3 border border-[#30363D]">
+      <div id="subview-tamu" class="space-y-3.5">
+        <div class="bg-[#FFFFFF] rounded-2xl p-5 space-y-4 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
           <div class="flex items-center justify-between gap-2 flex-wrap">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#8B949E]">ALOKASI KUOTA &amp; VERIFIKASI TAMU</span>
-            <button type="button" id="btnOpenEditQuotaModal" class="min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs">
-              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#8B949E]"></i>
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-[#78716C]">Kuota &amp; Kehadiran</span>
+            <button type="button" id="btnOpenEditQuotaModal" class="min-h-[44px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] border border-[#EAE6DF] text-xs font-medium flex items-center gap-1.5 transition active:scale-95">
+              <i data-lucide="sliders-horizontal" stroke-width="1.5" class="w-4 h-4 text-[#78716C]"></i>
               <span>Atur Kuota</span>
             </button>
           </div>
 
-          <!-- Interactive RSVP Ring Summary Bar -->
-          <div class="flex items-center gap-3.5 bg-[#090D12] p-3 rounded-md border border-[#30363D]">
-            <div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+          <div class="flex items-center gap-3.5 bg-[#F9F8F6] p-3.5 rounded-2xl border border-[#EAE6DF]">
+            <div class="relative w-12 h-12 shrink-0 flex items-center justify-center">
               <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                <path class="text-[#21262D]" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                <path id="guestRsvpProgressCircle" class="text-[#3FB950] transition-all duration-1000 ease-out" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path class="text-[#EAE6DF]" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path id="guestRsvpProgressCircle" class="text-[#2C4237] transition-all duration-700 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
               </svg>
               <div class="absolute inset-0 flex items-center justify-center">
-                <span id="guestRsvpPercent" class="text-[11px] font-bold text-[#F0F6FC] font-mono tabular-nums">0%</span>
+                <span id="guestRsvpPercent" class="text-[10px] font-bold text-[#1C1917] font-tabular">0%</span>
               </div>
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-[#F0F6FC]">Konfirmasi Kehadiran</span>
-                <span id="guestSummaryPill" class="text-[11px] font-bold text-[#3FB950] font-mono tabular-nums">0 / 0 Pax</span>
+                <span class="font-semibold text-[#1C1917]">Konfirmasi Kehadiran</span>
+                <span id="guestSummaryPill" class="text-[11px] font-semibold text-[#244233] font-tabular">0 / 0 Pax</span>
               </div>
-              <div class="w-full h-2 rounded-full bg-[#21262D] overflow-hidden mt-1.5 border border-[#30363D]">
-                <div id="guestRsvpProgressBar" class="h-full bg-[#238636] rounded-full transition-all duration-700" style="width: 0%"></div>
+              <div class="w-full h-1 rounded-full bg-[#EAE6DF] overflow-hidden mt-2">
+                <div id="guestRsvpProgressBar" class="h-full bg-[#2C4237] rounded-full transition-all duration-700" style="width: 0%"></div>
               </div>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <!-- Total -->
-            <div class="bento-surface rounded-md p-2.5">
-              <span class="text-[10px] font-semibold text-[#8B949E]">Total Terdaftar</span>
-              <p id="guestTotalPax" class="text-sm sm:text-base font-bold text-[#F0F6FC] font-mono tabular-nums mt-0.5">112 / 400 Pax</p>
-              <span id="guestTotalPct" class="text-[10px] text-[#58A6FF] font-mono tabular-nums">28.0% terisi</span>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-3">
+              <span class="text-[11px] font-medium text-[#78716C]">Terdaftar</span>
+              <p id="guestTotalPax" class="text-sm sm:text-base font-bold text-[#1C1917] font-tabular mt-0.5">112 / 400 Pax</p>
+              <span id="guestTotalPct" class="text-[11px] text-[#57534E] font-tabular">28.0%</span>
             </div>
-            <!-- CPP -->
-            <div class="bento-surface rounded-md p-2.5">
-              <span class="text-[10px] font-semibold text-[#8B949E]">Pihak CPP</span>
-              <p id="guestCppPax" class="text-sm sm:text-base font-bold text-[#C9D1D9] font-mono tabular-nums mt-0.5">5 / 200 Pax</p>
-              <span id="guestCppRem" class="text-[10px] text-[#8B949E] font-mono tabular-nums">Sisa: 195</span>
+            <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-3">
+              <span class="text-[11px] font-medium text-[#78716C]">Pihak CPP</span>
+              <p id="guestCppPax" class="text-sm sm:text-base font-bold text-[#1C1917] font-tabular mt-0.5">5 / 200 Pax</p>
+              <span id="guestCppRem" class="text-[11px] text-[#78716C] font-tabular">Sisa: 195</span>
             </div>
-            <!-- CPW -->
-            <div class="bento-surface rounded-md p-2.5">
-              <span class="text-[10px] font-semibold text-[#8B949E]">Pihak CPW</span>
-              <p id="guestCpwPax" class="text-sm sm:text-base font-bold text-[#C9D1D9] font-mono tabular-nums mt-0.5">107 / 200 Pax</p>
-              <span id="guestCpwRem" class="text-[10px] text-[#8B949E] font-mono tabular-nums">Sisa: 93</span>
+            <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-3">
+              <span class="text-[11px] font-medium text-[#78716C]">Pihak CPW</span>
+              <p id="guestCpwPax" class="text-sm sm:text-base font-bold text-[#1C1917] font-tabular mt-0.5">107 / 200 Pax</p>
+              <span id="guestCpwRem" class="text-[11px] text-[#78716C] font-tabular">Sisa: 93</span>
             </div>
-            <!-- Hadir -->
-            <div class="bento-surface rounded-md p-2.5">
-              <span class="text-[10px] font-semibold text-[#3FB950]">RSVP Hadir</span>
-              <p id="guestHadirPax" class="text-sm sm:text-base font-bold text-[#3FB950] font-mono tabular-nums mt-0.5">11 Pax</p>
-              <span class="text-[10px] text-[#3FB950]">Konfirmasi</span>
+            <div class="rounded-2xl bg-[#ECF3EF] border border-[#C6DDD0] p-3">
+              <span class="text-[11px] font-medium text-[#244233]">RSVP Hadir</span>
+              <p id="guestHadirPax" class="text-sm sm:text-base font-bold text-[#244233] font-tabular mt-0.5">11 Pax</p>
+              <span class="text-[11px] text-[#244233]">Terkonfirmasi</span>
             </div>
           </div>
         </div>
 
-        <!-- Filter tabs & Add Button -->
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            <button type="button" data-guesttab="all" class="guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D]">Semua</button>
-            <button type="button" data-guesttab="CPP" class="guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">🤵 Pihak CPP</button>
-            <button type="button" data-guesttab="CPW" class="guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">👰 Pihak CPW</button>
+            <button type="button" data-guesttab="all" class="guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]">Semua</button>
+            <button type="button" data-guesttab="CPP" class="guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">Pihak CPP</button>
+            <button type="button" data-guesttab="CPW" class="guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">Pihak CPW</button>
           </div>
-          <button type="button" id="btnAddGuestSlot" class="min-h-[44px] px-3.5 py-2 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center gap-1.5 transition active:scale-95">
-            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
-            <span>+ Tamu Baru</span>
+          <button type="button" id="btnAddGuestSlot" class="min-h-[44px] px-4 py-2 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center gap-1.5 transition active:scale-95">
+            <i data-lucide="user-plus" stroke-width="1.5" class="w-4 h-4"></i>
+            <span>Tamu Baru</span>
           </button>
         </div>
 
-        <!-- Search & Filter inputs -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <input id="guestSearchInput" type="text" placeholder="Cari nama tamu..." class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
-          <select id="guestCategoryFilter" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#C9D1D9] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <input id="guestSearchInput" type="text" placeholder="Cari nama tamu..." class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
+          <select id="guestCategoryFilter" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
             <option value="all">Semua Circle</option>
-            <option value="👑 Keluarga Inti">👑 Keluarga Inti</option>
+            <option value="👑 Keluarga Inti">Keluarga Inti</option>
             <option value="Keluarga Besar">Keluarga Besar</option>
             <option value="Rekan Kerja &amp; Kolega Kantor">Rekan Kerja &amp; Kolega Kantor</option>
             <option value="Sahabat &amp; Teman Dekat">Sahabat &amp; Teman Dekat</option>
@@ -535,7 +486,7 @@
             <option value="Kerabat">Kerabat</option>
             <option value="Lainnya">Lainnya</option>
           </select>
-          <select id="guestRsvpFilter" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#C9D1D9] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+          <select id="guestRsvpFilter" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
             <option value="all">Semua Status RSVP</option>
             <option value="Hadir">Hadir</option>
             <option value="Ragu-ragu">Ragu-ragu</option>
@@ -544,134 +495,119 @@
           </select>
         </div>
 
-        <!-- Guest List Container -->
-        <div id="guestListContainer" class="space-y-2"></div>
+        <div id="guestListContainer" class="space-y-3"></div>
       </div>
 
       <!-- Sub-view: ADMINISTRASI KUA -->
-      <div id="subview-adminkua" class="hidden space-y-3">
-        <div class="glass-card rounded-xl p-4 flex items-center justify-between flex-wrap gap-2 border border-[#30363D]">
-          <div>
-            <h3 class="text-xs sm:text-sm font-bold text-[#F0F6FC]">Checklist Kelengkapan Berkas KUA</h3>
-          </div>
-          <span id="kuaProgressBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-[#D29922]/15 text-[#D29922] border border-[#9E6A03] font-tabular">
-            0 / 48 Berkas Selesai
+      <div id="subview-adminkua" class="hidden space-y-3.5">
+        <div class="bg-[#FFFFFF] rounded-2xl p-5 flex items-center justify-between flex-wrap gap-2 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+          <h3 class="font-editorial text-lg font-medium text-[#1C1917]">Berkas KUA</h3>
+          <span id="kuaProgressBadge" class="px-3 py-1 rounded-full text-xs font-semibold bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC] font-tabular">
+            0 / 48 Berkas
           </span>
         </div>
-        <div id="adminKuaContainer" class="space-y-2"></div>
+        <div id="adminKuaContainer" class="space-y-3"></div>
       </div>
     </section>
 
     <!-- ==================== TAB 4: VENDOR & RUNDOWN HARI H ==================== -->
-    <section id="tab-vendors" class="hidden space-y-3.5">
-      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-        <button type="button" id="btnSubRundown" class="px-3.5 py-2 rounded-md min-h-[44px] text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs">
-          ⏱️ Rundown Hari H
+    <section id="tab-vendors" class="hidden space-y-4">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
+        <button type="button" id="btnSubRundown" class="px-4 py-2 rounded-full min-h-[44px] text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]">
+          Rundown
         </button>
-        <button type="button" id="btnSubVendors" class="px-3.5 py-2 rounded-md min-h-[44px] text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
-          🏢 Direktori Rekanan &amp; Vendor
+        <button type="button" id="btnSubVendors" class="px-4 py-2 rounded-full min-h-[44px] text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">
+          Vendor
         </button>
-        <button type="button" id="btnSubTimeline" class="px-3.5 py-2 rounded-md min-h-[44px] text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]">
-          🗓️ Timeline
+        <button type="button" id="btnSubTimeline" class="px-4 py-2 rounded-full min-h-[44px] text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]">
+          Timeline
         </button>
       </div>
 
-      <!-- Sub-view: Rundown Hari H -->
       <div id="rundownHeaderBar" class="flex items-center justify-between gap-2 flex-wrap mb-1">
         <div>
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[#8B949E]">Rundown Operasional Acara</h3>
-          <p id="rundownDateVenueSubtitle" class="text-[11px] text-[#8B949E] font-mono tabular-nums">Minggu, 27 Juni 2027 &bull; Venue Intimate</p>
+          <h3 class="font-editorial text-lg font-medium text-[#1C1917]">Rundown Acara</h3>
+          <p id="rundownDateVenueSubtitle" class="text-xs text-[#78716C] font-tabular">Minggu, 27 Juni 2027 &bull; Venue Intimate</p>
         </div>
-        <button type="button" id="btnCopyWaRundown" class="min-h-[44px] px-3.5 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#58A6FF] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs">
-          <i data-lucide="share-2" class="w-3.5 h-3.5 text-[#58A6FF]"></i>
+        <button type="button" id="btnCopyWaRundown" class="min-h-[44px] px-4 py-2 rounded-full bg-[#FFFFFF] hover:bg-[#EFECE6] text-[#2C4237] border border-[#EAE6DF] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95">
+          <i data-lucide="share-2" stroke-width="1.5" class="w-4 h-4 text-[#2C4237]"></i>
           <span>Salin Format WA</span>
         </button>
       </div>
-      <div id="subview-rundown" class="space-y-2"></div>
+      <div id="subview-rundown" class="space-y-3"></div>
 
-      <!-- Sub-view: Vendors -->
-      <div id="subview-vendors" class="hidden space-y-3">
-        <div id="vendorSummaryBanner" class="glass-card rounded-lg p-4 grid grid-cols-2 sm:grid-cols-4 gap-2 border border-[#30363D]">
-          <div class="bento-surface rounded-md p-2.5">
-            <span class="text-[10px] font-semibold text-[#8B949E]">Total Rekanan</span>
-            <p id="vendorCountText" class="text-sm sm:text-base font-bold text-[#F0F6FC] mt-0.5 font-mono tabular-nums">14 Vendor</p>
+      <div id="subview-vendors" class="hidden space-y-3.5">
+        <div id="vendorSummaryBanner" class="bg-[#FFFFFF] rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-4 gap-3 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+          <div class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-3">
+            <span class="text-[11px] font-medium text-[#78716C]">Rekanan</span>
+            <p id="vendorCountText" class="text-sm sm:text-base font-bold text-[#1C1917] mt-0.5 font-tabular">14 Vendor</p>
           </div>
-          <div class="bento-surface rounded-md p-2.5">
-            <span class="text-[10px] font-semibold text-[#D29922]">Status SPK</span>
-            <p id="vendorDealCount" class="text-sm sm:text-base font-bold text-[#D29922] mt-0.5 font-mono tabular-nums">0 Deal</p>
+          <div class="rounded-2xl bg-[#FBF5EB] border border-[#EBD9BC] p-3">
+            <span class="text-[11px] font-medium text-[#8A5A19]">Status SPK</span>
+            <p id="vendorDealCount" class="text-sm sm:text-base font-bold text-[#8A5A19] mt-0.5 font-tabular">0 Deal</p>
           </div>
-          <div id="vendorTotalContractCard" class="bento-surface rounded-md p-2.5">
-            <span class="text-[10px] font-semibold text-[#8B949E]">Total Kontrak</span>
-            <p id="vendorTotalContract" class="text-sm sm:text-base font-bold text-[#C9D1D9] mt-0.5 font-mono tabular-nums">Rp 80.000.000</p>
+          <div id="vendorTotalContractCard" class="rounded-2xl bg-[#F9F8F6] border border-[#EAE6DF] p-3">
+            <span class="text-[11px] font-medium text-[#78716C]">Total Kontrak</span>
+            <p id="vendorTotalContract" class="text-sm sm:text-base font-bold text-[#1C1917] mt-0.5 font-tabular">Rp 80.000.000</p>
           </div>
-          <div id="vendorRemainingCard" class="bento-surface rounded-md p-2.5">
-            <span class="text-[10px] font-semibold text-[#58A6FF]">Sisa Pelunasan</span>
-            <p id="vendorTotalRemaining" class="text-sm sm:text-base font-bold text-[#58A6FF] mt-0.5 font-mono tabular-nums">Rp 80.000.000</p>
+          <div id="vendorRemainingCard" class="rounded-2xl bg-[#ECF3EF] border border-[#C6DDD0] p-3">
+            <span class="text-[11px] font-medium text-[#244233]">Sisa Pelunasan</span>
+            <p id="vendorTotalRemaining" class="text-sm sm:text-base font-bold text-[#244233] mt-0.5 font-tabular">Rp 80.000.000</p>
           </div>
         </div>
-        <div id="vendorListContainer" class="space-y-2"></div>
+        <div id="vendorListContainer" class="space-y-3"></div>
       </div>
 
-      <!-- Sub-view: Timeline Persiapan -->
-      <div id="subview-timeline" class="hidden space-y-2"></div>
+      <div id="subview-timeline" class="hidden space-y-3"></div>
     </section>
 
-    <!-- ==================== TAB 5: INTEGRASI SHEETS & PANDUAN ==================== -->
-    <section id="tab-setup" class="hidden space-y-3.5">
-      <div class="glass-card rounded-lg p-4 sm:p-5 space-y-3.5 border border-[#30363D]">
-        <div>
-          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#58A6FF]/15 text-[#58A6FF] border border-[#58A6FF] font-mono tabular-nums">
-            Two-Way Sync Engine v3
+    <!-- ==================== TAB 5: INTEGRASI SHEETS & PENGATURAN ==================== -->
+    <section id="tab-setup" class="hidden space-y-4">
+      <div class="bg-[#FFFFFF] rounded-2xl p-5 sm:p-6 space-y-4 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <h2 class="font-editorial text-xl font-medium text-[#1C1917]">Pengaturan Sinkronisasi</h2>
+          <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]">
+            Endpoint Aktif
           </span>
-          <h2 class="text-sm sm:text-base font-bold text-[#F0F6FC] mt-1">Integrasi Google Apps Script</h2>
         </div>
 
-        <div class="space-y-3">
-          <div class="flex items-center justify-between gap-2 p-2.5 rounded-md bg-[#238636]/15 border border-[#238636] text-[11px] font-semibold text-[#3FB950]">
-            <span>✓ Endpoint Google Apps Script terkonfigurasi otomatis</span>
-            <span class="font-mono text-[10px] text-[#8B949E]">Read/Write Aktif</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div class="space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label for="cfgPinInput" class="block text-xs font-bold text-[#8B949E] mb-1">
-                PIN Akses Pengguna
-              </label>
-              <input id="cfgPinInput" type="password" placeholder="Masukkan PIN Akses" class="w-full px-3.5 py-2.5 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="cfgPinInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">PIN Akses</label>
+              <input id="cfgPinInput" type="password" placeholder="Masukkan PIN Akses" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917]" />
             </div>
             <div class="flex items-end">
-              <button type="button" id="btnSaveSyncConfig" class="w-full min-h-[44px] py-2.5 px-4 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
+              <button type="button" id="btnSaveSyncConfig" class="w-full min-h-[44px] py-2.5 px-4 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
                 Simpan &amp; Tarik Data
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Master Date & Venue Settings -->
-        <div class="pt-3 border-t border-[#30363D] space-y-2">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-[#8B949E]">JADWAL &amp; VENUE MASTER (D6 &amp; H6)</span>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div class="pt-4 border-t border-[#EAE6DF] space-y-3">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-[#78716C]">Jadwal &amp; Venue</span>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label for="cfgWeddingDateInput" class="block text-[10px] font-bold text-[#8B949E] mb-1">Tanggal Akad &amp; Resepsi</label>
-              <input id="cfgWeddingDateInput" type="date" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25 font-mono tabular-nums" />
+              <label for="cfgWeddingDateInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Tanggal Acara</label>
+              <input id="cfgWeddingDateInput" type="date" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
             <div>
-              <label for="cfgVenueInput" class="block text-[10px] font-bold text-[#8B949E] mb-1">Lokasi / Venue</label>
-              <input id="cfgVenueInput" type="text" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="cfgVenueInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Lokasi / Venue</label>
+              <input id="cfgVenueInput" type="text" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]" />
             </div>
             <div class="flex items-end">
-              <button type="button" id="btnSaveMasterMeta" class="w-full min-h-[44px] py-2 px-3 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#58A6FF] border border-[#30363D] text-xs font-semibold flex items-center justify-center transition active:scale-95 shadow-xs">
-                Update Master
+              <button type="button" id="btnSaveMasterMeta" class="w-full min-h-[44px] py-2 px-4 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] border border-[#EAE6DF] text-xs font-semibold flex items-center justify-center transition active:scale-95">
+                Simpan Jadwal
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Checklist Pengujian -->
-      <div class="glass-card rounded-xl p-4 sm:p-5 space-y-2.5 border border-[#30363D]">
-        <h3 class="text-xs sm:text-sm font-bold text-[#F0F6FC]">Checklist Status Fitur</h3>
-        <div id="weddingTestingChecklist" class="space-y-1.5"></div>
+      <div class="bg-[#FFFFFF] rounded-2xl p-5 sm:p-6 space-y-3 border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)]">
+        <h3 class="font-editorial text-lg font-medium text-[#1C1917]">Status Fitur</h3>
+        <div id="weddingTestingChecklist" class="space-y-2"></div>
       </div>
     </section>
 
@@ -679,135 +615,118 @@
 
   <!-- ==================== SMART IOS PWA INSTALL BANNER ==================== -->
   <aside id="iosInstallBanner" class="hidden fixed left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-md z-[9998] transition-all duration-300 ease-out opacity-0 translate-y-4" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);" aria-label="Panduan Install iOS">
-    <div class="relative bg-[#161B22] border border-[#30363D] rounded-xl p-3 shadow-2xl flex items-start gap-3 backdrop-blur-md">
-      <img src="./icons/icon-192.png" alt="Farhan & Indira App" class="w-10 h-10 rounded-lg border border-[#30363D] shrink-0 object-cover mt-0.5 shadow-sm" />
-      <div class="flex-1 min-w-0 pr-6">
-        <div class="flex items-center gap-1.5 mb-1">
-          <span class="inline-block w-2 h-2 rounded-full bg-[#3FB950] animate-pulse"></span>
-          <span class="text-xs font-bold text-[#F0F6FC]">Pasang di iPhone / iPad</span>
-        </div>
-        <p class="text-[11px] leading-relaxed text-[#C9D1D9]">
-          Pasang di iPhone: Ketuk tombol <strong class="text-[#F0F6FC]">Bagikan (Share <span class="text-[#58A6FF]">⎋</span>)</strong> di bawah, lalu pilih <strong class="text-[#F0F6FC]">'Tambah ke Layar Utama' (Add to Home Screen)</strong>.
+    <div class="relative bg-[#FFFFFF] border border-[#EAE6DF] rounded-2xl p-4 shadow-[0_8px_30px_rgba(28,25,23,0.12)] flex items-start gap-3">
+      <div class="w-10 h-10 rounded-full bg-[#F3F1EC] border border-[#EAE6DF] flex items-center justify-center shrink-0">
+        <span class="font-editorial text-sm font-semibold text-[#1C1917]">F<span class="italic text-[#9A7B4F]">&amp;</span>I</span>
+      </div>
+      <div class="flex-1 min-w-0 pr-8">
+        <p class="text-xs font-semibold text-[#1C1917] mb-1">Pasang Aplikasi</p>
+        <p class="text-[11px] leading-relaxed text-[#57534E]">
+          Ketuk <strong class="text-[#1C1917]">Share</strong> lalu pilih <strong class="text-[#1C1917]">Add to Home Screen</strong>.
         </p>
       </div>
-      <button type="button" id="btnCloseIosPrompt" class="absolute top-2 right-2 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-[#F0F6FC] transition border border-[#30363D]/60 active:scale-95" aria-label="Tutup panduan">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
+      <button type="button" id="btnCloseIosPrompt" class="absolute top-2.5 right-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] transition" aria-label="Tutup panduan">
+        <i data-lucide="x" stroke-width="1.5" class="w-4 h-4"></i>
       </button>
-    </div>
-    <!-- Arrow pointer to bottom Safari toolbar -->
-    <div class="flex justify-center -mt-1 pointer-events-none">
-      <div class="w-2.5 h-2.5 bg-[#161B22] border-r border-b border-[#30363D] transform rotate-45 shadow-sm"></div>
     </div>
   </aside>
 
-  <!-- ==================== MODERN FLOATING NAVIGATION DOCK ==================== -->
-  <!-- Left Side: Hidden Popup Menu for backwards compatibility -->
+  <!-- ==================== FLOATING NAVIGATION DOCK ==================== -->
   <div id="floatingNavMenuPopup" class="hidden"></div>
   <button type="button" id="btnToggleNavMenu" class="hidden">
-    <i data-lucide="menu" id="iconToggleNavMenu"></i>
-    <span id="labelCurrentNavTab">Master</span>
+    <i data-lucide="menu" stroke-width="1.5" id="iconToggleNavMenu"></i>
+    <span id="labelCurrentNavTab">Ringkas</span>
   </button>
 
-  <!-- Modern Floating Dock (Mobile & Desktop) -->
   <nav class="floating-dock-nav">
-    <button type="button" data-tab="master" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-semibold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#58A6FF] bg-[#21262D] border border-[#30363D] shadow-xs active:scale-95">
-      <i data-lucide="heart" class="w-4 h-4 text-[#58A6FF]"></i>
-      <span class="text-[11px]">Home</span>
+    <button type="button" data-tab="master" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-semibold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#2C4237] bg-[#ECF3EF] border border-[#C6DDD0] active:scale-95">
+      <i data-lucide="layout-grid" stroke-width="1.5" class="w-5 h-5"></i>
+      <span class="text-[11px]">Ringkas</span>
     </button>
-    <button type="button" data-tab="modules" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#8B949E] hover:text-[#F0F6FC] hover:bg-[#21262D] border border-transparent active:scale-95">
-      <i data-lucide="layers" class="w-4 h-4"></i>
-      <span class="text-[11px]">Tracker</span>
+    <button type="button" data-tab="modules" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#57534E] hover:text-[#1C1917] hover:bg-[#EFECE6] border border-transparent active:scale-95">
+      <i data-lucide="layers" stroke-width="1.5" class="w-5 h-5"></i>
+      <span class="text-[11px]">Persiapan</span>
     </button>
 
-    <!-- Center Floating Action Button (FAB) -->
     <div class="px-0.5">
-      <button type="button" id="btnFabQuickAction" class="min-h-[44px] min-w-[44px] px-3.5 rounded-full bg-[#238636] hover:bg-[#2EA043] active:bg-[#1A6328] text-white font-bold border border-[rgba(240,246,252,0.15)] shadow-xs flex items-center justify-center gap-1.5 transition active:scale-95" aria-label="Quick Action">
-        <i data-lucide="sparkles" class="w-4 h-4 text-[#D29922]"></i>
-        <span class="text-[11px] font-black tracking-wide text-white uppercase">UPDATE</span>
+      <button type="button" id="btnFabQuickAction" class="min-h-[44px] min-w-[44px] px-4 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold flex items-center justify-center gap-1.5 transition active:scale-95" aria-label="Update Data">
+        <i data-lucide="plus" stroke-width="1.5" class="w-5 h-5 text-white"></i>
+        <span class="text-xs font-semibold text-white">Update</span>
       </button>
     </div>
 
-    <button type="button" data-tab="guests" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#8B949E] hover:text-[#F0F6FC] hover:bg-[#21262D] border border-transparent active:scale-95">
-      <i data-lucide="users" class="w-4 h-4"></i>
+    <button type="button" data-tab="guests" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#57534E] hover:text-[#1C1917] hover:bg-[#EFECE6] border border-transparent active:scale-95">
+      <i data-lucide="users" stroke-width="1.5" class="w-5 h-5"></i>
       <span class="text-[11px]">Tamu</span>
     </button>
-    <button type="button" data-tab="vendors" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#8B949E] hover:text-[#F0F6FC] hover:bg-[#21262D] border border-transparent active:scale-95">
-      <i data-lucide="calendar-clock" class="w-4 h-4"></i>
-      <span class="text-[11px]">Rundown</span>
+    <button type="button" data-tab="vendors" class="bottom-nav-btn pointer-events-auto cursor-pointer min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#57534E] hover:text-[#1C1917] hover:bg-[#EFECE6] border border-transparent active:scale-95">
+      <i data-lucide="calendar-clock" stroke-width="1.5" class="w-5 h-5"></i>
+      <span class="text-[11px]">Acara</span>
     </button>
   </nav>
 
   <!-- ==================== MODAL UPDATE (2-STEP BOTTOM-SHEET POPUP) ==================== -->
-  <div id="quickEditModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
-    <div class="bg-[#161B22] border border-[#30363D] w-full sm:max-w-md rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-[0_16px_36px_rgba(1,4,9,0.7)] animate-slide-up max-h-[92vh] overflow-y-auto" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
+  <div id="quickEditModal" class="hidden pointer-events-none fixed inset-0 z-50 items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
+    <div class="bg-[#FFFFFF] border border-[#EAE6DF] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 pb-8 sm:pb-6 animate-slide-up max-h-[92vh] overflow-y-auto" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
 
-      <!-- Drag Handle -->
       <div class="modal-drag-handle"></div>
 
-      <!-- STEP 1: 3 POP UP KARTU PILIHAN UTAMA -->
-      <div id="quickStep1Selection" class="space-y-3">
+      <!-- STEP 1 -->
+      <div id="quickStep1Selection" class="space-y-4">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-md bg-[#238636]/20 border border-[#238636]/40 flex items-center justify-center text-[#3FB950] font-bold text-xs">
-              ⚡
-            </div>
-            <h3 class="text-sm font-bold text-[#F0F6FC]">Pilih Aksi Update</h3>
+          <div>
+            <p class="text-[11px] font-medium uppercase tracking-wider text-[#9A7B4F]">Pembaruan Data</p>
+            <h3 class="font-editorial text-xl font-medium text-[#1C1917]">Pilih Aksi Update</h3>
           </div>
-          <button type="button" id="btnCloseQuickStep1" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-[#F0F6FC] transition border border-[#30363D]/60">
-            <i data-lucide="x" class="w-4 h-4"></i>
+          <button type="button" id="btnCloseQuickStep1" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] transition">
+            <i data-lucide="x" stroke-width="1.5" class="w-5 h-5"></i>
           </button>
         </div>
 
-        <div class="space-y-2 pt-1">
-          <!-- Card 1: Biaya & Realisasi -->
-          <button type="button" data-actionchoice="item" class="action-card-btn w-full p-3 rounded-md bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left group">
+        <div class="space-y-2.5">
+          <button type="button" data-actionchoice="item" class="action-card-btn w-full p-3.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#EFECE6] border border-[#EAE6DF] transition flex items-center justify-between text-left group">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-md bg-[#161B22] text-[#58A6FF] flex items-center justify-center shrink-0 border border-[#30363D]">
-                <i data-lucide="receipt" class="w-4 h-4"></i>
+              <div class="w-10 h-10 rounded-xl bg-[#F3F1EC] text-[#2C4237] flex items-center justify-center shrink-0 border border-[#EAE6DF]">
+                <i data-lucide="receipt" stroke-width="1.5" class="w-4 h-4"></i>
               </div>
-              <h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] transition">Biaya &amp; Realisasi</h4>
+              <h4 class="text-sm font-semibold text-[#1C1917] group-hover:text-[#2C4237] transition">Biaya &amp; Realisasi</h4>
             </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-[#58A6FF] shrink-0"></i>
+            <i data-lucide="chevron-right" stroke-width="1.5" class="w-4 h-4 text-[#78716C] group-hover:text-[#2C4237] shrink-0"></i>
           </button>
 
-          <!-- Card 2: Mahar & Saham BSSR -->
-          <button type="button" id="btnActionChoiceMahar" data-actionchoice="mahar" class="action-card-btn w-full p-3 rounded-md bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left group">
+          <button type="button" id="btnActionChoiceMahar" data-actionchoice="mahar" class="action-card-btn w-full p-3.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#EFECE6] border border-[#EAE6DF] transition flex items-center justify-between text-left group">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-md bg-[#161B22] text-[#D29922] flex items-center justify-center shrink-0 border border-[#30363D]">
-                <i data-lucide="coins" class="w-4 h-4 text-[#D29922]"></i>
+              <div class="w-10 h-10 rounded-xl bg-[#F3F1EC] text-[#9A7B4F] flex items-center justify-center shrink-0 border border-[#EAE6DF]">
+                <i data-lucide="gem" stroke-width="1.5" class="w-4 h-4"></i>
               </div>
-              <h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#D29922] transition">Mahar &amp; Cicilan</h4>
+              <h4 class="text-sm font-semibold text-[#1C1917] group-hover:text-[#2C4237] transition">Mahar &amp; Cicilan</h4>
             </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-[#D29922] shrink-0"></i>
+            <i data-lucide="chevron-right" stroke-width="1.5" class="w-4 h-4 text-[#78716C] group-hover:text-[#2C4237] shrink-0"></i>
           </button>
 
-          <!-- Card 3: Tamu & RSVP -->
-          <button type="button" data-actionchoice="guest" class="action-card-btn w-full p-3 rounded-md bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left group">
+          <button type="button" data-actionchoice="guest" class="action-card-btn w-full p-3.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#EFECE6] border border-[#EAE6DF] transition flex items-center justify-between text-left group">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-md bg-[#161B22] text-[#A371F7] flex items-center justify-center shrink-0 border border-[#30363D]">
-                <i data-lucide="user-check" class="w-4 h-4 text-[#A371F7]"></i>
+              <div class="w-10 h-10 rounded-xl bg-[#F3F1EC] text-[#2C4237] flex items-center justify-center shrink-0 border border-[#EAE6DF]">
+                <i data-lucide="user-check" stroke-width="1.5" class="w-4 h-4"></i>
               </div>
-              <h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] group-hover:text-[#A371F7] transition">Tamu &amp; RSVP</h4>
+              <h4 class="text-sm font-semibold text-[#1C1917] group-hover:text-[#2C4237] transition">Tamu &amp; RSVP</h4>
             </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E] group-hover:text-[#A371F7] shrink-0"></i>
+            <i data-lucide="chevron-right" stroke-width="1.5" class="w-4 h-4 text-[#78716C] group-hover:text-[#2C4237] shrink-0"></i>
           </button>
         </div>
       </div>
 
-      <!-- STEP 2: FORM DETAIL -->
-      <div id="quickStep2Detail" class="hidden space-y-3">
-        <div class="flex items-center justify-between pb-2.5 border-b border-[#30363D]">
-          <button type="button" id="btnBackToQuickStep1" class="min-h-[44px] text-xs font-semibold text-[#58A6FF] hover:text-[#58A6FF] flex items-center gap-1 transition">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      <!-- STEP 2 -->
+      <div id="quickStep2Detail" class="hidden space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-[#EAE6DF]">
+          <button type="button" id="btnBackToQuickStep1" class="min-h-[44px] text-xs font-semibold text-[#2C4237] flex items-center gap-1.5 transition">
+            <i data-lucide="arrow-left" stroke-width="1.5" class="w-4 h-4"></i>
             <span id="btnBackLabel">Kembali</span>
           </button>
           <div class="flex items-center gap-2">
-            <span id="step2HeaderBadge" class="text-[11px] font-bold text-[#8B949E]">Detail</span>
-            <button type="button" id="btnCloseQuickStep2" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white transition">
-              <i data-lucide="x" class="w-4 h-4"></i>
+            <span id="step2HeaderBadge" class="text-xs font-semibold text-[#78716C]">Detail</span>
+            <button type="button" id="btnCloseQuickStep2" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] transition">
+              <i data-lucide="x" stroke-width="1.5" class="w-5 h-5"></i>
             </button>
           </div>
         </div>
@@ -815,52 +734,52 @@
         <!-- FORM DETAIL A: EDIT / TAMBAH ITEM MODUL -->
         <form id="formEditItem" class="hidden space-y-3" novalidate>
           <input type="hidden" id="editItemMode" value="edit" />
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="editModuleSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Modul</label>
-              <select id="editModuleSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
-                <option value="weddingTracker">💍 Akad &amp; Resepsi</option>
-                <option value="preWedding">📷 Pre-Wedding</option>
-                <option value="seserahan">🎁 Seserahan</option>
-                <option value="vendors">🏢 Vendor</option>
-                <option value="rundown">⏱️ Rundown Hari H</option>
-                <option value="timeline">🗓️ Timeline Persiapan</option>
+              <label for="editModuleSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Modul</label>
+              <select id="editModuleSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
+                <option value="weddingTracker">Akad &amp; Resepsi</option>
+                <option value="preWedding">Pre-Wedding</option>
+                <option value="seserahan">Seserahan</option>
+                <option value="vendors">Vendor</option>
+                <option value="rundown">Rundown Hari H</option>
+                <option value="timeline">Timeline Persiapan</option>
               </select>
             </div>
             <div id="wrapperEditItemSelect">
-              <label for="editItemSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Pilih Baris</label>
-              <select id="editItemSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25"></select>
+              <label for="editItemSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Pilih Item</label>
+              <select id="editItemSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]"></select>
             </div>
             <div id="wrapperAddCategorySelect" class="hidden">
-              <label for="addCategorySelect" class="block text-xs font-bold text-[#8B949E] mb-1">Kategori</label>
-              <select id="addCategorySelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25"></select>
+              <label for="addCategorySelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Kategori</label>
+              <select id="addCategorySelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]"></select>
             </div>
           </div>
 
           <div id="editCustomNameWrapper">
-            <label for="editCustomNameInput" id="labelEditCustomName" class="block text-xs font-bold text-[#8B949E] mb-1">Nama Item</label>
-            <input id="editCustomNameInput" type="text" placeholder="Nama item / vendor..." class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            <label for="editCustomNameInput" id="labelEditCustomName" class="block text-xs font-semibold text-[#57534E] mb-1.5">Nama Item</label>
+            <input id="editCustomNameInput" type="text" placeholder="Nama item / vendor..." class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
           </div>
 
-          <div id="editFinancialFields" class="grid grid-cols-2 gap-2">
+          <div id="editFinancialFields" class="grid grid-cols-2 gap-3">
             <div>
-              <label for="editEstimasiInput" id="labelEditEstimasi" class="block text-xs font-bold text-[#8B949E] mb-1">Estimasi (Rp)</label>
-              <input id="editEstimasiInput" type="text" inputmode="numeric" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="editEstimasiInput" id="labelEditEstimasi" class="block text-xs font-semibold text-[#57534E] mb-1.5">Estimasi (Rp)</label>
+              <input id="editEstimasiInput" type="text" inputmode="numeric" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
             <div>
-              <label for="editRealisasiInput" id="labelEditRealisasi" class="block text-xs font-bold text-[#58A6FF] mb-1">Realisasi (Rp)</label>
-              <input id="editRealisasiInput" type="text" inputmode="numeric" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#58A6FF] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="editRealisasiInput" id="labelEditRealisasi" class="block text-xs font-semibold text-[#2C4237] mb-1.5">Realisasi (Rp)</label>
+              <input id="editRealisasiInput" type="text" inputmode="numeric" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#2C4237] font-tabular" />
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="editStatusSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Status</label>
-              <select id="editStatusSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25"></select>
+              <label for="editStatusSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Status</label>
+              <select id="editStatusSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]"></select>
             </div>
             <div>
-              <label for="editPicSelect" id="labelEditPic" class="block text-xs font-bold text-[#8B949E] mb-1">PIC</label>
-              <select id="editPicSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <label for="editPicSelect" id="labelEditPic" class="block text-xs font-semibold text-[#57534E] mb-1.5">PIC</label>
+              <select id="editPicSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
                 <option value="CPP &amp; CPW Bersama">CPP &amp; CPW Bersama</option>
                 <option value="CPP (Pengantin Pria)">CPP (Pengantin Pria)</option>
                 <option value="CPW (Pengantin Wanita)">CPW (Pengantin Wanita)</option>
@@ -873,89 +792,89 @@
                 <option value="Bridesmaid / Bestman">Bridesmaid / Bestman</option>
                 <option value="Lainnya">Lainnya</option>
               </select>
-              <input id="editPicInput" type="text" placeholder="Atau ketik nama PIC..." class="hidden w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] mt-1" />
+              <input id="editPicInput" type="text" placeholder="Atau ketik nama PIC..." class="hidden w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] mt-1.5" />
             </div>
           </div>
 
           <div>
-            <label for="editNoteInput" class="block text-xs font-bold text-[#8B949E] mb-1">Catatan</label>
-            <input id="editNoteInput" type="text" placeholder="Catatan tambahan / link..." class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            <label for="editNoteInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Catatan</label>
+            <input id="editNoteInput" type="text" placeholder="Catatan tambahan / link..." class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
           </div>
 
-          <p id="editItemError" class="hidden text-xs font-semibold text-[#F85149] bg-[#F85149]/10 border border-[#F85149]/20 p-2.5 rounded-md"></p>
+          <p id="editItemError" class="hidden text-xs font-semibold text-[#991B1B] bg-[#FDF2F2] border border-[#F8D0D0] p-3 rounded-xl"></p>
 
-          <button type="submit" class="w-full min-h-[44px] py-3 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
-            Simpan ke Spreadsheet
+          <button type="submit" class="w-full min-h-[44px] py-3 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
+            Simpan Perubahan
           </button>
         </form>
 
         <!-- FORM DETAIL B: CICILAN & TARGET MAHAR -->
         <form id="formAddMahar" class="hidden space-y-3" novalidate>
           <input type="hidden" id="maharLogEditId" value="" />
-          <div id="maharFormBannerInfo" class="p-2.5 rounded-md bg-[#D29922]/15 border border-[#D29922] text-[11px] text-[#D29922] font-semibold">
+          <div id="maharFormBannerInfo" class="p-3 rounded-xl bg-[#FBF5EB] border border-[#EBD9BC] text-xs text-[#8A5A19] font-medium">
             Log Cicilan Mahar
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="maharKomponenSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Instrumen</label>
-              <select id="maharKomponenSelect" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <label for="maharKomponenSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Instrumen</label>
+              <select id="maharKomponenSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
                 <option value="Saham BSSR">Saham BSSR (Lot)</option>
                 <option value="Emas Hartadinata">Emas Hartadinata / Logam Mulia (Gram)</option>
                 <option value="Uang Tunai">Uang Tunai (Paket)</option>
               </select>
             </div>
             <div>
-              <label id="labelMaharTarget" for="maharTargetQtyInput" class="block text-xs font-bold text-[#D29922] mb-1">Target Akumulasi (Lot)</label>
-              <input id="maharTargetQtyInput" type="number" step="any" min="0.01" inputmode="decimal" value="27" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label id="labelMaharTarget" for="maharTargetQtyInput" class="block text-xs font-semibold text-[#8A5A19] mb-1.5">Target Akumulasi (Lot)</label>
+              <input id="maharTargetQtyInput" type="number" step="any" min="0.01" inputmode="decimal" value="27" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
           </div>
 
-          <div id="maharQtyGrid" class="grid grid-cols-2 gap-2">
+          <div id="maharQtyGrid" class="grid grid-cols-2 gap-3">
             <div>
-              <label id="labelMaharVolume" for="maharVolumeInput" class="block text-xs font-bold text-[#8B949E] mb-1">Jumlah (Lot)</label>
-              <input id="maharVolumeInput" type="number" step="1" min="1" inputmode="numeric" value="1" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label id="labelMaharVolume" for="maharVolumeInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Jumlah (Lot)</label>
+              <input id="maharVolumeInput" type="number" step="1" min="1" inputmode="numeric" value="1" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
             <div id="maharMultiplierWrap" class="hidden">
-              <label id="labelMaharMultiplier" for="maharMultiplierInput" class="block text-xs font-bold text-[#8B949E] mb-1">Jumlah Keping / Pengali</label>
-              <input id="maharMultiplierInput" type="number" step="1" min="1" inputmode="numeric" value="1" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label id="labelMaharMultiplier" for="maharMultiplierInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Jumlah Keping / Pengali</label>
+              <input id="maharMultiplierInput" type="number" step="1" min="1" inputmode="numeric" value="1" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
             <div id="maharPriceWrap" class="col-span-1">
-              <label id="labelMaharPrice" for="maharTotalRealisasiInput" class="block text-xs font-bold text-[#8B949E] mb-1">Harga Beli / Lembar (Rp)</label>
-              <input id="maharTotalRealisasiInput" type="text" inputmode="numeric" placeholder="Misal: 4.940" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label id="labelMaharPrice" for="maharTotalRealisasiInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Harga Beli / Lembar (Rp)</label>
+              <input id="maharTotalRealisasiInput" type="text" inputmode="numeric" placeholder="Misal: 4.940" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="maharDateInput" class="block text-xs font-bold text-[#8B949E] mb-1">Tanggal</label>
-              <input id="maharDateInput" type="date" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="maharDateInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Tanggal</label>
+              <input id="maharDateInput" type="date" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
             <div>
-              <label for="maharStatusSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Status</label>
-              <select id="maharStatusSelect" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <label for="maharStatusSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Status</label>
+              <select id="maharStatusSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
                 <option value="Terencana">Terencana</option>
                 <option value="Selesai">Selesai</option>
               </select>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="maharAccountInput" class="block text-xs font-bold text-[#8B949E] mb-1">Sumber Dana</label>
-              <input id="maharAccountInput" type="text" value="RDN Indo Premier (IPOT)" class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="maharAccountInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Sumber Dana</label>
+              <input id="maharAccountInput" type="text" value="RDN Indo Premier (IPOT)" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917]" />
             </div>
             <div>
-              <label for="maharNoteInput" class="block text-xs font-bold text-[#8B949E] mb-1">Catatan</label>
-              <input id="maharNoteInput" type="text" placeholder="Cicil lot saham..." class="w-full min-h-[44px] px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="maharNoteInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Catatan</label>
+              <input id="maharNoteInput" type="text" placeholder="Cicil lot saham..." class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
             </div>
           </div>
 
-          <p id="maharCalcPreview" class="text-xs font-bold text-[#3FB950] bg-[#3FB950]/15 border border-[#238636] p-2.5 rounded-md font-mono tabular-nums">
+          <p id="maharCalcPreview" class="text-xs font-semibold text-[#244233] bg-[#ECF3EF] border border-[#C6DDD0] p-3.5 rounded-2xl font-tabular">
             Estimasi Realisasi: Rp 0
           </p>
 
-          <button type="submit" class="w-full min-h-[44px] py-3 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
+          <button type="submit" class="w-full min-h-[44px] py-3 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
             Simpan Cicilan Mahar
           </button>
         </form>
@@ -963,19 +882,19 @@
         <!-- FORM DETAIL C: TAMU & RSVP -->
         <form id="formGuestModal" class="hidden space-y-3" novalidate>
           <input type="hidden" id="guestEditId" value="" />
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="guestSideSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Alokasi</label>
-              <select id="guestSideSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
-                <option value="CPP">🤵 Pihak CPP (Farhan)</option>
-                <option value="CPW">👰 Pihak CPW (Indira)</option>
+              <label for="guestSideSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Alokasi</label>
+              <select id="guestSideSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
+                <option value="CPP">Pihak CPP (Farhan)</option>
+                <option value="CPW">Pihak CPW (Indira)</option>
               </select>
             </div>
             <div>
-              <label for="guestCircleSelect" class="block text-xs font-bold text-[#8B949E] mb-1">Circle</label>
-              <select id="guestCircleSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <label for="guestCircleSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">Circle</label>
+              <select id="guestCircleSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
                 <option value="Keluarga Besar">Keluarga Besar</option>
-                <option value="👑 Keluarga Inti">👑 Keluarga Inti</option>
+                <option value="👑 Keluarga Inti">Keluarga Inti</option>
                 <option value="Rekan Kerja &amp; Kolega Kantor">Rekan Kerja &amp; Kolega Kantor</option>
                 <option value="Sahabat &amp; Teman Dekat">Sahabat &amp; Teman Dekat</option>
                 <option value="Teman Sekolah / Kuliah">Teman Sekolah / Kuliah</option>
@@ -988,40 +907,40 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-3 gap-3">
             <div class="col-span-2">
-              <label for="guestNameInput" class="block text-xs font-bold text-[#8B949E] mb-1">Nama Tamu</label>
-              <input id="guestNameInput" type="text" placeholder="Bpk. Budi &amp; Ibu" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="guestNameInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Nama Tamu</label>
+              <input id="guestNameInput" type="text" placeholder="Bpk. Budi &amp; Ibu" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
             </div>
             <div>
-              <label for="guestPaxInput" class="block text-xs font-bold text-[#8B949E] mb-1">Pax</label>
-              <input id="guestPaxInput" type="number" min="1" max="20" value="2" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label for="guestWaInput" class="block text-xs font-bold text-[#8B949E] mb-1">WhatsApp</label>
-              <input id="guestWaInput" type="tel" placeholder="08123456789" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
-            </div>
-            <div>
-              <label for="guestIgInput" class="block text-xs font-bold text-[#8B949E] mb-1">Instagram</label>
-              <input id="guestIgInput" type="text" placeholder="@username" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-medium text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+              <label for="guestPaxInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Pax</label>
+              <input id="guestPaxInput" type="number" min="1" max="20" value="2" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="guestInviteStatus" class="block text-xs font-bold text-[#8B949E] mb-1">Undangan</label>
-              <select id="guestInviteStatus" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <label for="guestWaInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">WhatsApp</label>
+              <input id="guestWaInput" type="tel" placeholder="08123456789" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
+            </div>
+            <div>
+              <label for="guestIgInput" class="block text-xs font-semibold text-[#57534E] mb-1.5">Instagram</label>
+              <input id="guestIgInput" type="text" placeholder="@username" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-medium text-[#1C1917] placeholder-[#78716C]" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="guestInviteStatus" class="block text-xs font-semibold text-[#57534E] mb-1.5">Undangan</label>
+              <select id="guestInviteStatus" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
                 <option value="Draft">Draft</option>
                 <option value="Digital">Digital (WA/Web)</option>
                 <option value="Fisik">Fisik (Kartu VIP)</option>
               </select>
             </div>
             <div>
-              <label for="guestRsvpSelect" class="block text-xs font-bold text-[#8B949E] mb-1">RSVP</label>
-              <select id="guestRsvpSelect" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25">
+              <label for="guestRsvpSelect" class="block text-xs font-semibold text-[#57534E] mb-1.5">RSVP</label>
+              <select id="guestRsvpSelect" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]">
                 <option value="Hadir">Hadir</option>
                 <option value="Ragu-ragu">Ragu-ragu</option>
                 <option value="Tidak Hadir">Tidak Hadir</option>
@@ -1030,7 +949,7 @@
             </div>
           </div>
 
-          <button type="submit" class="w-full min-h-[44px] py-2.5 rounded-md bg-[#238636] hover:bg-[#2EA043] active:bg-[#1A6328] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
+          <button type="submit" class="w-full min-h-[44px] py-3 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
             Simpan Data Tamu
           </button>
         </form>
@@ -1040,48 +959,35 @@
   </div>
 
   <!-- ==================== MODAL UBAH ALOKASI KUOTA TAMU ==================== -->
-  <div id="editQuotaModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
-    <div class="glass-card bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3.5" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
-      <!-- Drag Handle -->
+  <div id="editQuotaModal" class="hidden pointer-events-none fixed inset-0 z-50 items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
+    <div class="bg-[#FFFFFF] border border-[#EAE6DF] w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 pb-8 sm:pb-6 animate-slide-up space-y-4" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="modal-drag-handle"></div>
 
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-md bg-[#21262D] border border-[#30363D] text-[#58A6FF] flex items-center justify-center shrink-0">
-            <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-[#F0F6FC]">Alokasi Kuota Tamu</h3>
-            <p class="text-[10px] text-[#8B949E] font-mono tabular-nums">Sel G4 (CPP) &amp; K4 (CPW)</p>
-          </div>
-        </div>
-        <button type="button" id="btnCloseQuotaModal" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <h3 class="font-editorial text-xl font-medium text-[#1C1917]">Alokasi Kuota Tamu</h3>
+        <button type="button" id="btnCloseQuotaModal" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] transition">
+          <i data-lucide="x" stroke-width="1.5" class="w-5 h-5"></i>
         </button>
       </div>
 
       <form id="formEditQuota" class="space-y-3" novalidate>
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="quotaInputCpp" class="block text-xs font-bold text-[#8B949E] mb-1">
-              🤵 Kuota CPP
-            </label>
-            <input id="quotaInputCpp" type="number" min="1" max="1000" step="5" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            <label for="quotaInputCpp" class="block text-xs font-semibold text-[#57534E] mb-1.5">Kuota CPP</label>
+            <input id="quotaInputCpp" type="number" min="1" max="1000" step="5" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
           </div>
           <div>
-            <label for="quotaInputCpw" class="block text-xs font-bold text-[#8B949E] mb-1">
-              👰 Kuota CPW
-            </label>
-            <input id="quotaInputCpw" type="number" min="1" max="1000" step="5" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] font-mono tabular-nums focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+            <label for="quotaInputCpw" class="block text-xs font-semibold text-[#57534E] mb-1.5">Kuota CPW</label>
+            <input id="quotaInputCpw" type="number" min="1" max="1000" step="5" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-bold text-[#1C1917] font-tabular" />
           </div>
         </div>
 
-        <div class="p-2.5 rounded-md bg-[#58A6FF]/15 border border-[#58A6FF]/30 flex items-center justify-between text-xs">
-          <span class="font-bold text-[#8B949E]">Total Kuota:</span>
-          <span id="previewTotalQuotaText" class="font-black text-[#58A6FF] font-mono tabular-nums">400 Pax</span>
+        <div class="p-3 rounded-2xl bg-[#ECF3EF] border border-[#C6DDD0] flex items-center justify-between text-xs">
+          <span class="font-semibold text-[#244233]">Total Kuota</span>
+          <span id="previewTotalQuotaText" class="font-bold text-[#244233] font-tabular">400 Pax</span>
         </div>
 
-        <button type="submit" class="w-full min-h-[44px] py-3 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
+        <button type="submit" class="w-full min-h-[44px] py-3 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
           Simpan Kuota
         </button>
       </form>
@@ -1089,38 +995,28 @@
   </div>
 
   <!-- ==================== MODAL EDIT NAMA MEMPELAI ==================== -->
-  <div id="coupleNameModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
-    <div class="glass-card bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3.5" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
-      <!-- Drag Handle -->
+  <div id="coupleNameModal" class="hidden pointer-events-none fixed inset-0 z-50 items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
+    <div class="bg-[#FFFFFF] border border-[#EAE6DF] w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 pb-8 sm:pb-6 animate-slide-up space-y-4" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="modal-drag-handle"></div>
 
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-md bg-[#21262D] border border-[#30363D] text-[#58A6FF] flex items-center justify-center shrink-0">
-            <i data-lucide="heart-handshake" class="w-3.5 h-3.5"></i>
-          </div>
-          <h3 class="text-sm font-bold text-[#F0F6FC]">Nama Mempelai</h3>
-        </div>
-        <button type="button" id="btnCloseCoupleNameModal" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <h3 class="font-editorial text-xl font-medium text-[#1C1917]">Nama Mempelai</h3>
+        <button type="button" id="btnCloseCoupleNameModal" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] transition">
+          <i data-lucide="x" stroke-width="1.5" class="w-5 h-5"></i>
         </button>
       </div>
 
       <form id="formEditCoupleNames" class="space-y-3" novalidate>
         <div>
-          <label for="inpNameCpp" class="block text-xs font-bold text-[#8B949E] mb-1">
-            Pengantin Pria (CPP)
-          </label>
-          <input id="inpNameCpp" type="text" placeholder="FARHAN RAFIQI" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+          <label for="inpNameCpp" class="block text-xs font-semibold text-[#57534E] mb-1.5">Pengantin Pria (CPP)</label>
+          <input id="inpNameCpp" type="text" placeholder="FARHAN RAFIQI" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]" />
         </div>
         <div>
-          <label for="inpNameCpw" class="block text-xs font-bold text-[#8B949E] mb-1">
-            Pengantin Wanita (CPW)
-          </label>
-          <input id="inpNameCpw" type="text" placeholder="INDIRA GUSTI" class="w-full px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-semibold text-[#F0F6FC] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25" />
+          <label for="inpNameCpw" class="block text-xs font-semibold text-[#57534E] mb-1.5">Pengantin Wanita (CPW)</label>
+          <input id="inpNameCpw" type="text" placeholder="INDIRA GUSTI" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl bg-[#F3F1EC] border border-[#EAE6DF] text-xs font-semibold text-[#1C1917]" />
         </div>
 
-        <button type="submit" class="w-full min-h-[44px] py-3 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
+        <button type="submit" class="w-full min-h-[44px] py-3 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
           Simpan Nama
         </button>
       </form>
@@ -1128,33 +1024,32 @@
   </div>
 
   <!-- ==================== MODAL ROLE PIN SWITCHER ==================== -->
-  <div id="roleModal" class="hidden pointer-events-none fixed inset-0 z-50 bg-[#010409]/75 backdrop-blur-[4px] items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
-    <div class="bg-[#161B22] border border-[#30363D] w-full max-w-sm rounded-t-xl sm:rounded-xl p-5 pb-8 sm:pb-5 shadow-2xl animate-slide-up space-y-3" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
-      <!-- Drag Handle -->
+  <div id="roleModal" class="hidden pointer-events-none fixed inset-0 z-50 items-end sm:items-center justify-center p-0 sm:p-4" style="display: none !important; pointer-events: none !important;">
+    <div class="bg-[#FFFFFF] border border-[#EAE6DF] w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 pb-8 sm:pb-6 animate-slide-up space-y-4" style="padding-bottom: max(2rem, env(safe-area-inset-bottom, 24px)); margin-bottom: env(safe-area-inset-bottom, 0px);">
       <div class="modal-drag-handle"></div>
 
       <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold text-[#F0F6FC]">Otorisasi &amp; Privasi</h3>
-        <button type="button" id="btnCloseRoleModal" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#8B949E] hover:text-white transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <h3 class="font-editorial text-xl font-medium text-[#1C1917]">Otorisasi Akses</h3>
+        <button type="button" id="btnCloseRoleModal" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] transition">
+          <i data-lucide="x" stroke-width="1.5" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <div class="space-y-2 pt-1">
-        <button type="button" id="btnActivateCommittee" class="min-h-[44px] w-full p-3 rounded-md bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] transition flex items-center justify-between text-left">
-          <p class="text-xs font-semibold text-[#C9D1D9]">🔒 Otorisasi Panitia</p>
-          <i data-lucide="chevron-right" class="w-4 h-4 text-[#8B949E]"></i>
+      <div class="space-y-3 pt-1">
+        <button type="button" id="btnActivateCommittee" class="min-h-[44px] w-full p-3.5 rounded-2xl bg-[#FBF5EB] hover:bg-[#F5EAD6] border border-[#EBD9BC] transition flex items-center justify-between text-left">
+          <p class="text-xs font-semibold text-[#8A5A19]">Aktifkan Mode Panitia</p>
+          <i data-lucide="chevron-right" stroke-width="1.5" class="w-4 h-4 text-[#8A5A19]"></i>
         </button>
 
-        <div class="p-3 rounded-md bg-[#58A6FF]/10 border border-[#58A6FF]/20 space-y-2">
-          <p class="text-xs font-bold text-[#58A6FF]">🔓 Otorisasi Mempelai</p>
+        <div class="p-3.5 rounded-2xl bg-[#ECF3EF] border border-[#C6DDD0] space-y-2.5">
+          <p class="text-xs font-semibold text-[#244233]">Otorisasi Mempelai</p>
           <div class="flex gap-2">
-            <input id="pinUnlockInput" type="password" inputmode="numeric" placeholder="Masukkan PIN" class="flex-1 px-3 py-2 rounded-md bg-[#090D12] border border-[#30363D] text-xs font-bold text-[#F0F6FC] placeholder-[#8B949E] focus:outline-none focus:border-[#58A6FF] focus:ring-2 focus:ring-[#58A6FF]/25 font-mono" />
-            <button type="button" id="btnUnlockCouple" class="min-h-[44px] px-4 py-2 rounded-md bg-[#238636] hover:bg-[#2EA043] text-white font-semibold border border-[rgba(240,246,252,0.15)] shadow-xs text-xs flex items-center justify-center transition active:scale-95">
+            <input id="pinUnlockInput" type="password" inputmode="numeric" placeholder="Masukkan PIN" class="flex-1 min-h-[44px] px-3.5 py-2 rounded-xl bg-[#FFFFFF] border border-[#C6DDD0] text-xs font-bold text-[#1C1917] placeholder-[#78716C] font-tabular" />
+            <button type="button" id="btnUnlockCouple" class="min-h-[44px] px-4 py-2 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center justify-center transition active:scale-95">
               Buka
             </button>
           </div>
-          <p id="pinErrorText" class="hidden text-[11px] font-bold text-[#F85149]">PIN tidak sesuai.</p>
+          <p id="pinErrorText" class="hidden text-[11px] font-semibold text-[#991B1B]">PIN tidak sesuai.</p>
         </div>
       </div>
     </div>
@@ -1163,7 +1058,7 @@
   <!-- Toast Notification Container -->
   <div id="toastBox" class="fixed top-16 right-4 left-4 sm:left-auto sm:w-80 z-50 pointer-events-none space-y-2"></div>
 
-  <script src="./sheetApi.js?v=2.3-syncfix"></script>
-  <script src="./app.js?v=2.3-syncfix"></script>
+  <script src="./sheetApi.js?v=3.0-editorial"></script>
+  <script src="./app.js?v=3.0-editorial"></script>
 </body>
 </html>

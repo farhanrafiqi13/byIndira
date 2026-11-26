@@ -1,11 +1,8 @@
 /* ==========================================================================
-   GITHUB PRIMER DARK THEME — Farhan & Indira Wedding Tracker & Command Center
-   Official Tokens:
-   Canvas Default: #0D1117 | Canvas Sub: #161B22 | Canvas Subtle: #21262D
-   Border Default: #30363D | Border Muted: #21262D
-   Text Primary: #F0F6FC | Text Body: #C9D1D9 | Text Muted: #8B949E
-   Green Accent: #238636 (Hover: #2EA043) | Blue Accent: #58A6FF
-   Yellow Accent: #D29922 | Red Accent: #F85149
+   WARM EDITORIAL MINIMALIST — Farhan & Indira Wedding Tracker PWA
+   Palette: Warm Alabaster (#F9F8F6), Surface (#FFFFFF), Warm Stone (#F3F1EC),
+            Hairline (#EAE6DF), Deep Warm Charcoal (#1C1917), Warm Slate (#57534E),
+            Deep Botanical Sage (#2C4237), Champagne Bronze (#9A7B4F)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -26,7 +23,6 @@ main {
   pointer-events: auto !important;
 }
 
-/* Strict .hidden rule: never display or intercept touches when inactive */
 .hidden {
   display: none !important;
   pointer-events: none !important;
@@ -34,7 +30,6 @@ main {
   opacity: 0 !important;
 }
 
-/* Modal Backdrops & Overlays Default Protection */
 #quickEditModal,
 #editQuotaModal,
 #coupleNameModal,
@@ -48,7 +43,6 @@ main {
   opacity: 0 !important;
 }
 
-/* Active Modal State: display flex and allow touches only when NOT hidden */
 #quickEditModal:not(.hidden),
 #editQuotaModal:not(.hidden),
 #coupleNameModal:not(.hidden),
@@ -62,7 +56,6 @@ main {
   opacity: 1 !important;
 }
 
-/* Interactive Elements & Touch Targets */
 button, input, select, a, [role="button"] {
   pointer-events: auto !important;
   cursor: pointer !important;
@@ -88,46 +81,29 @@ textarea,
 }
 
 /* --------------------------------------------------------------------------
-   2. GITHUB PRIMER DESIGN TOKENS
+   2. WARM EDITORIAL DESIGN TOKENS
    -------------------------------------------------------------------------- */
 :root {
-  --color-canvas-default: #0D1117;
-  --color-canvas-subtle: #161B22;
-  --color-canvas-inset: #090D12;
-  --color-canvas-overlay: #161B22;
-  --color-canvas-sub: #21262D;
-
-  --color-border-default: #30363D;
-  --color-border-muted: #21262D;
-  --color-border-subtle: rgba(240, 246, 252, 0.1);
-
-  --color-fg-default: #F0F6FC;
-  --color-fg-muted: #8B949E;
-  --color-fg-subtle: #8B949E;
-  --color-fg-body: #C9D1D9;
-
-  --color-accent-fg: #58A6FF;
-  --color-accent-emphasis: #1F6FEB;
-  --color-accent-muted: rgba(56, 139, 253, 0.15);
-  --color-accent-subtle: rgba(56, 139, 253, 0.1);
-
-  --color-success-fg: #3FB950;
-  --color-success-emphasis: #238636;
-  --color-success-hover: #2EA043;
-  --color-success-active: #1A6328;
-  --color-success-muted: rgba(35, 134, 54, 0.15);
-
-  --color-attention-fg: #D29922;
-  --color-attention-emphasis: #9E6A03;
-  --color-attention-muted: rgba(210, 153, 34, 0.15);
-
-  --color-danger-fg: #F85149;
-  --color-danger-emphasis: #DA3633;
-  --color-danger-muted: rgba(248, 81, 73, 0.15);
-
-  --color-done-fg: #A371F7;
-  --color-done-emphasis: #8957E5;
-  --color-done-muted: rgba(163, 113, 247, 0.15);
+  --bg-base: #F9F8F6;
+  --bg-surface: #FFFFFF;
+  --bg-inset: #F3F1EC;
+  --bg-hover: #EFECE6;
+  --border-hairline: #EAE6DF;
+  --text-primary: #1C1917;
+  --text-secondary: #57534E;
+  --text-muted: #78716C;
+  --accent-sage: #2C4237;
+  --accent-sage-hover: #21332A;
+  --accent-champagne: #9A7B4F;
+  --chip-success-bg: #ECF3EF;
+  --chip-success-border: #C6DDD0;
+  --chip-success-text: #244233;
+  --chip-warn-bg: #FBF5EB;
+  --chip-warn-border: #EBD9BC;
+  --chip-warn-text: #8A5A19;
+  --chip-danger-bg: #FDF2F2;
+  --chip-danger-border: #F8D0D0;
+  --chip-danger-text: #991B1B;
 }
 
 * {
@@ -136,194 +112,179 @@ textarea,
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   scroll-behavior: smooth;
-  background-color: var(--color-canvas-default);
+  background-color: var(--bg-base);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Text", "Inter", Roboto, sans-serif !important;
-  background-color: #0D1117 !important;
-  color: #C9D1D9 !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  background-color: var(--bg-base) !important;
+  color: var(--text-primary) !important;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Numeric & Monospace Tabular Fonts */
+.font-editorial {
+  font-family: 'Newsreader', Georgia, serif;
+}
+
 .font-tabular,
 .font-mono-num {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
 }
 
-/* Text Selection */
 ::selection {
-  background-color: rgba(56, 139, 253, 0.35);
-  color: #F0F6FC;
+  background-color: #ECF3EF;
+  color: #244233;
 }
 
 /* --------------------------------------------------------------------------
-   3. GITHUB PRIMER CARDS, SURFACES & CONTAINERS
+   3. EDITORIAL CARDS & SURFACES
    -------------------------------------------------------------------------- */
 .glass-card,
 .bento-surface,
 .gh-box,
 .gh-card {
-  background-color: #161B22 !important;
-  border: 1px solid #30363D !important;
-  border-radius: 8px !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
-  color: #C9D1D9 !important;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE6DF !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 10px rgba(28, 25, 23, 0.03) !important;
+  color: #1C1917 !important;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
 }
 
 .glass-card-hover:hover,
 .bento-surface:hover {
-  border-color: #8B949E !important;
+  border-color: #D6D1C7 !important;
 }
 
-/* GitHub Inset Surface */
 .gh-inset,
 .inset-surface {
-  background-color: #090D12 !important;
-  border: 1px solid #30363D !important;
-  border-radius: 6px !important;
+  background-color: #F3F1EC !important;
+  border: 1px solid #EAE6DF !important;
+  border-radius: 12px !important;
 }
 
-/* Header Sticky Bar */
 header.glass-card {
-  background: rgba(22, 27, 34, 0.95) !important;
-  border-bottom: 1px solid #30363D !important;
+  background: rgba(249, 248, 246, 0.92) !important;
+  border-bottom: 1px solid #EAE6DF !important;
   border-radius: 0 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 /* --------------------------------------------------------------------------
-   4. GITHUB BUTTONS & CONTROLS (Ergonomic Thumb-Zone, min 44x44px touch)
+   4. BUTTONS & CONTROLS (min 44x44px touch targets)
    -------------------------------------------------------------------------- */
-/* Primary GitHub Button (Green) */
 .btn-primary,
 .fab-burgundy,
 .bg-rose-600 {
   min-height: 44px;
-  background-color: #238636 !important;
-  border: 1px solid rgba(240, 246, 252, 0.15) !important;
+  background-color: #2C4237 !important;
+  border: 1px solid transparent !important;
   color: #FFFFFF !important;
   font-weight: 600 !important;
-  border-radius: 6px !important;
-  box-shadow: 0 1px 2px rgba(1, 4, 9, 0.3) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 2px 6px rgba(44, 66, 55, 0.18) !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
+  transition: all 0.18s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .btn-primary:hover,
 .fab-burgundy:hover,
 .bg-rose-600:hover {
-  background-color: #2EA043 !important;
-  border-color: rgba(240, 246, 252, 0.2) !important;
+  background-color: #21332A !important;
   color: #FFFFFF !important;
 }
 
 .btn-primary:active,
 .fab-burgundy:active,
 .bg-rose-600:active {
-  background-color: #1A6328 !important;
-  box-shadow: inset 0 1px 2px rgba(0, 45, 17, 0.3) !important;
-  transform: scale(0.95) !important;
+  transform: scale(0.97) !important;
 }
 
-/* Secondary / Subtle GitHub Button */
-.btn-secondary,
-.bg-slate-100,
-.bg-slate-50,
-.bg-white:not(header) {
+.btn-secondary {
   min-height: 44px;
-  background-color: #21262D !important;
-  border: 1px solid #30363D !important;
-  color: #C9D1D9 !important;
-  border-radius: 6px !important;
+  background-color: #F3F1EC !important;
+  border: 1px solid #EAE6DF !important;
+  color: #57534E !important;
+  border-radius: 9999px !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
+  transition: all 0.18s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.btn-secondary:hover,
-.bg-slate-100:hover,
-.bg-slate-50:hover,
-.bg-white:not(header):hover {
-  background-color: #30363D !important;
-  border-color: #8B949E !important;
-  color: #F0F6FC !important;
+.btn-secondary:hover {
+  background-color: #EFECE6 !important;
+  color: #1C1917 !important;
 }
 
-.btn-secondary:active {
-  background-color: #161B22 !important;
-  transform: scale(0.95) !important;
-}
-
-/* Subtle Action Card Button */
 .action-card-btn {
   min-height: 44px;
-  background-color: #161B22 !important;
-  border: 1px solid #30363D !important;
-  border-radius: 8px !important;
-  transition: all 0.15s ease;
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE6DF !important;
+  border-radius: 16px !important;
+  transition: all 0.18s ease;
 }
+
 .action-card-btn:hover {
-  background-color: #21262D !important;
-  border-color: #58A6FF !important;
+  background-color: #EFECE6 !important;
+  border-color: #9A7B4F !important;
 }
+
 .action-card-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 /* --------------------------------------------------------------------------
-   5. INPUTS, SELECTS & TEXTAREAS (GitHub Inset: #090D12)
+   5. INPUTS, SELECTS & TEXTAREAS
    -------------------------------------------------------------------------- */
 input,
 select,
 textarea {
-  min-height: 40px;
-  background-color: #090D12 !important;
-  border: 1px solid #30363D !important;
-  color: #F0F6FC !important;
-  border-radius: 6px !important;
+  min-height: 44px;
+  background-color: #F3F1EC !important;
+  border: 1px solid #EAE6DF !important;
+  color: #1C1917 !important;
+  border-radius: 12px !important;
   font-size: 13px !important;
   padding: 8px 12px !important;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  background-color: #090D12 !important;
-  border-color: #58A6FF !important;
+  background-color: #FFFFFF !important;
+  border-color: #2C4237 !important;
   outline: none !important;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.25) !important;
-  color: #F0F6FC !important;
+  box-shadow: 0 0 0 3px rgba(44, 66, 55, 0.12) !important;
+  color: #1C1917 !important;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #8B949E !important;
+  color: #78716C !important;
 }
 
 select option {
-  background-color: #161B22 !important;
-  color: #C9D1D9 !important;
+  background-color: #FFFFFF !important;
+  color: #1C1917 !important;
 }
 
 /* --------------------------------------------------------------------------
-   6. GITHUB BADGES, STATUS CHIPS & LABELS
+   6. STATUS DOTS & CHIPS
    -------------------------------------------------------------------------- */
-/* Status Dot Indicators */
 .status-dot {
   display: inline-block;
   width: 7px;
@@ -334,74 +295,57 @@ select option {
 
 .status-confirmed,
 .status-dot-emerald {
-  background-color: #3FB950 !important;
-  box-shadow: 0 0 6px rgba(63, 185, 80, 0.4) !important;
+  background-color: #2C4237 !important;
 }
 
 .status-pending,
 .status-dot-amber {
-  background-color: #D29922 !important;
-  box-shadow: 0 0 6px rgba(210, 153, 34, 0.4) !important;
+  background-color: #9A7B4F !important;
 }
 
 .status-draft,
 .status-dot-slate {
-  background-color: #8B949E !important;
-  box-shadow: none !important;
+  background-color: #78716C !important;
 }
 
 .status-dot-teal {
-  background-color: #58A6FF !important;
-  box-shadow: 0 0 6px rgba(88, 166, 255, 0.4) !important;
+  background-color: #2C4237 !important;
 }
 
-/* Status Badges */
 .emerald-badge,
-.bg-emerald-50,
 .status-chip-confirmed {
-  background: rgba(35, 134, 54, 0.15) !important;
-  border: 1px solid #238636 !important;
-  color: #3FB950 !important;
+  background: #ECF3EF !important;
+  border: 1px solid #C6DDD0 !important;
+  color: #244233 !important;
   border-radius: 9999px !important;
 }
 
 .gold-badge,
-.bg-amber-50,
 .status-chip-pending {
-  background: rgba(210, 153, 34, 0.15) !important;
-  border: 1px solid #D29922 !important;
-  color: #D29922 !important;
+  background: #FBF5EB !important;
+  border: 1px solid #EBD9BC !important;
+  color: #8A5A19 !important;
   border-radius: 9999px !important;
 }
 
 .coral-badge,
 .status-chip-danger {
-  background: rgba(248, 81, 73, 0.15) !important;
-  border: 1px solid #F85149 !important;
-  color: #F85149 !important;
-  border-radius: 9999px !important;
-}
-
-.teal-badge,
-.bg-blue-50,
-.bg-sky-50,
-.status-chip-info {
-  background: rgba(88, 166, 255, 0.15) !important;
-  border: 1px solid #58A6FF !important;
-  color: #58A6FF !important;
+  background: #FDF2F2 !important;
+  border: 1px solid #F8D0D0 !important;
+  color: #991B1B !important;
   border-radius: 9999px !important;
 }
 
 .neutral-badge,
 .status-chip-neutral {
-  background: #21262D !important;
-  border: 1px solid #30363D !important;
-  color: #C9D1D9 !important;
+  background: #F3F1EC !important;
+  border: 1px solid #EAE6DF !important;
+  color: #57534E !important;
   border-radius: 9999px !important;
 }
 
 /* --------------------------------------------------------------------------
-   7. FLOATING DOCK NAVIGATION (GITHUB PRIMER DARK - ERGONOMIC THUMB-ZONE)
+   7. FLOATING DOCK NAVIGATION (EDITORIAL LIGHT BLUR)
    -------------------------------------------------------------------------- */
 .floating-dock-nav {
   position: fixed;
@@ -412,20 +356,20 @@ select option {
   width: calc(100% - 32px);
   max-width: 440px;
   z-index: 9999;
-  background: rgba(22, 27, 34, 0.95) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #30363D !important;
-  box-shadow: 0 8px 24px rgba(1, 4, 9, 0.6) !important;
+  border: 1px solid #EAE6DF !important;
+  box-shadow: 0 8px 30px rgba(28, 25, 23, 0.08) !important;
   border-radius: 9999px !important;
-  padding: 6px 10px;
+  padding: 6px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 4px;
   pointer-events: auto !important;
   opacity: 1;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease !important;
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.22s ease !important;
 }
 
 .floating-dock-nav.nav-hidden,
@@ -433,7 +377,7 @@ select option {
   transform: translate(-50%, 150%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease !important;
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.22s ease !important;
 }
 
 .bottom-nav-btn {
@@ -443,18 +387,18 @@ select option {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px !important;
-  color: #8B949E !important;
+  padding: 6px 10px !important;
+  color: #57534E !important;
   border-radius: 9999px !important;
-  transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  transition: transform 0.15s ease, background-color 0.18s ease, color 0.18s ease;
   user-select: none;
   -webkit-user-select: none;
   border: 1px solid transparent;
 }
 
 .bottom-nav-btn:hover {
-  background-color: #21262D !important;
-  color: #F0F6FC !important;
+  background-color: #EFECE6 !important;
+  color: #1C1917 !important;
 }
 
 .bottom-nav-btn:active {
@@ -464,36 +408,34 @@ select option {
 .bottom-nav-btn.active,
 .bottom-nav-btn[data-active="true"],
 .bottom-nav-btn.active-pill-indicator {
-  background-color: #21262D !important;
-  color: #58A6FF !important;
-  border-color: #30363D !important;
+  background-color: #ECF3EF !important;
+  color: #2C4237 !important;
+  border-color: #C6DDD0 !important;
 }
 
 #btnFabQuickAction {
   min-height: 44px;
   min-width: 44px;
-  padding-left: 14px;
-  padding-right: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
   border-radius: 9999px !important;
-  background-color: #238636 !important;
+  background-color: #2C4237 !important;
   color: #FFFFFF !important;
-  font-weight: 700 !important;
-  border: 1px solid rgba(240, 246, 252, 0.15) !important;
-  box-shadow: 0 1px 2px rgba(1, 4, 9, 0.3) !important;
+  font-weight: 600 !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 2px 8px rgba(44, 66, 55, 0.22) !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 0.15s cubic-bezier(0.3, 0, 0.5, 1);
+  transition: all 0.18s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 #btnFabQuickAction:hover {
-  background-color: #2EA043 !important;
-  border-color: rgba(240, 246, 252, 0.25) !important;
+  background-color: #21332A !important;
 }
 
 #btnFabQuickAction:active {
-  background-color: #1A6328 !important;
   transform: scale(0.95) !important;
 }
 
@@ -503,9 +445,9 @@ select option {
 .modal-drag-handle {
   width: 40px;
   height: 4px;
-  background-color: #30363D;
+  background-color: #D6D1C7;
   border-radius: 9999px;
-  margin: 12px auto;
+  margin: 0 auto 14px auto;
 }
 
 #quickEditModal,
@@ -514,46 +456,55 @@ select option {
 #roleModal,
 .modal-backdrop,
 [id$="Modal"] {
-  background: rgba(1, 4, 9, 0.75) !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(28, 25, 23, 0.35) !important;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 [id$="Modal"] > div,
 [id$="Modal"] .glass-card {
-  background-color: #161B22 !important;
-  border: 1px solid #30363D !important;
-  border-radius: 12px !important;
-  box-shadow: 0 16px 36px rgba(1, 4, 9, 0.7) !important;
-  color: #C9D1D9 !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE6DF !important;
+  border-radius: 24px 24px 0 0 !important;
+  box-shadow: 0 -12px 40px rgba(28, 25, 23, 0.12) !important;
+  color: #1C1917 !important;
+}
+
+@media (min-width: 640px) {
+  [id$="Modal"] > div,
+  [id$="Modal"] .glass-card {
+    border-radius: 24px !important;
+    box-shadow: 0 20px 50px rgba(28, 25, 23, 0.15) !important;
+  }
 }
 
 [id$="Modal"] input,
 [id$="Modal"] select,
 [id$="Modal"] textarea {
-  min-height: 40px;
-  background-color: #090D12 !important;
-  border: 1px solid #30363D !important;
-  color: #F0F6FC !important;
-  border-radius: 6px !important;
+  min-height: 44px;
+  background-color: #F3F1EC !important;
+  border: 1px solid #EAE6DF !important;
+  color: #1C1917 !important;
+  border-radius: 12px !important;
 }
 
 [id$="Modal"] input:focus,
 [id$="Modal"] select:focus,
 [id$="Modal"] textarea:focus {
-  border-color: #58A6FF !important;
+  background-color: #FFFFFF !important;
+  border-color: #2C4237 !important;
   outline: none !important;
-  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.25) !important;
+  box-shadow: 0 0 0 3px rgba(44, 66, 55, 0.12) !important;
 }
 
 /* --------------------------------------------------------------------------
-   8b. FUTURISTIC SPLASH & SAFE AREA INSETS
+   8b. SPLASH & SAFE AREA INSETS
    -------------------------------------------------------------------------- */
 #splash-screen,
 #appSplashScreen,
 .splash-overlay {
   opacity: 1;
-  transition: opacity 0.4s ease-out;
+  transition: opacity 0.3s ease-out;
   pointer-events: auto;
 }
 
@@ -571,61 +522,25 @@ header {
 }
 
 /* --------------------------------------------------------------------------
-   9. TYPOGRAPHY & TEXT HIERARCHY OVERRIDES
+   9. TYPOGRAPHY & SCROLLBARS
    -------------------------------------------------------------------------- */
-h1, h2, h3, h4, h5, h6,
-.text-slate-900,
-.text-slate-800,
-.text-white {
-  color: #F0F6FC !important;
-}
-
-.text-slate-700,
-.text-slate-600,
-.text-slate-200,
-.text-slate-300 {
-  color: #C9D1D9 !important;
-}
-
-.text-slate-500,
-.text-slate-400 {
-  color: #8B949E !important;
-}
-
-/* Link and Accents */
-a, .text-blue-500, .text-sky-500 {
-  color: #58A6FF !important;
-}
-
 a:hover {
   text-decoration: underline;
 }
 
-/* Gradients Replacement (Replaced with Solid Clean GitHub Dark tones) */
-.coral-gradient,
-.violet-gradient,
-.teal-gradient,
-.burgundy-gradient {
-  background: #21262D !important;
-  border: 1px solid #30363D !important;
-}
-
-/* --------------------------------------------------------------------------
-   10. SCROLLBARS, SHIMMER & SKELETON
-   -------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0D1117;
+  background: #F9F8F6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #30363D;
+  background: #D6D1C7;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B949E;
+  background: #9A7B4F;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -636,7 +551,6 @@ a:hover {
   scrollbar-width: none;
 }
 
-/* Skeleton Shimmer Dark */
 @keyframes shimmerAnim {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -645,36 +559,34 @@ a:hover {
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    #161B22 25%,
-    #21262D 50%,
-    #161B22 75%
+    #F3F1EC 25%,
+    #EFECE6 50%,
+    #F3F1EC 75%
   ) !important;
   background-size: 200% 100% !important;
   animation: shimmerAnim 1.6s infinite !important;
 }
 
-/* Pulsing Sync Animation */
 @keyframes pulseDot {
   0%, 100% {
     opacity: 1;
     transform: scale(1);
   }
   50% {
-    opacity: 0.35;
+    opacity: 0.45;
     transform: scale(0.85);
   }
 }
 
 .pulsing-dot {
-  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulseDot 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Slide Up Animation */
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-slide-up {
-  animation: slideUp 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }

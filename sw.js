@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v2.4-maharfix';
+const CACHE_NAME = 'v3.0-editorial';
 const ASSETS = [
   './',
   './index.html',

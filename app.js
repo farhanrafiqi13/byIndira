@@ -163,8 +163,15 @@
     });
   }
 
+  function cleanDisplayText(s) {
+    return String(s || '')
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F\u2610\u2713]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function formatRp(num) {
-    if (state.role === 'committee') return '🔒 Privasi';
+    if (state.role === 'committee') return 'Privasi';
     const n = Math.round(Number(num) || 0);
     return 'Rp ' + Math.abs(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   }
@@ -191,8 +198,8 @@
     const box = document.getElementById('toastBox');
     if (!box) return;
     const el = document.createElement('div');
-    el.className = 'px-4 py-3 rounded-2xl shadow-lg text-xs font-bold animate-slide-up ' +
-      (isError ? 'bg-[#DA3633] text-white' : 'bg-[#161B22] text-[#F0F6FC] border border-[#30363D]');
+    el.className = 'px-4 py-3 rounded-full shadow-lg text-xs font-medium animate-slide-up ' +
+      (isError ? 'bg-[#991B1B] text-white' : 'bg-[#1C1917] text-white');
     el.textContent = msg;
     box.appendChild(el);
     setTimeout(function() {
@@ -295,10 +302,10 @@
     });
 
     const btnMH = document.getElementById('btnSubmodMahar');
-    if (btnWT) btnWT.textContent = '💍 Akad & Resepsi (' + activeWT.length + ')';
-    if (btnPW) btnPW.textContent = '📷 Pre-Wedding (' + activePW.length + ')';
-    if (btnSS) btnSS.textContent = '🎁 Seserahan (' + activeSS.length + ')';
-    if (btnMH) btnMH.textContent = '🪙 Mahar (' + validMaharLogs.length + ')';
+    if (btnWT) btnWT.textContent = 'Akad & Resepsi (' + activeWT.length + ')';
+    if (btnPW) btnPW.textContent = 'Pre-Wedding (' + activePW.length + ')';
+    if (btnSS) btnSS.textContent = 'Seserahan (' + activeSS.length + ')';
+    if (btnMH) btnMH.textContent = 'Mahar (' + validMaharLogs.length + ')';
   }
 
   function computeMasterMetrics() {
@@ -396,12 +403,12 @@
       totalReal: totalReal,
       sisa: sisa,
       pillars: [
-        { key: 'tracker', name: '💍 Wedding Tracker (Akad & Resepsi)', pagu: p1Pagu, real: p1Real, statusText: p1Status, pct: p1Pct },
-        { key: 'prewed', name: '📷 Pre-Wedding & Rangkaian', pagu: p2Pagu, real: p2Real, statusText: p2Status, pct: p2Pct },
-        { key: 'seserahan', name: '🎁 Hantaran & Seserahan', pagu: p3Pagu, real: p3Real, statusText: p3Status, pct: p3Pct },
-        { key: 'mahar', name: '🪙 Mahar (' + bssrLotTarget + ' Lot BSSR, Emas, Tunai)', pagu: p4Pagu, real: p4Real, statusText: p4Status, pct: p4Pct },
-        { key: 'kua', name: '📋 Administrasi KUA & Legal', pagu: p5Pagu, real: p5Real, statusText: p5Status, pct: p5Pct },
-        { key: 'tamu', name: '👥 Daftar Tamu & RSVP', pagu: targetTotal, real: totalRegistered, statusText: p6Status, subText: p6SubText, paguText: p6PaguText, pct: registeredPct, isGuest: true }
+        { key: 'tracker', name: 'Wedding Tracker', pagu: p1Pagu, real: p1Real, statusText: p1Status, pct: p1Pct },
+        { key: 'prewed', name: 'Pre-Wedding', pagu: p2Pagu, real: p2Real, statusText: p2Status, pct: p2Pct },
+        { key: 'seserahan', name: 'Seserahan', pagu: p3Pagu, real: p3Real, statusText: p3Status, pct: p3Pct },
+        { key: 'mahar', name: 'Tabungan & Mahar', pagu: p4Pagu, real: p4Real, statusText: p4Status, pct: p4Pct },
+        { key: 'kua', name: 'Administrasi & KUA', pagu: p5Pagu, real: p5Real, statusText: p5Status, pct: p5Pct },
+        { key: 'tamu', name: 'Buku Tamu & RSVP', pagu: targetTotal, real: totalRegistered, statusText: p6Status, subText: p6SubText, paguText: p6PaguText, pct: registeredPct, isGuest: true }
       ],
       kuaCheckedSlots: kuaCheckedSlots,
       kuaTotalSlots: kuaTotalSlots,
@@ -423,8 +430,8 @@
     const vRem = document.getElementById('vendorRemainingCard');
 
     if (isCommittee) {
-      badge.textContent = '🔒 Otorisasi Panitia';
-      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D29922]/15 text-[#D29922] border border-[#D29922] font-mono';
+      badge.textContent = 'Mode Panitia';
+      badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC]';
       finHero.classList.add('hidden');
       privBanner.classList.remove('hidden');
       chartsSec.classList.add('hidden');
@@ -433,8 +440,8 @@
       vContract.classList.add('hidden');
       vRem.classList.add('hidden');
     } else {
-      badge.textContent = '🔓 Otorisasi Mempelai';
-      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#3FB950]/15 text-[#3FB950] border border-[#238636] font-mono';
+      badge.textContent = 'Akses Mempelai';
+      badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
       finHero.classList.remove('hidden');
       privBanner.classList.add('hidden');
       chartsSec.classList.remove('hidden');
@@ -443,15 +450,14 @@
       vContract.classList.remove('hidden');
       vRem.classList.remove('hidden');
 
-      // Pastikan wrapper chart tidak tersembunyi agar canvas memiliki dimensi ukuran saat digambar
       const wPagu = document.getElementById('wrapperSectionPaguChart');
       const wShare = document.getElementById('wrapperSectionShareChart');
       const lblPagu = document.getElementById('labelToggleSectionPaguChart');
       const lblShare = document.getElementById('labelToggleSectionShareChart');
       if (wPagu) wPagu.classList.remove('hidden');
       if (wShare) wShare.classList.remove('hidden');
-      if (lblPagu) lblPagu.textContent = 'Hide';
-      if (lblShare) lblShare.textContent = 'Hide';
+      if (lblPagu) lblPagu.textContent = 'Sembunyikan';
+      if (lblShare) lblShare.textContent = 'Sembunyikan';
     }
   }
 
@@ -467,7 +473,7 @@
                                document.querySelector('.countdown') ||
                                document.querySelector('[data-countdown]');
       if (countdownElement) {
-        countdownElement.textContent = '⏳ ' + (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
+        countdownElement.textContent = (diffDays > 0 ? diffDays : 0) + ' Hari Menuju Acara';
       }
     } catch (eCd) {}
   }
@@ -477,11 +483,12 @@
     const wDateIso = meta.weddingDate || '2027-06-27';
     const wDateFormatted = formatTanggalIndo(wDateIso);
     const venueStr = meta.venue || 'Venue Intimate';
-    const targetStr = meta.targetReady || 'April 2027 (H-2 Bulan)';
+    const targetStr = meta.targetReady || 'April 2027';
 
-    // Update seluruh teks nama, tanggal & profil dari MASTER
     const heroNames = document.getElementById('heroCoupleNames');
-    if (heroNames) heroNames.textContent = (meta.cpp || 'FARHAN RAFIQI') + ' & ' + (meta.cpw || 'INDIRA GUSTI');
+    if (heroNames) {
+      heroNames.innerHTML = escapeHtml(meta.cpp || 'Farhan Rafiqi') + ' <span class="italic font-normal text-[#9A7B4F]">&amp;</span> ' + escapeHtml(meta.cpw || 'Indira Gusti');
+    }
     const titleHdr = document.getElementById('headerCoupleTitle');
     if (titleHdr) titleHdr.textContent = (meta.cpp || 'FARHAN RAFIQI') + ' & ' + (meta.cpw || 'INDIRA GUSTI');
 
@@ -507,49 +514,44 @@
     const totalRealDisplay = (hasFormula && state.data.masterFormulas.totalRealStr) ? state.data.masterFormulas.totalRealStr : formatRp(m.totalReal);
     const totalSisaDisplay = (hasFormula && state.data.masterFormulas.totalSisaStr) ? state.data.masterFormulas.totalSisaStr : formatRp(m.sisa);
     const pctSerapan = m.totalPagu > 0 ? ((m.totalReal / m.totalPagu) * 100).toFixed(1) : '0.0';
-    const serapanDisplay = (hasFormula && state.data.masterFormulas.serapanPctStr) ? (state.data.masterFormulas.serapanPctStr + ' dari total anggaran') : (pctSerapan + '% dari total anggaran');
+    const serapanDisplay = (hasFormula && state.data.masterFormulas.serapanPctStr) ? state.data.masterFormulas.serapanPctStr : (pctSerapan + '%');
 
-    // Update Interactive Budget Circular Ring
     const budgetPctEl = document.getElementById('budgetProgressPercent');
     if (budgetPctEl) {
-      budgetPctEl.textContent = (hasFormula && state.data.masterFormulas.serapanPctStr) ? state.data.masterFormulas.serapanPctStr : (pctSerapan + '%');
+      budgetPctEl.textContent = serapanDisplay;
     }
     const budgetCircleEl = document.getElementById('budgetProgressCircle');
     if (budgetCircleEl) {
-      const circ = 2 * Math.PI * 40; // ~251.3
       const numPct = Math.min(100, Math.max(0, Number(pctSerapan)));
-      const offset = circ - (circ * numPct / 100);
-      budgetCircleEl.style.strokeDashoffset = offset;
+      budgetCircleEl.setAttribute('stroke-dasharray', numPct + ', 100');
     }
 
-    document.getElementById('kpiTotalPagu').textContent = state.role === 'committee' ? '🔒 Privasi' : totalPaguDisplay;
-    document.getElementById('kpiTotalRealisasi').textContent = state.role === 'committee' ? '🔒 Privasi' : totalRealDisplay;
+    document.getElementById('kpiTotalPagu').textContent = state.role === 'committee' ? 'Privasi' : totalPaguDisplay;
+    document.getElementById('kpiTotalRealisasi').textContent = state.role === 'committee' ? 'Privasi' : totalRealDisplay;
     document.getElementById('kpiSerapanPct').textContent = serapanDisplay;
-    document.getElementById('kpiSisaAnggaran').textContent = state.role === 'committee' ? '🔒 Privasi' : totalSisaDisplay;
+    document.getElementById('kpiSisaAnggaran').textContent = state.role === 'committee' ? 'Privasi' : totalSisaDisplay;
 
     const grid = document.getElementById('masterModuleCardsGrid');
     grid.innerHTML = m.pillars.map(function(p) {
       if (state.role === 'committee' && p.key === 'mahar') return '';
-      const subText = p.isGuest
-        ? 'CPP: ' + m.cppPax + ' Pax &bull; CPW: ' + m.cpwPax + ' Pax'
-        : (state.role === 'committee' ? 'Anggaran disembunyikan' : 'Realisasi: ' + formatRp(p.real));
-      const paguText = p.isGuest
-        ? 'Target: ' + p.pagu + ' Pax'
-        : (state.role === 'committee' ? '' : 'Pagu: ' + formatRp(p.pagu));
+      const rightMetric = p.isGuest
+        ? m.cppPax + ' CPP · ' + m.cpwPax + ' CPW'
+        : (state.role === 'couple' ? formatRp(p.real) : '');
 
       return (
-        '<button type="button" data-jump="' + p.key + '" class="jump-card-btn bento-surface rounded-md p-3.5 text-left border border-[#30363D] hover:border-[#8B949E] transition flex flex-col justify-between group bg-[#161B22] shadow-xs active:scale-95">' +
-          '<div>' +
-            '<div class="flex items-center justify-between gap-1 mb-1">' +
-              '<span class="text-xs font-bold text-[#F0F6FC] group-hover:text-[#58A6FF] truncate transition">' + escapeHtml(p.name) + '</span>' +
-              '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] font-mono tabular-nums">' + p.pct + '%</span>' +
-            '</div>' +
-            '<p class="text-[11px] font-semibold text-[#8B949E]">' + escapeHtml(p.statusText) + '</p>' +
-            '<p class="text-[11px] text-[#8B949E] mt-1 font-mono tabular-nums">' + subText + '</p>' +
-            (paguText ? '<p class="text-[10px] text-[#8B949E] font-mono tabular-nums">' + paguText + '</p>' : '') +
+        '<button type="button" data-jump="' + p.key + '" class="jump-card-btn rounded-2xl p-5 text-left border border-[#EAE6DF] bg-[#FFFFFF] hover:bg-[#EFECE6]/50 transition flex flex-col justify-between group active:scale-[0.99]">' +
+          '<div class="w-full flex items-center justify-between gap-2">' +
+            '<span class="text-sm font-semibold text-[#1C1917] group-hover:text-[#2C4237] truncate transition">' + escapeHtml(p.name) + '</span>' +
+            '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0] font-tabular shrink-0">' + p.pct + '%</span>' +
           '</div>' +
-          '<div class="w-full h-1.5 rounded-full bg-[#21262D] overflow-hidden mt-2.5 border border-[#30363D]">' +
-            '<div class="h-full bg-[#58A6FF] rounded-full transition-all duration-500" style="width:' + Math.max(4, p.pct) + '%"></div>' +
+          '<div class="w-full mt-4 space-y-2">' +
+            '<div class="flex items-baseline justify-between gap-2 text-xs font-tabular">' +
+              '<span class="font-semibold text-[#1C1917] truncate">' + escapeHtml(cleanDisplayText(p.statusText)) + '</span>' +
+              (rightMetric ? '<span class="text-[#57534E] shrink-0">' + rightMetric + '</span>' : '') +
+            '</div>' +
+            '<div class="w-full h-1 rounded-full bg-[#EAE6DF] overflow-hidden">' +
+              '<div class="h-full bg-[#2C4237] rounded-full transition-all duration-500" style="width:' + Math.max(4, Math.min(100, p.pct)) + '%"></div>' +
+            '</div>' +
           '</div>' +
         '</button>'
       );
@@ -572,16 +574,16 @@
                 {
                   label: 'Pagu Anggaran',
                   data: finPillars.map(function(p) { return p.pagu; }),
-                  backgroundColor: '#21262D',
-                  borderColor: '#30363D',
+                  backgroundColor: '#EAE6DF',
+                  borderColor: '#D6D1C7',
                   borderWidth: 1,
-                  borderRadius: 4
+                  borderRadius: 6
                 },
                 {
                   label: 'Realisasi Aktual',
                   data: finPillars.map(function(p) { return p.real; }),
-                  backgroundColor: '#58A6FF',
-                  borderRadius: 4
+                  backgroundColor: '#2C4237',
+                  borderRadius: 6
                 }
               ]
             },
@@ -592,20 +594,20 @@
               scales: {
                 y: {
                   beginAtZero: true,
-                  grid: { color: '#21262D' },
+                  grid: { color: '#EAE6DF' },
                   ticks: {
-                    color: '#8B949E',
+                    color: '#78716C',
                     font: { size: 10, weight: '600' },
                     callback: function(v) { return 'Rp' + (v / 1000000).toFixed(0) + 'jt'; }
                   }
                 },
                 x: {
                   grid: { display: false },
-                  ticks: { color: '#8B949E', font: { size: 10, weight: '600' } }
+                  ticks: { color: '#57534E', font: { size: 10, weight: '600' } }
                 }
               },
               plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 10, color: '#C9D1D9', font: { size: 11, weight: '600' } } },
+                legend: { position: 'bottom', labels: { boxWidth: 10, color: '#57534E', font: { size: 11, weight: '600' } } },
                 tooltip: {
                   callbacks: {
                     label: function(c) { return ' ' + c.dataset.label + ': ' + formatRp(c.raw); }
@@ -630,9 +632,9 @@
               labels: ['Akad & Resepsi', 'Pre-Wedding', 'Seserahan', 'Mahar', 'Admin KUA'],
               datasets: [{
                 data: finPillars.map(function(p) { return p.real; }),
-                backgroundColor: ['#58A6FF', '#238636', '#D29922', '#BC8CFF', '#F85149'],
+                backgroundColor: ['#2C4237', '#9A7B4F', '#5B7A67', '#C4A476', '#991B1B'],
                 borderWidth: 2,
-                borderColor: '#161B22'
+                borderColor: '#FFFFFF'
               }]
             },
             options: {
@@ -641,7 +643,7 @@
               animation: { duration: 300 },
               cutout: '64%',
               plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 10, color: '#C9D1D9', font: { size: 11, weight: '600' } } },
+                legend: { position: 'bottom', labels: { boxWidth: 10, color: '#57534E', font: { size: 11, weight: '600' } } },
                 tooltip: {
                   callbacks: {
                     label: function(c) { return ' ' + c.label + ': ' + formatRp(c.raw); }
@@ -656,13 +658,12 @@
       const listEl = document.getElementById('pillarConsolidationList');
       if (listEl) {
         listEl.innerHTML = finPillars.map(function(p) {
-          const s = p.pagu - p.real;
           return (
-            '<div class="flex items-center justify-between text-xs py-2 border-b border-[#30363D] last:border-0">' +
-              '<span class="font-bold text-[#F0F6FC] truncate">' + escapeHtml(p.name) + '</span>' +
-              '<div class="flex items-center gap-2 font-mono tabular-nums shrink-0">' +
-                '<span class="text-[#58A6FF] font-black">' + formatRp(p.real) + '</span>' +
-                '<span class="text-[#8B949E] font-semibold text-[10px]">(' + (p.pagu > 0 ? ((p.real / p.pagu) * 100).toFixed(0) : '0') + '%)</span>' +
+            '<div class="flex items-center justify-between text-xs py-2.5 border-b border-[#EAE6DF] last:border-0">' +
+              '<span class="font-semibold text-[#1C1917] truncate">' + escapeHtml(p.name) + '</span>' +
+              '<div class="flex items-center gap-2 font-tabular shrink-0">' +
+                '<span class="text-[#2C4237] font-bold">' + formatRp(p.real) + '</span>' +
+                '<span class="text-[#78716C] font-medium text-[11px]">(' + (p.pagu > 0 ? ((p.real / p.pagu) * 100).toFixed(0) : '0') + '%)</span>' +
               '</div>' +
             '</div>'
           );
@@ -737,11 +738,11 @@
       if (totalUnusedInMod > 0) {
         unusedBar.classList.remove('hidden');
         if (state.showUnusedItems) {
-          unusedInfo.innerHTML = 'Menampilkan seluruh <strong>' + list.length + ' item</strong> (termasuk ' + totalUnusedInMod + ' item "Tidak Digunakan").';
-          btnToggleUnused.textContent = 'Sembunyikan "Tidak Digunakan" (' + totalUnusedInMod + ')';
+          unusedInfo.textContent = list.length + ' item';
+          btnToggleUnused.textContent = 'Sembunyikan Nonaktif (' + totalUnusedInMod + ')';
         } else {
-          unusedInfo.innerHTML = 'Menampilkan <strong>' + totalActiveInMod + ' item aktif</strong> (' + totalUnusedInMod + ' item "Tidak Digunakan" disembunyikan).';
-          btnToggleUnused.textContent = 'Tampilkan "Tidak Digunakan" (' + totalUnusedInMod + ')';
+          unusedInfo.textContent = totalActiveInMod + ' item aktif';
+          btnToggleUnused.textContent = 'Lihat Nonaktif (' + totalUnusedInMod + ')';
         }
       } else {
         unusedBar.classList.add('hidden');
@@ -763,7 +764,7 @@
     });
 
     if (filtered.length === 0) {
-      container.innerHTML = '<div class="bento-surface rounded-xl p-8 text-center text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D]">Tidak ada item yang cocok dengan filter.</div>';
+      container.innerHTML = '<div class="rounded-2xl p-8 text-center text-xs text-[#78716C] bg-[#FFFFFF] border border-[#EAE6DF]">Tidak ada item yang cocok dengan filter.</div>';
       return;
     }
 
@@ -773,41 +774,40 @@
       const isDone = item.status === 'Selesai' || String(item.status || '').indexOf('Selesai') === 0 || item.status.indexOf('Deal') !== -1;
       const badgeDot = isInactive ? 'status-dot-slate' : (isDone ? 'status-dot-emerald' : (item.status.indexOf('Proses') !== -1 ? 'status-dot-amber' : 'status-dot-slate'));
       const badgeCls = isInactive
-        ? 'bg-[#21262D] text-[#8B949E] border border-[#30363D]'
+        ? 'bg-[#F3F1EC] text-[#78716C] border border-[#EAE6DF]'
         : isDone
-        ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]'
+        ? 'bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]'
         : item.status.indexOf('Proses') !== -1
-        ? 'bg-[#D29922]/15 text-[#D29922] border border-[#D29922]'
-        : 'bg-[#21262D] text-[#8B949E] border border-[#30363D]';
+        ? 'bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC]'
+        : 'bg-[#F3F1EC] text-[#57534E] border border-[#EAE6DF]';
 
       const priceHtml = isSeserahan
-        ? '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-mono tabular-nums">' + formatRp(item.harga) + '</p>' +
-          '<p class="text-[10px] text-[#8B949E] font-medium">' + escapeHtml(item.brand || '-') + '</p>'
-        : '<p class="text-xs sm:text-sm font-black text-[#58A6FF] font-mono tabular-nums">' + formatRp(item.realisasi) + '</p>' +
-          '<p class="text-[10px] text-[#8B949E] font-mono tabular-nums">Est: ' + formatRp(item.estimasi) + '</p>';
+        ? '<p class="text-xs sm:text-sm font-bold text-[#1C1917] font-tabular">' + formatRp(item.harga) + '</p>' +
+          '<p class="text-[11px] text-[#78716C]">' + escapeHtml(item.brand || '-') + '</p>'
+        : '<p class="text-xs sm:text-sm font-bold text-[#1C1917] font-tabular">' + formatRp(item.realisasi) + '</p>' +
+          '<p class="text-[11px] text-[#78716C] font-tabular">Est: ' + formatRp(item.estimasi) + '</p>';
 
       return (
-        '<div class="bento-surface rounded-md p-3.5 flex items-start justify-between gap-3 border border-[#30363D] bg-[#161B22] hover:border-[#8B949E] transition shadow-xs ' + (isInactive ? 'opacity-50' : '') + '">' +
+        '<div class="rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-3 border border-[#EAE6DF] bg-[#FFFFFF] hover:bg-[#EFECE6]/40 transition shadow-[0_2px_10px_rgba(28,25,23,0.03)] ' + (isInactive ? 'opacity-50' : '') + '">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(item.kategori) + '</span>' +
-              '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + badgeCls + '"><span class="status-dot ' + badgeDot + '"></span>' + escapeHtml(item.status) + '</span>' +
-              '<span class="text-[10px] text-[#8B949E] font-mono tabular-nums">#' + item.rowIndex + '</span>' +
+              '<span class="px-2.5 py-0.5 rounded-full bg-[#F3F1EC] text-[#57534E] border border-[#EAE6DF] text-[11px] font-medium">' + escapeHtml(item.kategori) + '</span>' +
+              '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-semibold ' + badgeCls + '"><span class="status-dot ' + badgeDot + '"></span>' + escapeHtml(cleanDisplayText(item.status)) + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + escapeHtml(item.item) + '</p>' +
-            '<p class="text-[11px] text-[#8B949E] mt-0.5">' +
+            '<p class="text-sm font-semibold text-[#1C1917] mt-1.5">' + escapeHtml(item.item) + '</p>' +
+            '<p class="text-xs text-[#78716C] mt-0.5">' +
               (isSeserahan
-                ? (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="text-[#58A6FF] font-bold hover:underline">Link Toko</a>' : 'Belum ada link')
-                : 'PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(item.pic || '-') + '</strong>' + (item.target ? ' &bull; Target: ' + escapeHtml(item.target) : '')) +
+                ? (item.link ? '<a href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer" class="text-[#2C4237] font-semibold hover:underline">Link Toko</a>' : '-')
+                : 'PIC: <span class="text-[#57534E] font-medium">' + escapeHtml(item.pic || '-') + '</span>') +
             '</p>' +
           '</div>' +
-          '<div class="text-right shrink-0 flex flex-col items-end gap-1.5">' +
+          '<div class="text-right shrink-0 flex flex-col items-end gap-2">' +
             priceHtml +
             '<div class="flex items-center gap-1.5">' +
               (isSeserahan
-                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (item.status === 'Selesai' ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">' + (item.status === 'Selesai' ? '✓ Selesai' : 'Tandai') + '</button>'
+                ? '<button type="button" data-toggleseserahan="' + item.id + '" class="min-h-[40px] px-3.5 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 flex items-center justify-center ' + (item.status === 'Selesai' ? 'bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]' : 'bg-[#F3F1EC] text-[#57534E] hover:bg-[#EFECE6] border border-[#EAE6DF]') + '">' + (item.status === 'Selesai' ? 'Selesai' : 'Tandai') + '</button>'
                 : '') +
-              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition active:scale-95 flex items-center justify-center">Edit</button>' +
+              '<button type="button" data-editmod="' + modKey + '" data-editid="' + item.id + '" class="min-h-[40px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] text-xs font-medium border border-[#EAE6DF] transition active:scale-95 flex items-center justify-center">Edit</button>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -822,44 +822,42 @@
     const pct = totalEst > 0 ? ((totalReal / totalEst) * 100).toFixed(1) : '0.0';
 
     const dynamicSubparts = state.data.maharTargets.map(function(t) {
-      if (/saham|bssr/i.test(t.instrumen)) return (t.targetJumlah || 27) + ' Lot Saham BSSR';
-      if (/emas|logam\s*mulia/i.test(t.instrumen)) return (t.targetJumlah || 6) + ' Gram Emas Hartadinata / Logam Mulia';
+      if (/saham|bssr/i.test(t.instrumen)) return (t.targetJumlah || 27) + ' Lot BSSR';
+      if (/emas|logam\s*mulia/i.test(t.instrumen)) return (t.targetJumlah || 6) + ' Gram Emas';
       return 'Tunai ' + formatRp(t.totalEstimasi);
-    }).join(' • ');
+    }).join(' · ');
 
     const targetsHtml = state.data.maharTargets.map(function(t) {
       let p = 0;
       let volProgress = '';
       if (t.targetJumlah > 0 && t.collectedVolume !== undefined) {
         p = Math.min(100, Math.round((t.collectedVolume / t.targetJumlah) * 100));
-        volProgress = 'Terkumpul: <strong class="text-[#C9D1D9]">' + t.collectedVolume + ' / ' + t.targetJumlah + ' ' + escapeHtml(t.satuan) + ' (' + p + '%)</strong>';
+        volProgress = t.collectedVolume + ' / ' + t.targetJumlah + ' ' + escapeHtml(t.satuan);
       } else {
         p = t.totalEstimasi > 0 ? Math.min(100, Math.round((t.realisasi / t.totalEstimasi) * 100)) : 0;
-        volProgress = 'Target: <strong class="text-[#C9D1D9]">' + t.targetJumlah + ' ' + escapeHtml(t.satuan) + '</strong>';
+        volProgress = t.targetJumlah + ' ' + escapeHtml(t.satuan);
       }
+      const isLengkap = t.status === 'Selesai' || String(t.status || '').indexOf('Lengkap') !== -1;
       return (
-        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] space-y-2.5 shadow-xs">' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] space-y-3 shadow-[0_2px_10px_rgba(28,25,23,0.03)]">' +
           '<div class="flex items-start justify-between gap-2">' +
             '<div>' +
-              '<div class="flex items-center gap-1.5 flex-wrap">' +
-                '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (t.status === 'Selesai' || String(t.status || '').indexOf('Lengkap') !== -1 ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#D29922]/15 text-[#D29922] border border-[#D29922]') + '">' + escapeHtml(t.status) + '</span>' +
-                '<span class="text-[10px] text-[#8B949E] font-medium">Batas: ' + escapeHtml(t.batasWaktu || 'Hari H') + '</span>' +
-              '</div>' +
-              '<h4 class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + escapeHtml(t.instrumen) + '</h4>' +
-              '<p class="text-[11px] text-[#8B949E] mt-0.5">' + volProgress + ' &bull; PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(t.pic || 'CPP') + '</strong></p>' +
+              '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold ' + (isLengkap ? 'bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]' : 'bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC]') + '">' + escapeHtml(cleanDisplayText(t.status)) + '</span>' +
+              '<h4 class="text-sm font-semibold text-[#1C1917] mt-2">' + escapeHtml(t.instrumen) + '</h4>' +
+              '<p class="text-xs text-[#78716C] mt-0.5 font-tabular">' + volProgress + '</p>' +
             '</div>' +
             '<div class="text-right shrink-0 font-tabular">' +
-              '<p class="text-xs sm:text-sm font-black text-[#58A6FF]">' + formatRp(t.realisasi) + '</p>' +
-              '<p class="text-[11px] text-[#8B949E]">Est: ' + formatRp(t.totalEstimasi) + '</p>' +
+              '<p class="text-sm font-bold text-[#1C1917]">' + formatRp(t.realisasi) + '</p>' +
+              '<p class="text-[11px] text-[#78716C]">Est: ' + formatRp(t.totalEstimasi) + '</p>' +
             '</div>' +
           '</div>' +
-          '<div class="space-y-1">' +
-            '<div class="flex items-center justify-between text-[10px] text-[#8B949E] font-tabular font-bold">' +
-              '<span>Progress Serapan Target</span>' +
+          '<div class="space-y-1.5">' +
+            '<div class="flex items-center justify-between text-[11px] text-[#78716C] font-tabular font-medium">' +
+              '<span>Progress</span>' +
               '<span>' + p + '%</span>' +
             '</div>' +
-            '<div class="w-full bg-[#21262D] rounded-full h-2 overflow-hidden border border-[#30363D]">' +
-              '<div class="bg-[#58A6FF] h-full rounded-full transition-all duration-500" style="width: ' + p + '%"></div>' +
+            '<div class="w-full bg-[#EAE6DF] rounded-full h-1 overflow-hidden">' +
+              '<div class="bg-[#2C4237] h-full rounded-full transition-all duration-500" style="width: ' + p + '%"></div>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -875,24 +873,23 @@
     const logsHtml = logsList.map(function(l) {
       const isSelesai = (String(l.status || '').trim() === 'Selesai');
       return (
-        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] flex items-center justify-between gap-3 flex-wrap shadow-xs hover:border-[#8B949E] transition">' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] flex items-center justify-between gap-3 flex-wrap shadow-[0_2px_10px_rgba(28,25,23,0.03)] hover:bg-[#EFECE6]/40 transition">' +
           '<div class="min-w-0 flex-1">' +
-            '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="text-xs sm:text-sm font-bold text-[#F0F6FC]">' + escapeHtml(l.komponen) + ' (' + l.volume + ' ' + escapeHtml(l.satuan) + ')</span>' +
-              '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border border-[#238636]' : 'bg-[#D29922]/15 text-[#D29922] border border-[#D29922]') + '">' + escapeHtml(l.status) + '</span>' +
-              '<span class="text-[10px] text-[#8B949E] font-tabular">Baris #' + l.rowIndex + '</span>' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+              '<span class="text-sm font-semibold text-[#1C1917]">' + escapeHtml(l.komponen) + ' (' + l.volume + ' ' + escapeHtml(l.satuan) + ')</span>' +
+              '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold ' + (isSelesai ? 'bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]' : 'bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC]') + '">' + escapeHtml(cleanDisplayText(l.status)) + '</span>' +
             '</div>' +
-            '<p class="text-[11px] text-[#8B949E] mt-0.5">' + escapeHtml(l.tanggal) + ' &bull; Sumber: ' + escapeHtml(l.sumberDana || '-') + '</p>' +
+            '<p class="text-xs text-[#78716C] mt-1 font-tabular">' + escapeHtml(l.tanggal) + ' &bull; ' + escapeHtml(l.sumberDana || '-') + '</p>' +
           '</div>' +
           '<div class="text-right shrink-0 flex items-center gap-2">' +
             '<div class="text-right font-tabular mr-1">' +
-              '<p class="text-xs sm:text-sm font-black text-[#58A6FF]">' + formatRp(l.totalRealisasi) + '</p>' +
-              '<p class="text-[10px] text-[#8B949E]">@ ' + formatRp(l.hargaSatuan) + '</p>' +
+              '<p class="text-sm font-bold text-[#1C1917]">' + formatRp(l.totalRealisasi) + '</p>' +
+              '<p class="text-[11px] text-[#78716C]">@ ' + formatRp(l.hargaSatuan) + '</p>' +
             '</div>' +
-            '<button type="button" data-togglemaharstatus="' + l.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md text-[10px] font-bold border transition active:scale-95 flex items-center justify-center ' + (isSelesai ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636] hover:bg-[#238636]/25' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (isSelesai ? '✓ Selesai' : 'Pending') + '</button>' +
-            '<button type="button" data-editmaharlog="' + l.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[10px] font-bold border border-[#30363D] transition active:scale-95 flex items-center justify-center">Edit</button>' +
-            '<button type="button" data-deletemaharlog="' + l.id + '" class="min-h-[38px] min-w-[38px] p-2 rounded-md bg-[#21262D] hover:bg-[#DA3633]/25 text-[#F85149] hover:text-[#F85149] border border-[#30363D] hover:border-[#DA3633] transition active:scale-95 flex items-center justify-center shrink-0" title="Hapus Catatan Mahar">' +
-              '<i data-lucide="trash-2" class="w-3.5 h-3.5 text-[#F85149]"></i>' +
+            '<button type="button" data-togglemaharstatus="' + l.id + '" class="min-h-[40px] px-3 py-1.5 rounded-full text-xs font-semibold border transition active:scale-95 flex items-center justify-center ' + (isSelesai ? 'bg-[#ECF3EF] text-[#244233] border-[#C6DDD0]' : 'bg-[#F3F1EC] text-[#57534E] border-[#EAE6DF] hover:bg-[#EFECE6]') + '">' + (isSelesai ? 'Selesai' : 'Pending') + '</button>' +
+            '<button type="button" data-editmaharlog="' + l.id + '" class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] text-xs font-medium border border-[#EAE6DF] transition active:scale-95 flex items-center justify-center">Edit</button>' +
+            '<button type="button" data-deletemaharlog="' + l.id + '" class="min-h-[40px] min-w-[40px] p-2 rounded-full bg-[#FDF2F2] hover:bg-[#FBE4E4] text-[#991B1B] border border-[#F8D0D0] transition active:scale-95 flex items-center justify-center shrink-0" title="Hapus Catatan Mahar">' +
+              '<i data-lucide="trash-2" stroke-width="1.5" class="w-4 h-4 text-[#991B1B]"></i>' +
             '</button>' +
           '</div>' +
         '</div>'
@@ -901,31 +898,28 @@
 
     container.innerHTML = (
       '<div class="space-y-4">' +
-        '<div class="p-4 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-center justify-between gap-3 flex-wrap">' +
+        '<div class="p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] flex items-center justify-between gap-3 flex-wrap">' +
           '<div>' +
             '<div class="flex items-center gap-2">' +
-              '<span class="text-lg">💍</span>' +
-              '<h3 class="text-sm font-bold text-[#F0F6FC]">Komposisi Mahar Dinamis</h3>' +
-              '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#58A6FF]/15 text-[#58A6FF] border border-[#58A6FF]/30">' + pct + '% Terkumpul</span>' +
+              '<h3 class="font-editorial text-lg font-medium text-[#1C1917]">Komposisi Mahar</h3>' +
+              '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0] font-tabular">' + pct + '%</span>' +
             '</div>' +
-            '<p class="text-xs text-[#8B949E] mt-1">' + escapeHtml(dynamicSubparts) + '</p>' +
+            '<p class="text-xs text-[#78716C] mt-1 font-tabular">' + escapeHtml(dynamicSubparts) + '</p>' +
           '</div>' +
-          '<div class="flex items-center gap-2">' +
-            '<button type="button" id="btnOpenMaharPurchaseModal" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-[#238636] hover:bg-[#2EA043] active:bg-[#1A6328] text-white font-bold text-xs shadow-xs btn-shine flex items-center gap-1.5 transition active:scale-95">' +
-              '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Log Pembelian' +
-            '</button>' +
-          '</div>' +
+          '<button type="button" id="btnOpenMaharPurchaseModal" class="min-h-[44px] px-4 py-2 rounded-full bg-[#2C4237] hover:bg-[#21332A] text-white font-semibold text-xs flex items-center gap-1.5 transition active:scale-95">' +
+            '<i data-lucide="plus" stroke-width="1.5" class="w-4 h-4"></i><span>Log Pembelian</span>' +
+          '</button>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-3 gap-3">' +
           targetsHtml +
         '</div>' +
-        '<div class="space-y-2.5">' +
-          '<div class="flex items-center justify-between">' +
-            '<h4 class="text-xs font-bold text-[#F0F6FC] uppercase tracking-wider">Riwayat Cicil & Akumulasi Mahar</h4>' +
-            '<span class="text-[11px] font-bold text-[#8B949E] font-tabular">' + logsList.length + ' Transaksi</span>' +
+        '<div class="space-y-3">' +
+          '<div class="flex items-center justify-between px-1">' +
+            '<h4 class="font-editorial text-lg font-medium text-[#1C1917]">Riwayat Cicilan Mahar</h4>' +
+            '<span class="text-xs font-medium text-[#78716C] font-tabular">' + logsList.length + ' Transaksi</span>' +
           '</div>' +
-          '<div class="space-y-2">' +
-            (logsHtml || '<div class="bento-surface rounded-xl p-6 text-center text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D]">Belum ada catatan transaksi cicil mahar.</div>') +
+          '<div class="space-y-2.5">' +
+            (logsHtml || '<div class="rounded-2xl p-6 text-center text-xs text-[#78716C] bg-[#FFFFFF] border border-[#EAE6DF]">Belum ada catatan transaksi mahar.</div>') +
           '</div>' +
         '</div>' +
       '</div>'
@@ -937,7 +931,7 @@
         openQuickStep2Form('mahar', null, null, 'direct_add');
       });
     }
-    if (window.lucide) window.lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
   }
 
   function renderGuestsAndKua() {
@@ -979,14 +973,14 @@
     // Perbarui teks & status aktif tab filter tamu
     document.querySelectorAll('.guest-tab-btn').forEach(function(b) {
       const gtab = b.getAttribute('data-guesttab');
-      if (gtab === 'all') b.textContent = 'Semua (' + targetTotal + ' Pax)';
-      else if (gtab === 'CPP') b.innerHTML = '🤵 Pihak CPP (Farhan &bull; ' + targetCpp + ')';
-      else if (gtab === 'CPW') b.innerHTML = '👰 Pihak CPW (Indira &bull; ' + targetCpw + ')';
+      if (gtab === 'all') b.textContent = 'Semua (' + targetTotal + ')';
+      else if (gtab === 'CPP') b.textContent = 'Pihak CPP (' + targetCpp + ')';
+      else if (gtab === 'CPW') b.textContent = 'Pihak CPW (' + targetCpw + ')';
 
       if (gtab === state.activeGuestTab) {
-        b.className = 'guest-tab-btn px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+        b.className = 'guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
       } else {
-        b.className = 'guest-tab-btn px-3 py-1.5 rounded-md text-xs font-medium bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
+        b.className = 'guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
       }
     });
 
@@ -1014,42 +1008,42 @@
 
     const gContainer = document.getElementById('guestListContainer');
     if (filteredGuests.length === 0) {
-      gContainer.innerHTML = '<div class="bento-surface rounded-xl p-6 text-center text-xs text-[#8B949E] bg-[#161B22] border border-[#30363D]">Tidak ada tamu yang cocok dengan filter ini.</div>';
+      gContainer.innerHTML = '<div class="rounded-2xl p-6 text-center text-xs text-[#78716C] bg-[#FFFFFF] border border-[#EAE6DF]">Tidak ada tamu yang cocok dengan filter ini.</div>';
     } else {
       gContainer.innerHTML = filteredGuests.map(function(g) {
         const sideBadge = g.side === 'CPP'
-          ? 'bg-[#58A6FF]/15 text-[#58A6FF] border-[#58A6FF]/30'
-          : 'bg-[#A371F7]/15 text-[#A371F7] border-[#A371F7]/30';
+          ? 'bg-[#ECF3EF] text-[#244233] border-[#C6DDD0]'
+          : 'bg-[#FBF5EB] text-[#8A5A19] border-[#EBD9BC]';
         return (
           (function() {
             const rawPhone = String(g.whatsapp || '').replace(/[^0-9]/g, '');
             const waDigits = rawPhone ? (rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone) : '';
             const rawIg = String(g.instagram || '').replace(/[@\s]/g, '');
-            const contactSub = (g.whatsapp ? '📱 WA: ' + escapeHtml(g.whatsapp) + ' ' : '') + (g.instagram ? '📸 IG: @' + escapeHtml(rawIg) : '');
+            const contactSub = (g.whatsapp ? 'WA: ' + escapeHtml(g.whatsapp) + ' ' : '') + (g.instagram ? '· IG: @' + escapeHtml(rawIg) : '');
 
             return (
-              '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs space-y-2.5 transition hover:border-[#8B949E]">' +
+              '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] space-y-3 transition hover:bg-[#EFECE6]/40">' +
                 '<div class="flex items-start justify-between gap-2">' +
                   '<div class="min-w-0">' +
-                    '<div class="flex items-center gap-1.5 flex-wrap">' +
-                      '<span class="px-2 py-0.5 rounded-md border text-[10px] font-bold ' + sideBadge + '">' + g.side + '</span>' +
-                      '<span class="text-xs sm:text-sm font-bold text-[#F0F6FC]">' + escapeHtml(g.nama) + '</span>' +
-                      '<span class="px-1.5 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold font-tabular border border-[#30363D]">' + g.pax + ' Pax</span>' +
+                    '<div class="flex items-center gap-2 flex-wrap">' +
+                      '<span class="px-2.5 py-0.5 rounded-full border text-[11px] font-semibold ' + sideBadge + '">' + g.side + '</span>' +
+                      '<span class="text-sm font-semibold text-[#1C1917]">' + escapeHtml(g.nama) + '</span>' +
+                      '<span class="px-2 py-0.5 rounded-full bg-[#F3F1EC] text-[#57534E] text-[11px] font-medium font-tabular border border-[#EAE6DF]">' + g.pax + ' Pax</span>' +
                     '</div>' +
-                    '<p class="text-[11px] text-[#8B949E] mt-0.5">' + escapeHtml(g.kelompok) + ' &bull; ' + (g.kategori || '-') + '</p>' +
-                    (contactSub ? '<p class="text-[11px] text-[#8B949E] mt-0.5">' + contactSub + '</p>' : '') +
+                    '<p class="text-xs text-[#78716C] mt-1">' + escapeHtml(cleanDisplayText(g.kelompok)) + ' &bull; ' + escapeHtml(cleanDisplayText(g.kategori || '-')) + '</p>' +
+                    (contactSub ? '<p class="text-xs text-[#57534E] mt-0.5 font-tabular">' + contactSub + '</p>' : '') +
                   '</div>' +
                   '<div class="flex items-center gap-1.5 shrink-0">' +
-                    (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="min-h-[38px] px-2.5 py-1.5 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition flex items-center justify-center active:scale-95">WA</a>' : '') +
-                    '<button type="button" data-editguest="' + g.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' +
+                    (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#ECF3EF] hover:bg-[#DDECE4] text-[#244233] border border-[#C6DDD0] text-xs font-semibold transition flex items-center justify-center active:scale-95">WA</a>' : '') +
+                    '<button type="button" data-editguest="' + g.id + '" class="min-h-[40px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] text-xs font-medium border border-[#EAE6DF] transition flex items-center justify-center active:scale-95">Edit</button>' +
                   '</div>' +
                 '</div>' +
-                '<div class="flex items-center justify-between pt-1 border-t border-[#30363D] text-xs">' +
-                  '<span class="text-[11px] font-bold text-[#8B949E]">RSVP:</span>' +
+                '<div class="flex items-center justify-between pt-2.5 border-t border-[#EAE6DF] text-xs">' +
+                  '<span class="text-xs font-medium text-[#78716C]">RSVP</span>' +
                   '<div class="flex items-center gap-1.5">' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Hadir" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Hadir' ? 'bg-[#238636] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Hadir</button>' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Ragu-ragu" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Ragu-ragu' ? 'bg-[#D29922] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Ragu</button>' +
-                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Tidak Hadir" class="min-h-[38px] px-3 py-1.5 rounded-md text-[11px] font-bold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Tidak Hadir' ? 'bg-[#DA3633] text-white shadow-xs' : 'bg-[#21262D] text-[#8B949E] hover:bg-[#30363D] border border-[#30363D]') + '">Tidak</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Hadir" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Hadir' ? 'bg-[#2C4237] text-white' : 'bg-[#F3F1EC] text-[#57534E] hover:bg-[#EFECE6] border border-[#EAE6DF]') + '">Hadir</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Ragu-ragu" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Ragu-ragu' ? 'bg-[#9A7B4F] text-white' : 'bg-[#F3F1EC] text-[#57534E] hover:bg-[#EFECE6] border border-[#EAE6DF]') + '">Ragu</button>' +
+                    '<button type="button" data-rsvpid="' + g.id + '" data-rsvpval="Tidak Hadir" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 flex items-center justify-center ' + (g.rsvp === 'Tidak Hadir' ? 'bg-[#991B1B] text-white' : 'bg-[#F3F1EC] text-[#57534E] hover:bg-[#EFECE6] border border-[#EAE6DF]') + '">Tidak</button>' +
                   '</div>' +
                 '</div>' +
               '</div>'
@@ -1059,25 +1053,25 @@
       }).join('');
     }
 
-    document.getElementById('kuaProgressBadge').textContent = m.kuaCheckedSlots + ' / ' + m.kuaTotalSlots + ' Berkas Selesai';
+    document.getElementById('kuaProgressBadge').textContent = m.kuaCheckedSlots + ' / ' + m.kuaTotalSlots + ' Berkas';
     const kuaContainer = document.getElementById('adminKuaContainer');
     kuaContainer.innerHTML = state.data.administrasi.map(function(a) {
       const cppBtn = a.cppCheck === 'NA'
-        ? '<span class="min-h-[38px] px-2.5 py-1.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D] flex items-center justify-center">CPP: —</span>'
-        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpp" class="min-h-[38px] px-3 py-1.5 rounded-md text-[10px] font-bold border transition active:scale-95 flex items-center justify-center ' + (a.cppCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cppCheck ? '✓ CPP Siap' : '☐ Ceklis CPP') + '</button>';
+        ? '<span class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#F3F1EC] text-[#78716C] text-xs font-medium border border-[#EAE6DF] flex items-center justify-center">CPP: —</span>'
+        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpp" class="min-h-[40px] px-3.5 py-1.5 rounded-full text-xs font-semibold border transition active:scale-95 flex items-center justify-center ' + (a.cppCheck ? 'bg-[#ECF3EF] text-[#244233] border-[#C6DDD0]' : 'bg-[#F3F1EC] text-[#57534E] border-[#EAE6DF] hover:bg-[#EFECE6]') + '">' + (a.cppCheck ? 'CPP Siap' : 'Ceklis CPP') + '</button>';
 
       const cpwBtn = a.cpwCheck === 'NA'
-        ? '<span class="min-h-[38px] px-2.5 py-1.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D] flex items-center justify-center">CPW: —</span>'
-        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpw" class="min-h-[38px] px-3 py-1.5 rounded-md text-[10px] font-bold border transition active:scale-95 flex items-center justify-center ' + (a.cpwCheck ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]' : 'bg-[#21262D] text-[#8B949E] border-[#30363D] hover:bg-[#30363D]') + '">' + (a.cpwCheck ? '✓ CPW Siap' : '☐ Ceklis CPW') + '</button>';
+        ? '<span class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#F3F1EC] text-[#78716C] text-xs font-medium border border-[#EAE6DF] flex items-center justify-center">CPW: —</span>'
+        : '<button type="button" data-kuacheck="' + a.id + '" data-kuaside="cpw" class="min-h-[40px] px-3.5 py-1.5 rounded-full text-xs font-semibold border transition active:scale-95 flex items-center justify-center ' + (a.cpwCheck ? 'bg-[#ECF3EF] text-[#244233] border-[#C6DDD0]' : 'bg-[#F3F1EC] text-[#57534E] border-[#EAE6DF] hover:bg-[#EFECE6]') + '">' + (a.cpwCheck ? 'CPW Siap' : 'Ceklis CPW') + '</button>';
 
       return (
-        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 flex-wrap">' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] flex items-start justify-between gap-3 flex-wrap">' +
           '<div class="min-w-0 flex-1">' +
-            '<div class="flex items-center gap-1.5">' +
-              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] text-[10px] font-bold border border-[#30363D]">' + escapeHtml(a.instansi) + '</span>' +
-              '<span class="text-[10px] text-[#8B949E] font-medium">Target: ' + escapeHtml(a.target || '-') + '</span>' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="px-2.5 py-0.5 rounded-full bg-[#F3F1EC] text-[#57534E] text-[11px] font-medium border border-[#EAE6DF]">' + escapeHtml(a.instansi) + '</span>' +
+              '<span class="text-xs text-[#78716C]">' + escapeHtml(a.target || '-') + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + a.no + '. ' + escapeHtml(a.dokumen) + '</p>' +
+            '<p class="text-sm font-semibold text-[#1C1917] mt-1.5">' + a.no + '. ' + escapeHtml(a.dokumen) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-1.5 shrink-0">' +
             cppBtn +
@@ -1093,24 +1087,24 @@
     rdContainer.innerHTML = (state.data.rundown || []).map(function(r) {
       const stDot = r.status === 'Siap' || r.status === 'Selesai' ? 'status-dot-emerald' : (r.status === 'Dalam Proses' ? 'status-dot-amber' : 'status-dot-slate');
       const stCls = r.status === 'Siap' || r.status === 'Selesai'
-        ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]'
+        ? 'bg-[#ECF3EF] text-[#244233] border-[#C6DDD0]'
         : r.status === 'Dalam Proses'
-        ? 'bg-[#D29922]/15 text-[#D29922] border-[#D29922]'
-        : 'bg-[#21262D] text-[#8B949E] border-[#30363D]';
+        ? 'bg-[#FBF5EB] text-[#8A5A19] border-[#EBD9BC]'
+        : 'bg-[#F3F1EC] text-[#57534E] border-[#EAE6DF]';
       return (
-        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 hover:border-[#8B949E] transition">' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] flex items-start justify-between gap-3 hover:bg-[#EFECE6]/40 transition">' +
           '<div class="min-w-0 flex-1">' +
-            '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[10px] font-bold font-tabular">⏰ ' + escapeHtml(r.waktu) + ' (' + escapeHtml(r.durasi) + ')</span>' +
-              '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + stCls + '"><span class="status-dot ' + stDot + '"></span>' + escapeHtml(r.status) + '</span>' +
-              '<span class="text-[10px] font-semibold text-[#8B949E]">📍 ' + escapeHtml(r.lokasi) + '</span>' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+              '<span class="px-2.5 py-0.5 rounded-full bg-[#F3F1EC] text-[#1C1917] border border-[#EAE6DF] text-[11px] font-semibold font-tabular">' + escapeHtml(r.waktu) + ' (' + escapeHtml(r.durasi) + ')</span>' +
+              '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-semibold ' + stCls + '"><span class="status-dot ' + stDot + '"></span>' + escapeHtml(cleanDisplayText(r.status)) + '</span>' +
+              '<span class="text-xs text-[#78716C]">' + escapeHtml(r.lokasi) + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + r.no + '. ' + escapeHtml(r.sesi) + '</p>' +
-            '<p class="text-[11px] text-[#8B949E] mt-1">👤 PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(r.pic) + '</strong> &bull; Vendor: ' + escapeHtml(r.vendor) + '</p>' +
+            '<p class="text-sm font-semibold text-[#1C1917] mt-1.5">' + r.no + '. ' + escapeHtml(r.sesi) + '</p>' +
+            '<p class="text-xs text-[#78716C] mt-1">PIC: <span class="text-[#57534E] font-medium">' + escapeHtml(r.pic) + '</span> &bull; ' + escapeHtml(r.vendor) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-1.5 shrink-0">' +
-            '<button type="button" data-togglerundown="' + r.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Status</button>' +
-            '<button type="button" data-editrundown="' + r.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' +
+            '<button type="button" data-togglerundown="' + r.id + '" class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] text-xs font-medium border border-[#EAE6DF] transition flex items-center justify-center active:scale-95">Status</button>' +
+            '<button type="button" data-editrundown="' + r.id + '" class="min-h-[40px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] text-xs font-medium border border-[#EAE6DF] transition flex items-center justify-center active:scale-95">Edit</button>' +
           '</div>' +
         '</div>'
       );
@@ -1123,24 +1117,24 @@
         const isProses = t.status === 'Dalam Proses';
         const stDot = isSelesai ? 'status-dot-emerald' : (isProses ? 'status-dot-amber' : 'status-dot-slate');
         const stCls = isSelesai
-          ? 'bg-[#238636]/15 text-[#3FB950] border-[#238636]'
+          ? 'bg-[#ECF3EF] text-[#244233] border-[#C6DDD0]'
           : isProses
-          ? 'bg-[#D29922]/15 text-[#D29922] border-[#D29922]'
-          : 'bg-[#21262D] text-[#8B949E] border-[#30363D]';
+          ? 'bg-[#FBF5EB] text-[#8A5A19] border-[#EBD9BC]'
+          : 'bg-[#F3F1EC] text-[#57534E] border-[#EAE6DF]';
         return (
-          '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 hover:border-[#8B949E] transition">' +
+          '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] flex items-start justify-between gap-3 hover:bg-[#EFECE6]/40 transition">' +
             '<div class="min-w-0 flex-1">' +
-              '<div class="flex items-center gap-1.5 flex-wrap">' +
-                '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[10px] font-bold font-tabular">📅 ' + escapeHtml(t.fase) + '</span>' +
-                '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(t.kategori) + '</span>' +
-                '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ' + stCls + '"><span class="status-dot ' + stDot + '"></span>' + escapeHtml(t.status) + '</span>' +
+              '<div class="flex items-center gap-2 flex-wrap">' +
+                '<span class="px-2.5 py-0.5 rounded-full bg-[#F3F1EC] text-[#1C1917] border border-[#EAE6DF] text-[11px] font-semibold font-tabular">' + escapeHtml(t.fase) + '</span>' +
+                '<span class="px-2.5 py-0.5 rounded-full bg-[#F9F8F6] text-[#57534E] border border-[#EAE6DF] text-[11px] font-medium">' + escapeHtml(t.kategori) + '</span>' +
+                '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-semibold ' + stCls + '"><span class="status-dot ' + stDot + '"></span>' + escapeHtml(cleanDisplayText(t.status)) + '</span>' +
               '</div>' +
-              '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + t.no + '. ' + escapeHtml(t.agenda) + '</p>' +
-              '<p class="text-[11px] text-[#8B949E] mt-1">👤 PIC: <strong class="text-[#C9D1D9]">' + escapeHtml(t.pic) + '</strong>' + (t.target ? ' &bull; Target: ' + escapeHtml(t.target) : '') + '</p>' +
+              '<p class="text-sm font-semibold text-[#1C1917] mt-1.5">' + t.no + '. ' + escapeHtml(t.agenda) + '</p>' +
+              '<p class="text-xs text-[#78716C] mt-1">PIC: <span class="text-[#57534E] font-medium">' + escapeHtml(t.pic) + '</span>' + (t.target ? ' &bull; ' + escapeHtml(t.target) : '') + '</p>' +
             '</div>' +
             '<div class="flex items-center gap-1.5 shrink-0">' +
-              '<button type="button" data-toggletimeline="' + t.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Status</button>' +
-              '<button type="button" data-edittimeline="' + t.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' +
+              '<button type="button" data-toggletimeline="' + t.id + '" class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#57534E] text-xs font-medium border border-[#EAE6DF] transition flex items-center justify-center active:scale-95">Status</button>' +
+              '<button type="button" data-edittimeline="' + t.id + '" class="min-h-[40px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] text-xs font-medium border border-[#EAE6DF] transition flex items-center justify-center active:scale-95">Edit</button>' +
             '</div>' +
           '</div>'
         );
@@ -1153,7 +1147,7 @@
     const dealCount = vendorsList.filter(function(v) { return (v.statusKerjasama || '').indexOf('Deal') !== -1 || (v.statusPembayaran || '').indexOf('Lunas') !== -1 || (v.statusPembayaran || '').indexOf('DP') !== -1; }).length;
 
     document.getElementById('vendorCountText').textContent = vendorsList.length + ' Vendor';
-    document.getElementById('vendorDealCount').textContent = dealCount + ' Deal / Aktif';
+    document.getElementById('vendorDealCount').textContent = dealCount + ' Deal';
     document.getElementById('vendorTotalContract').textContent = formatRp(totalKontrak);
     document.getElementById('vendorTotalRemaining').textContent = formatRp(totalSisa);
 
@@ -1174,26 +1168,26 @@
       v.waDigits = waDigits;
 
       return (
-        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs flex items-start justify-between gap-3 flex-wrap hover:border-[#8B949E] transition">' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] flex items-start justify-between gap-3 flex-wrap hover:bg-[#EFECE6]/40 transition">' +
           '<div class="min-w-0 flex-1">' +
             '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#8B949E] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(v.kategori) + '</span>' +
-              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#58A6FF] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(v.statusKerjasama) + '</span>' +
-              '<span class="px-2 py-0.5 rounded-md bg-[#21262D] text-[#D29922] border border-[#30363D] text-[10px] font-bold">' + escapeHtml(v.statusPembayaran) + '</span>' +
+              '<span class="px-2.5 py-0.5 rounded-full bg-[#F3F1EC] text-[#57534E] border border-[#EAE6DF] text-[11px] font-medium">' + escapeHtml(v.kategori) + '</span>' +
+              '<span class="px-2.5 py-0.5 rounded-full bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0] text-[11px] font-semibold">' + escapeHtml(v.statusKerjasama) + '</span>' +
+              '<span class="px-2.5 py-0.5 rounded-full bg-[#FBF5EB] text-[#8A5A19] border border-[#EBD9BC] text-[11px] font-semibold">' + escapeHtml(v.statusPembayaran) + '</span>' +
             '</div>' +
-            '<p class="text-xs sm:text-sm font-bold text-[#F0F6FC] mt-1">' + v.no + '. ' + escapeHtml(v.nama) + '</p>' +
-            '<p class="text-xs text-[#58A6FF] font-bold mt-0.5">📞 ' + escapeHtml(v.kontak) + '</p>' +
-            '<p class="text-[11px] text-[#8B949E] mt-0.5">📦 ' + escapeHtml(v.layanan) + '</p>' +
+            '<p class="text-sm font-semibold text-[#1C1917] mt-1.5">' + v.no + '. ' + escapeHtml(v.nama) + '</p>' +
+            '<p class="text-xs text-[#2C4237] font-medium mt-0.5">' + escapeHtml(v.kontak) + '</p>' +
+            '<p class="text-xs text-[#78716C] mt-0.5">' + escapeHtml(v.layanan) + '</p>' +
           '</div>' +
-          '<div class="text-right shrink-0 flex flex-col items-end gap-1.5">' +
+          '<div class="text-right shrink-0 flex flex-col items-end gap-2">' +
             (state.role === 'couple'
-              ? '<p class="text-xs font-bold text-[#F0F6FC] font-tabular">Kontrak: ' + formatRp(v.nilaiKontrak) + '</p>' +
-                '<p class="text-[11px] font-bold text-[#58A6FF] font-tabular">Sisa: ' + formatRp(v.sisaPembayaran) + '</p>'
-              : '<p class="text-xs font-bold text-[#8B949E]">Akses Finansial Terbatas</p>') +
+              ? '<p class="text-xs font-semibold text-[#1C1917] font-tabular">Kontrak: ' + formatRp(v.nilaiKontrak) + '</p>' +
+                '<p class="text-xs font-medium text-[#2C4237] font-tabular">Sisa: ' + formatRp(v.sisaPembayaran) + '</p>'
+              : '') +
             '<div class="flex items-center gap-1.5 mt-1">' +
-              (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#238636]/15 hover:bg-[#238636]/25 text-[#3FB950] border border-[#238636] text-[11px] font-bold transition flex items-center justify-center active:scale-95">WA</a>' : '') +
-              (phoneDigits ? '<a href="tel:' + phoneDigits + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-[11px] font-bold transition flex items-center justify-center active:scale-95">Telp</a>' : '') +
-              (state.role === 'couple' ? '<button type="button" data-editmod="vendors" data-editid="' + v.id + '" class="min-h-[38px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] text-[11px] font-bold border border-[#30363D] transition flex items-center justify-center active:scale-95">Edit</button>' : '') +
+              (waDigits ? '<a href="https://wa.me/' + waDigits + '" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#ECF3EF] hover:bg-[#DDECE4] text-[#244233] border border-[#C6DDD0] text-xs font-semibold transition flex items-center justify-center active:scale-95">WA</a>' : '') +
+              (phoneDigits ? '<a href="tel:' + phoneDigits + '" class="min-h-[40px] px-3 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] border border-[#EAE6DF] text-xs font-medium transition flex items-center justify-center active:scale-95">Telp</a>' : '') +
+              (state.role === 'couple' ? '<button type="button" data-editmod="vendors" data-editid="' + v.id + '" class="min-h-[40px] px-3.5 py-1.5 rounded-full bg-[#F3F1EC] hover:bg-[#EFECE6] text-[#1C1917] text-xs font-medium border border-[#EAE6DF] transition flex items-center justify-center active:scale-95">Edit</button>' : '') +
             '</div>' +
           '</div>' +
         '</div>'
@@ -1213,15 +1207,11 @@
 
     if (allDone && CHECKLIST_ITEMS.length > 0) {
       chkContainer.innerHTML =
-        '<div class="p-4 rounded-xl bg-[#238636]/15 border border-[#238636] flex items-center justify-between gap-3">' +
-          '<div class="flex items-center gap-2.5">' +
-            '<span class="w-8 h-8 rounded-lg bg-[#238636] text-white flex items-center justify-center font-bold text-sm shrink-0">✓</span>' +
-            '<div>' +
-              '<h4 class="text-xs font-bold text-[#F0F6FC]">Semua Pengujian Tuntas! (6/6)</h4>' +
-              '<p class="text-[11px] text-[#8B949E]">Aplikasi siap digunakan.</p>' +
-            '</div>' +
+        '<div class="p-4 rounded-2xl bg-[#ECF3EF] border border-[#C6DDD0] flex items-center justify-between gap-3">' +
+          '<div>' +
+            '<h4 class="text-xs font-semibold text-[#244233]">Semua Pengujian Tuntas</h4>' +
           '</div>' +
-          '<button type="button" id="btnResetChecklist" class="px-2.5 py-1 rounded-md bg-[#21262D] text-[#3FB950] border border-[#238636] text-[10px] font-bold hover:bg-[#30363D] transition shrink-0">Buka Lagi</button>' +
+          '<button type="button" id="btnResetChecklist" class="min-h-[40px] px-3.5 py-1.5 rounded-full bg-[#FFFFFF] text-[#244233] border border-[#C6DDD0] text-xs font-medium hover:bg-[#F3F1EC] transition shrink-0">Buka Lagi</button>' +
         '</div>';
       const btnReset = document.getElementById('btnResetChecklist');
       if (btnReset) {
@@ -1237,9 +1227,9 @@
     chkContainer.innerHTML = CHECKLIST_ITEMS.map(function(item) {
       const done = !!state.checklist[item.id];
       return (
-        '<label class="flex items-start gap-2.5 p-2.5 rounded-md bg-[#090D12] hover:bg-[#21262D] border border-[#30363D] cursor-pointer transition">' +
-          '<input type="checkbox" data-wchk="' + item.id + '" ' + (done ? 'checked' : '') + ' class="mt-0.5 rounded accent-[#238636]" />' +
-          '<span class="text-xs ' + (done ? 'line-through text-[#8B949E]' : 'text-[#C9D1D9] font-medium') + '">' + escapeHtml(item.text) + '</span>' +
+        '<label class="flex items-start gap-2.5 p-3 rounded-xl bg-[#F9F8F6] hover:bg-[#EFECE6] border border-[#EAE6DF] cursor-pointer transition">' +
+          '<input type="checkbox" data-wchk="' + item.id + '" ' + (done ? 'checked' : '') + ' class="mt-0.5 rounded accent-[#2C4237]" />' +
+          '<span class="text-xs ' + (done ? 'line-through text-[#78716C]' : 'text-[#1C1917] font-medium') + '">' + escapeHtml(item.text) + '</span>' +
         '</label>'
       );
     }).join('');
@@ -1259,11 +1249,11 @@
     });
 
     const tabLabels = {
-      master: 'Master',
-      modules: 'Modul',
-      guests: 'Tamu & KUA',
-      vendors: 'Acara & WO',
-      setup: 'Konfigurasi'
+      master: 'Ringkas',
+      modules: 'Persiapan',
+      guests: 'Tamu',
+      vendors: 'Acara',
+      setup: 'Pengaturan'
     };
     const lblCur = document.getElementById('labelCurrentNavTab');
     if (lblCur && tabLabels[tabName]) lblCur.textContent = tabLabels[tabName];
@@ -1271,9 +1261,9 @@
     document.querySelectorAll('.bottom-nav-btn').forEach(function(btn) {
       const bTab = btn.getAttribute('data-tab');
       if (bTab === tabName) {
-        btn.className = 'bottom-nav-btn min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-semibold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#58A6FF] bg-[#21262D] border border-[#30363D] shadow-xs active-pill-indicator active:scale-95';
+        btn.className = 'bottom-nav-btn min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-semibold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#2C4237] bg-[#ECF3EF] border border-[#C6DDD0] active-pill-indicator active:scale-95';
       } else {
-        btn.className = 'bottom-nav-btn min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#8B949E] hover:text-[#F0F6FC] hover:bg-[#21262D] border border-transparent active:scale-95';
+        btn.className = 'bottom-nav-btn min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#57534E] hover:text-[#1C1917] hover:bg-[#EFECE6] border border-transparent active:scale-95';
       }
     });
 
@@ -1286,12 +1276,12 @@
     if (btnSetup && lblSetup && icnSetup) {
       if (tabName === 'setup') {
         lblSetup.textContent = 'Kembali';
-        btnSetup.className = 'min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#58A6FF] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs';
+        btnSetup.className = 'min-h-[44px] px-3 py-1.5 rounded-full bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95';
         icnSetup.setAttribute('data-lucide', 'arrow-left');
       } else {
-        lblSetup.textContent = 'Konfigurasi';
-        btnSetup.className = 'min-h-[44px] px-3 py-1.5 rounded-md bg-[#21262D] hover:bg-[#30363D] text-[#C9D1D9] border border-[#30363D] text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-xs';
-        icnSetup.setAttribute('data-lucide', 'settings');
+        lblSetup.textContent = 'Pengaturan';
+        btnSetup.className = 'min-h-[44px] px-3 py-1.5 rounded-full bg-[#FFFFFF] hover:bg-[#EFECE6] text-[#57534E] border border-[#EAE6DF] text-xs font-medium flex items-center gap-1.5 transition active:scale-95';
+        icnSetup.setAttribute('data-lucide', 'sliders-horizontal');
       }
     }
 
@@ -1454,7 +1444,7 @@
           document.getElementById('maharStatusSelect').value = logItem.status || 'Selesai';
           document.getElementById('maharAccountInput').value = logItem.sumberDana || 'RDN Indo Premier (IPOT)';
           document.getElementById('maharNoteInput').value = logItem.catatan || '';
-          if (infoBanner) infoBanner.innerHTML = 'Mengedit log baris #' + logItem.rowIndex + ' (Status: <strong>' + escapeHtml(logItem.status) + '</strong>).';
+          if (infoBanner) infoBanner.innerHTML = 'Mengedit log transaksi (Status: <strong>' + escapeHtml(logItem.status) + '</strong>).';
         }
       } else {
         document.getElementById('maharLogEditId').value = '';
@@ -1465,7 +1455,7 @@
         const realInp = document.getElementById('maharTotalRealisasiInput');
         if (realInp) realInp.value = '';
         document.getElementById('maharStatusSelect').value = 'Selesai';
-        if (infoBanner) infoBanner.innerHTML = 'Menambah baris riwayat di <strong>Tabel Log Cicilan (Baris 16+)</strong> sekaligus mengupdate <strong>Realisasi &amp; Target Mahar</strong>.';
+        if (infoBanner) infoBanner.textContent = 'Log Cicilan Mahar';
       }
       syncMaharTargetField();
       updateMaharPreview();
@@ -1717,10 +1707,10 @@
       document.getElementById('labelEditRealisasi').textContent = 'Realisasi Aktual (Rp)';
       realInp.readOnly = false;
       document.getElementById('labelEditPic').textContent = 'PIC Pelaksana';
-      stSel.innerHTML = '<option value="Belum Dimulai">Belum Dimulai</option><option value="Dalam Proses ⏳">Dalam Proses ⏳</option><option value="Deal / Booking">Deal / Booking</option><option value="Selesai ✅">Selesai ✅</option><option value="Tidak Digunakan">Tidak Digunakan</option>';
+      stSel.innerHTML = '<option value="Belum Dimulai">Belum Dimulai</option><option value="Dalam Proses ⏳">Dalam Proses</option><option value="Deal / Booking">Deal / Booking</option><option value="Selesai ✅">Selesai</option><option value="Tidak Digunakan">Tidak Digunakan</option>';
       syncEditPicFieldUI(modKey, 'CPP & CPW Bersama');
     } else {
-      nameLbl.textContent = 'Nama Item / Tugas Akad-Resepsi Baru';
+      nameLbl.textContent = 'Nama Item Baru';
       nameInp.placeholder = 'Contoh: Tambahan Kursi / Genset';
       document.getElementById('labelEditEstimasi').textContent = 'Estimasi Biaya (Rp)';
       estInp.value = '0';
@@ -1728,7 +1718,7 @@
       document.getElementById('labelEditRealisasi').textContent = 'Realisasi Aktual (Rp)';
       realInp.readOnly = false;
       document.getElementById('labelEditPic').textContent = 'PIC Pelaksana';
-      stSel.innerHTML = '<option value="Belum Dimulai">Belum Dimulai</option><option value="Dalam Proses ⏳">Dalam Proses ⏳</option><option value="Deal / Booking">Deal / Booking</option><option value="Selesai ✅">Selesai ✅</option>';
+      stSel.innerHTML = '<option value="Belum Dimulai">Belum Dimulai</option><option value="Dalam Proses ⏳">Dalam Proses</option><option value="Deal / Booking">Deal / Booking</option><option value="Selesai ✅">Selesai</option>';
       syncEditPicFieldUI(modKey, 'CPP & CPW Bersama');
     }
   }
@@ -1739,7 +1729,7 @@
     const list = state.data[modKey] || [];
 
     itemSel.innerHTML = list.map(function(it) {
-      const label = it.item || it.agenda || it.nama || it.sesi || ('Baris #' + it.rowIndex);
+      const label = it.item || it.agenda || it.nama || it.sesi || 'Item';
       return '<option value="' + escapeHtml(it.id) + '">' + it.no + '. ' + escapeHtml(label) + '</option>';
     }).join('');
 
@@ -1754,7 +1744,7 @@
     else if (modKey === 'timeline') statuses = ['Belum Mulai', 'Dalam Proses', 'Selesai'];
 
     stSel.innerHTML = statuses.map(function(s) {
-      return '<option value="' + escapeHtml(s) + '">' + escapeHtml(s) + '</option>';
+      return '<option value="' + escapeHtml(s) + '">' + escapeHtml(cleanDisplayText(s)) + '</option>';
     }).join('');
 
     loadSelectedEditItemFields();
@@ -2105,7 +2095,7 @@
         await syncFromAppsScript(true);
       }
       if (!options.quietSuccessToast) {
-        showToast('✓ Sinkronisasi Berhasil: Data & formula spreadsheet telah diperbarui!');
+        showToast('Sinkronisasi berhasil: data terbaru diperbarui.');
       }
       return { ok: true };
     } catch (e) {
@@ -2356,13 +2346,13 @@
     const items = [];
     for (let i = 0; i < (count || 3); i++) {
       items.push(
-        '<div class="p-3.5 rounded-xl bento-surface bg-[#161B22] border border-[#30363D] shadow-xs space-y-2.5">' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-[#FFFFFF] border border-[#EAE6DF] shadow-[0_2px_10px_rgba(28,25,23,0.03)] space-y-2.5">' +
           '<div class="flex items-center justify-between">' +
-            '<div class="w-20 h-4 rounded-md skeleton-shimmer"></div>' +
-            '<div class="w-14 h-4 rounded-md skeleton-shimmer"></div>' +
+            '<div class="w-20 h-4 rounded-full skeleton-shimmer"></div>' +
+            '<div class="w-14 h-4 rounded-full skeleton-shimmer"></div>' +
           '</div>' +
-          '<div class="w-3/4 h-5 rounded-md skeleton-shimmer"></div>' +
-          '<div class="w-1/2 h-3.5 rounded-md skeleton-shimmer"></div>' +
+          '<div class="w-3/4 h-5 rounded-lg skeleton-shimmer"></div>' +
+          '<div class="w-1/2 h-3.5 rounded-lg skeleton-shimmer"></div>' +
         '</div>'
       );
     }
@@ -2393,10 +2383,10 @@
           const now = new Date();
           const hh = String(now.getHours()).padStart(2, '0');
           const mm = String(now.getMinutes()).padStart(2, '0');
-          badge.textContent = '✓ Tersinkron ' + hh + ':' + mm;
+          badge.textContent = 'Tersinkron ' + hh + ':' + mm;
         }
         if (!isSilentAutoSync) {
-          showToast('✓ Sinkronisasi Berhasil: Seluruh 9 tab & data formula terbaru dari Google Sheets ditarik ke aplikasi!');
+          showToast('Sinkronisasi berhasil: seluruh data terbaru telah dimuat.');
         }
       } else if (!isSilentAutoSync) {
         showToast(json.message || 'PIN atau URL tidak sesuai.', true);
@@ -2419,7 +2409,7 @@
     try { renderGuestsAndKua(); } catch (e) { console.error('renderGuestsAndKua error:', e); }
     try { renderVendorsAndRundown(); } catch (e) { console.error('renderVendorsAndRundown error:', e); }
     try { renderSetupView(); } catch (e) { console.error('renderSetupView error:', e); }
-    try { if (window.lucide) window.lucide.createIcons(); } catch (e) {}
+    try { if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } }); } catch (e) {}
   }
 
   function initEvents() {
@@ -2543,12 +2533,12 @@
         state.data.maharLogs = state.data.maharLogs.filter(function(l) { return l.id !== id; });
         computeMasterMetrics();
         renderModuleView();
-        showToast('Menghapus catatan mahar baris #' + removedRowIndex + '...', false);
+        showToast('Menghapus catatan mahar...', false);
 
         try {
           await SheetApi.deleteRow('MAHAR', removedRowIndex, state.config.scriptUrl, state.config.pin);
           await syncFromAppsScript(true);
-          showToast('✓ Catatan mahar berhasil dihapus & formula disinkronkan!');
+          showToast('Catatan mahar berhasil dihapus & formula disinkronkan.');
         } catch (err) {
           console.error('Delete mahar error:', err);
           showToast('Gagal menghapus mahar: ' + (err.message || String(err)), true);
@@ -2558,7 +2548,6 @@
       }
     });
 
-    // Helper ringkas untuk sakelar "Hide" dan "Unhide"
     function setupCollapsibleSection(btnId, wrapId, lblId, icnId) {
       const btn = document.getElementById(btnId);
       const wrap = document.getElementById(wrapId);
@@ -2570,14 +2559,13 @@
         e.preventDefault();
         const isNowHidden = wrap.classList.toggle('hidden');
         if (lbl) {
-          lbl.textContent = isNowHidden ? 'Unhide' : 'Hide';
+          lbl.textContent = isNowHidden ? 'Tampilkan' : 'Sembunyikan';
         }
         if (icn) {
           icn.setAttribute('data-lucide', isNowHidden ? 'chevron-down' : 'chevron-up');
         }
-        if (window.lucide) window.lucide.createIcons();
+        if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
 
-        // Jika unhide grafik saat dalam mode mempelai, trigger resize chart
         if (!isNowHidden && state.role === 'couple') {
           setTimeout(function() {
             if (pillarChart) pillarChart.resize();
@@ -2608,9 +2596,9 @@
         switchMainTab('modules');
         document.querySelectorAll('.submod-btn').forEach(function(b) {
           if (b.getAttribute('data-submod') === key) {
-            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
           } else {
-            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
           }
         });
         populateModuleFilters();
@@ -2623,9 +2611,9 @@
         state.activeSubMod = btn.getAttribute('data-submod');
         document.querySelectorAll('.submod-btn').forEach(function(b) {
           if (b.getAttribute('data-submod') === state.activeSubMod) {
-            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
           } else {
-            b.className = 'submod-btn shrink-0 min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
+            b.className = 'submod-btn shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
           }
         });
         populateModuleFilters();
@@ -2704,9 +2692,9 @@
       const vKua = document.getElementById('subview-adminkua');
       if (vKua) vKua.classList.add('hidden');
       const bTamu = document.getElementById('btnSubTamu');
-      if (bTamu) bTamu.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+      if (bTamu) bTamu.className = 'min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
       const bKua = document.getElementById('btnSubAdminKua');
-      if (bKua) bKua.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
+      if (bKua) bKua.className = 'min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
     });
 
     safeOn('btnSubAdminKua', 'click', function() {
@@ -2715,9 +2703,9 @@
       const vTamu = document.getElementById('subview-tamu');
       if (vTamu) vTamu.classList.add('hidden');
       const bKua = document.getElementById('btnSubAdminKua');
-      if (bKua) bKua.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+      if (bKua) bKua.className = 'min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
       const bTamu = document.getElementById('btnSubTamu');
-      if (bTamu) bTamu.className = 'min-h-[44px] px-3.5 py-2 rounded-md text-xs font-medium bg-[#161B22] text-[#8B949E] border border-[#30363D] hover:text-[#C9D1D9]';
+      if (bTamu) bTamu.className = 'min-h-[44px] px-4 py-2 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
     });
 
     document.querySelectorAll('.guest-tab-btn').forEach(function(btn) {
@@ -2725,9 +2713,9 @@
         state.activeGuestTab = btn.getAttribute('data-guesttab');
         document.querySelectorAll('.guest-tab-btn').forEach(function(b) {
           if (b.getAttribute('data-guesttab') === state.activeGuestTab) {
-            b.className = 'guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
+            b.className = 'guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
           } else {
-            b.className = 'guest-tab-btn min-h-[44px] px-3 py-1.5 rounded-md text-xs font-medium bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
+            b.className = 'guest-tab-btn min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
           }
         });
         renderGuestsAndKua();
@@ -2825,11 +2813,11 @@
           '',
           'Tanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Sahabat untuk hadir dan memberikan doa restu pada hari pernikahan kami:',
           '',
-          '💍 *Farhan Rafiqi & Indira Gusti*',
-          '📅 ' + wDate,
-          '📍 ' + venue,
+          '*Farhan Rafiqi & Indira Gusti*',
+          'Tanggal: ' + wDate,
+          'Lokasi: ' + venue,
           '',
-          '💌 _Link website undangan resmi & e-invitation akan kami kirimkan menyusul._',
+          '_Link website undangan resmi & e-invitation akan kami kirimkan menyusul._',
           '',
           'Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Sahabat berkenan hadir.',
           '',
@@ -2864,17 +2852,17 @@
         const venue = (state.data.meta && state.data.meta.venue) || 'Venue Intimate';
 
         const lines = [
-          'Halo ' + g.nama + '!',
+          'Halo ' + g.nama + ',',
           '',
           'Tanpa mengurangi rasa hormat, kami ingin mengundang kamu untuk hadir dan memberikan doa restu pada hari bahagia pernikahan kami:',
           '',
-          '💍 Farhan Rafiqi & Indira Gusti',
-          '📅 ' + wDate,
-          '📍 ' + venue,
+          'Farhan Rafiqi & Indira Gusti',
+          'Tanggal: ' + wDate,
+          'Lokasi: ' + venue,
           '',
-          '💌 Link website undangan & e-invitation resmi akan kami kirimkan menyusul yaa.',
+          'Link website undangan & e-invitation resmi akan kami kirimkan menyusul.',
           '',
-          'Terima kasih banyak atas doa dan restunya! ✨'
+          'Terima kasih banyak atas doa dan restunya.'
         ];
         const msgText = lines.join(String.fromCharCode(10));
 
@@ -2932,8 +2920,8 @@
       const bRundown = document.getElementById('btnSubRundown');
       const bVendors = document.getElementById('btnSubVendors');
       const bTimeline = document.getElementById('btnSubTimeline');
-      const actCls = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262D] text-[#58A6FF] border border-[#30363D] shadow-xs';
-      const inactCls = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-transparent text-[#8B949E] border border-transparent hover:text-[#C9D1D9] hover:bg-[#21262D]';
+      const actCls = 'px-4 py-2 rounded-full min-h-[44px] text-xs font-semibold bg-[#ECF3EF] text-[#244233] border border-[#C6DDD0]';
+      const inactCls = 'px-4 py-2 rounded-full min-h-[44px] text-xs font-medium bg-[#FFFFFF] text-[#57534E] border border-[#EAE6DF] hover:bg-[#EFECE6]';
       if (bRundown) bRundown.className = (v === 'rundown' ? actCls : inactCls);
       if (bVendors) bVendors.className = (v === 'vendors' ? actCls : inactCls);
       if (bTimeline) bTimeline.className = (v === 'timeline' ? actCls : inactCls);
@@ -3224,15 +3212,15 @@
           actionName = 'add_wedding_tracker';
         }
 
-        await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+        await withFormSubmitting(formEl, 'Menyimpan ke Sheets...', async function() {
           saveLocalState();
           refreshAll();
           const syncRes = await pushToAppsScript(actionName, newItem);
           closeQuickModal();
           if (syncRes && syncRes.ok) {
-            showToast('✓ Item baru "' + customNameVal + '" tersimpan ke Google Sheets (Baris #' + targetRow + ')!');
+            showToast('Item baru "' + customNameVal + '" tersimpan ke Google Sheets.');
           } else {
-            showToast('⚠ Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || 'Periksa koneksi'), true);
+            showToast('Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || 'Periksa koneksi'), true);
           }
         });
         return;
@@ -3286,15 +3274,15 @@
         actionName = (modKey === 'preWedding') ? 'update_pre_wedding' : 'update_wedding_tracker';
       }
 
-      await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+      await withFormSubmitting(formEl, 'Menyimpan ke Sheets...', async function() {
         saveLocalState();
         refreshAll();
         const syncRes = await pushToAppsScript(actionName, it);
         closeQuickModal();
         if (syncRes && syncRes.ok) {
-          showToast('✓ Data "' + (customNameVal || it.item || it.nama || it.sesi || it.agenda) + '" diperbarui di Google Sheets!');
+          showToast('Data "' + (customNameVal || it.item || it.nama || it.sesi || it.agenda) + '" diperbarui di Google Sheets.');
         } else {
-          showToast('⚠ Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || 'Periksa koneksi'), true);
+          showToast('Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || 'Periksa koneksi'), true);
         }
       });
     });
@@ -3333,7 +3321,7 @@
         }
       }
 
-      await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+      await withFormSubmitting(formEl, 'Menyimpan ke Sheets...', async function() {
         let targetRes = { ok: true };
         if (targetChanged && tObj) {
           tObj.targetJumlah = targetQty;
@@ -3367,9 +3355,9 @@
               const logRes = await pushToAppsScript('update_mahar_log', targetLog);
               closeQuickModal();
               if (logRes && logRes.ok) {
-                showToast('✓ Log transaksi Mahar #' + targetLog.no + ' diperbarui di Google Sheets!');
+                showToast('Log transaksi Mahar diperbarui di Google Sheets.');
               } else {
-                showToast('⚠ Tersimpan lokal, gagal kirim ke Sheets: ' + ((logRes && logRes.error) || ''), true);
+                showToast('Tersimpan lokal, gagal kirim ke Sheets: ' + ((logRes && logRes.error) || ''), true);
               }
               return;
             }
@@ -3398,9 +3386,9 @@
           const addRes = await pushToAppsScript('add_mahar_log', newLog);
           closeQuickModal();
           if (addRes && addRes.ok) {
-            showToast('✓ Cicilan Mahar (' + komp + ') tersimpan di Baris #' + nextLogRow + ' Google Sheets!');
+            showToast('Cicilan Mahar (' + komp + ') tersimpan di Google Sheets.');
           } else {
-            showToast('⚠ Tersimpan lokal, gagal kirim ke Sheets: ' + ((addRes && addRes.error) || ''), true);
+            showToast('Tersimpan lokal, gagal kirim ke Sheets: ' + ((addRes && addRes.error) || ''), true);
           }
           return;
         }
@@ -3410,9 +3398,9 @@
         closeQuickModal();
         refreshAll();
         if (targetChanged && targetRes && !targetRes.ok) {
-          showToast('⚠ Target lokal berubah, gagal update ke Sheets: ' + (targetRes.error || ''), true);
+          showToast('Target lokal berubah, gagal update ke Sheets: ' + (targetRes.error || ''), true);
         } else {
-          showToast('✓ Target Mahar (' + komp + ': ' + targetQty + ') berhasil diperbarui!');
+          showToast('Target Mahar (' + komp + ': ' + targetQty + ') berhasil diperbarui.');
         }
       });
     });
@@ -3485,15 +3473,15 @@
         state.guestExtras[keyByName] = { whatsapp: waVal, instagram: igVal };
       }
 
-      await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+      await withFormSubmitting(formEl, 'Menyimpan ke Sheets...', async function() {
         saveLocalState();
         refreshAll();
         const syncRes = targetGuest ? await pushToAppsScript('update_tamu', targetGuest) : { ok: false };
         closeQuickModal();
         if (syncRes && syncRes.ok) {
-          showToast('✓ Tamu "' + nama + '" tersimpan ke Google Sheets (Baris #' + targetGuest.rowIndex + ')!');
+          showToast('Tamu "' + nama + '" tersimpan ke Google Sheets.');
         } else {
-          showToast('⚠ Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || ''), true);
+          showToast('Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || ''), true);
         }
       });
     });
@@ -3523,7 +3511,9 @@
       state.data.meta.cpw = newCpw.trim();
 
       const heroNames = document.getElementById('heroCoupleNames');
-      if (heroNames) heroNames.textContent = state.data.meta.cpp + ' & ' + state.data.meta.cpw;
+      if (heroNames) {
+        heroNames.innerHTML = escapeHtml(state.data.meta.cpp) + ' <span class="italic font-normal text-[#9A7B4F]">&amp;</span> ' + escapeHtml(state.data.meta.cpw);
+      }
       const titleHdr = document.getElementById('headerCoupleTitle');
       if (titleHdr) titleHdr.textContent = state.data.meta.cpp + ' & ' + state.data.meta.cpw;
 
@@ -3570,23 +3560,23 @@
         const venueStr = meta.venue || 'Venue Intimate';
         const lines = [
           '*RUNDOWN ACARA PERNIKAHAN FARHAN & INDIRA*',
-          '📅 Hari/Tanggal: ' + wDateStr,
-          '📍 Lokasi: ' + venueStr,
+          'Hari/Tanggal: ' + wDateStr,
+          'Lokasi: ' + venueStr,
           '------------------------------------------',
           ''
         ];
 
         state.data.rundown.forEach(function(r) {
-          lines.push('⏰ *' + r.waktu + ' (' + r.durasi + ')* — ' + r.sesi);
-          lines.push('   • Sesi: ' + r.deskripsi);
-          lines.push('   • Tempat: ' + r.lokasi);
-          lines.push('   • PIC: ' + r.pic + ' | Vendor: ' + r.vendor);
-          if (r.catatan) lines.push('   • Catatan: ' + r.catatan);
+          lines.push('*' + r.waktu + ' (' + r.durasi + ')* — ' + r.sesi);
+          lines.push('   - Sesi: ' + r.deskripsi);
+          lines.push('   - Tempat: ' + r.lokasi);
+          lines.push('   - PIC: ' + r.pic + ' | Vendor: ' + r.vendor);
+          if (r.catatan) lines.push('   - Catatan: ' + r.catatan);
           lines.push('');
         });
 
         lines.push('------------------------------------------');
-        lines.push('💡 _Mohon seluruh panitia keluarga & WO hadir sesuai jadwal PIC masing-masing._');
+        lines.push('_Mohon seluruh panitia keluarga & WO hadir sesuai jadwal PIC masing-masing._');
 
         const ta = document.createElement('textarea');
         ta.value = lines.join(String.fromCharCode(10));
