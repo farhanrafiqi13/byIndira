@@ -23,8 +23,37 @@
 })(typeof self !== 'undefined' ? self : this, function() {
   'use strict';
 
-  const DEFAULT_ENDPOINT = 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec';
+  const FALLBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec';
+  const DEFAULT_ENDPOINT = (typeof window !== 'undefined' && window.WEDDING_GAS_ENDPOINT) ? window.WEDDING_GAS_ENDPOINT : FALLBACK_ENDPOINT;
   const DEFAULT_PIN = '270627';
+
+  function resolveEndpoint(endpoint) {
+    if (typeof window !== 'undefined' && window.WEDDING_GAS_ENDPOINT) {
+      return window.WEDDING_GAS_ENDPOINT;
+    }
+    return endpoint || DEFAULT_ENDPOINT || FALLBACK_ENDPOINT;
+  }
+
+  async function parseGasResponse(response, httpErrPrefix, actionErrFallback) {
+    if (!response.ok) {
+      throw new Error(httpErrPrefix + ': HTTP ' + response.status);
+    }
+    const rawText = await response.text();
+    let result = null;
+    try {
+      result = JSON.parse(rawText);
+    } catch (parseErr) {
+      const trimmed = String(rawText || '').trim();
+      if (trimmed.charAt(0) === '<') {
+        throw new Error('Server Google Apps Script mengembalikan halaman HTML (periksa izin Web App "Anyone").');
+      }
+      throw new Error('Respons server bukan JSON valid: ' + (parseErr.message || String(parseErr)));
+    }
+    if (!result || result.status !== 'success') {
+      throw new Error((result && result.message) || actionErrFallback);
+    }
+    return result;
+  }
 
   function parseCurrency(val) {
     if (val === null || val === undefined || val === '') return 0;
@@ -51,6 +80,21 @@
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
       return s.substring(0, 10);
     }
+    // Jika format teks Indonesia: "Minggu, 27 Juni 2027" atau "27 Juni 2027"
+    const indo = s.match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+    if (indo) {
+      const months = {
+        januari: '01', jan: '01', februari: '02', feb: '02', maret: '03', mar: '03',
+        april: '04', apr: '04', mei: '05', may: '05', juni: '06', jun: '06',
+        juli: '07', jul: '07', agustus: '08', agu: '08', ags: '08',
+        september: '09', sep: '09', oktober: '10', okt: '10',
+        november: '11', nov: '11', desember: '12', des: '12'
+      };
+      const mm = months[indo[2].toLowerCase()];
+      if (mm) {
+        return indo[3] + '-' + mm + '-' + indo[1].padStart(2, '0');
+      }
+    }
     return s;
   }
 
@@ -59,24 +103,22 @@
    * Mengambil data langsung dari Spreadsheet dengan getDisplayValues()
    */
   async function getAll(endpoint, pin) {
-    const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
+    const urlEndpoint = resolveEndpoint(endpoint);
     const pinVal = pin || DEFAULT_PIN;
     const sep = urlEndpoint.indexOf('?') === -1 ? '?' : '&';
     const finalUrl = urlEndpoint + sep + 'action=getAll&pin=' + encodeURIComponent(pinVal) + '&_t=' + Date.now();
 
     const response = await fetch(finalUrl, {
       method: 'GET',
+      mode: 'cors',
+      redirect: 'follow',
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });
 
-    if (!response.ok) {
-      throw new Error('Gagal menghubungi Google Apps Script: HTTP ' + response.status);
-    }
-
-    const result = await response.json();
-    if (result.status !== 'success' || !result.data) {
-      throw new Error(result.message || 'Respons tidak valid dari server backend');
+    const result = await parseGasResponse(response, 'Gagal menghubungi Google Apps Script', 'Respons tidak valid dari server backend');
+    if (!result.data) {
+      throw new Error('Data dari server backend kosong');
     }
 
     return result;
@@ -87,7 +129,7 @@
    * Mengirim POST dengan payload: { sheet, action: 'append', rowValues: [...] }
    */
   async function append(sheetName, rowValues, endpoint, pin) {
-    const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
+    const urlEndpoint = resolveEndpoint(endpoint);
     const pinVal = pin || DEFAULT_PIN;
 
     const payload = {
@@ -99,20 +141,14 @@
 
     const response = await fetch(urlEndpoint, {
       method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      cache: 'no-store',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      throw new Error('Gagal menambahkan data ke spreadsheet: HTTP ' + response.status);
-    }
-
-    const result = await response.json();
-    if (result.status !== 'success') {
-      throw new Error(result.message || 'Gagal menambahkan data');
-    }
-
-    return result;
+    return await parseGasResponse(response, 'Gagal menambahkan data ke spreadsheet', 'Gagal menambahkan data');
   }
 
   /**
@@ -120,66 +156,62 @@
    * Mengirim POST dengan payload: { sheet, action: 'updateRow', rowIndex, startCol, rowValues }
    */
   async function updateRow(sheetName, rowIndex, rowValues, startCol, endpoint, pin) {
-    const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
+    const rIdx = Number(rowIndex);
+    if (!rIdx || rIdx < 1) {
+      throw new Error('Target baris (rowIndex) tidak valid untuk pembaruan.');
+    }
+    const urlEndpoint = resolveEndpoint(endpoint);
     const pinVal = pin || DEFAULT_PIN;
 
     const payload = {
       sheet: sheetName,
       action: 'updateRow',
-      rowIndex: rowIndex,
-      startCol: startCol || 1,
+      rowIndex: rIdx,
+      startCol: Number(startCol) || 1,
       rowValues: rowValues,
       pin: pinVal
     };
 
     const response = await fetch(urlEndpoint, {
       method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      cache: 'no-store',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      throw new Error('Gagal memperbarui data spreadsheet: HTTP ' + response.status);
-    }
-
-    const result = await response.json();
-    if (result.status !== 'success') {
-      throw new Error(result.message || 'Gagal memperbarui baris');
-    }
-
-    return result;
+    return await parseGasResponse(response, 'Gagal memperbarui data spreadsheet', 'Gagal memperbarui baris');
   }
 
   /**
    * 4. DELETE ROW
    */
   async function deleteRow(sheetName, rowIndex, endpoint, pin) {
-    const urlEndpoint = endpoint || DEFAULT_ENDPOINT;
+    const rIdx = Number(rowIndex);
+    if (!rIdx || rIdx < 1) {
+      throw new Error('Target baris (rowIndex) tidak valid untuk penghapusan.');
+    }
+    const urlEndpoint = resolveEndpoint(endpoint);
     const pinVal = pin || DEFAULT_PIN;
 
     const payload = {
       sheet: sheetName,
       action: 'deleteRow',
-      rowIndex: rowIndex,
+      rowIndex: rIdx,
       pin: pinVal
     };
 
     const response = await fetch(urlEndpoint, {
       method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      cache: 'no-store',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      throw new Error('Gagal menghapus baris spreadsheet: HTTP ' + response.status);
-    }
-
-    const result = await response.json();
-    if (result.status !== 'success') {
-      throw new Error(result.message || 'Gagal menghapus baris');
-    }
-
-    return result;
+    return await parseGasResponse(response, 'Gagal menghapus baris spreadsheet', 'Gagal menghapus baris');
   }
 
   /**
@@ -290,10 +322,11 @@
     const masterFormulas = extractMasterFormulas(masterRows);
 
     // META
+    const rawWeddingDate = (masterFormulas && masterFormulas.weddingDateText) ? formatDateIso(masterFormulas.weddingDateText) : '2027-06-27';
     const meta = {
       cpp: (masterFormulas && masterFormulas.cpp) || 'FARHAN RAFIQI',
       cpw: (masterFormulas && masterFormulas.cpw) || 'INDIRA GUSTI ARINI',
-      weddingDate: '2027-06-27',
+      weddingDate: /^\d{4}-\d{2}-\d{2}$/.test(rawWeddingDate) ? rawWeddingDate : '2027-06-27',
       weddingDateText: (masterFormulas && masterFormulas.weddingDateText) || 'Minggu, 27 Juni 2027',
       venue: (masterFormulas && masterFormulas.venue) || 'Venue Intimate',
       targetReady: (masterFormulas && masterFormulas.targetReady) || 'April 2027 (H-2 Bulan)',
@@ -503,10 +536,10 @@
       });
     }
 
-    // 7. TIMELINE & RUNDOWN (Timeline: rows 8-22, Rundown: rows 31-50)
+    // 7. TIMELINE & RUNDOWN (Timeline: rows 8-27, Rundown: rows 31-55)
     const trRows = tabsData['TIMELINE & RUNDOWN'] || [];
     const timeline = [];
-    for (let r = 7; r < Math.min(22, trRows.length); r++) {
+    for (let r = 7; r < Math.min(27, trRows.length); r++) {
       const row = trRows[r];
       if (!row || !row[4] || !String(row[4]).trim()) continue;
       const rowIndex = r + 1;
@@ -525,7 +558,7 @@
     }
 
     const rundown = [];
-    for (let r = 30; r < Math.min(50, trRows.length); r++) {
+    for (let r = 30; r < Math.min(55, trRows.length); r++) {
       const row = trRows[r];
       if (!row || !row[4] || !String(row[4]).trim()) continue;
       const rowIndex = r + 1;

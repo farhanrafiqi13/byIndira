@@ -1,12 +1,12 @@
 /**
  * ============================================================================
- * BACKEND API: FARHAN & INDIRA WEDDING TRACKER PWA (Code.gs v2 — Full Sync)
+ * BACKEND API: FARHAN & INDIRA WEDDING TRACKER PWA (Code.gs v3 — Full Sync)
  * Terhubung ke Spreadsheet: "Farhan Indira by Indira"
  * Spreadsheet ID: 1_VOUhsc_Rt6zlj8hHtsZaZpEmiGShchaJFqFIaeFUQY
- * Mendukung Sinkronisasi 2 Arah penuh termasuk:
+ * Mendukung Sinkronisasi 2 Arah penuh (Raw 9 Tabs + Slot-Aware Mutations):
  *  - MASTER (Tanggal Pernikahan D6, Nama Mempelai D5/H5, Venue H6, Target L6)
  *  - WEDDING TRACKER, PRE WEDDING (filter otomatis "Tidak Digunakan")
- *  - SESERAHAN, MAHAR (Target E10:E12 & Log Cicilan Baris 16+)
+ *  - SESERAHAN, MAHAR (Target E10:E12 & Log Cicilan Baris 16-24)
  *  - ADMINISTRASI, TAMU, VENDOR DIRECTORY, TIMELINE & RUNDOWN
  * ============================================================================
  */
@@ -14,6 +14,18 @@
 const SPREADSHEET_ID = '1_VOUhsc_Rt6zlj8hHtsZaZpEmiGShchaJFqFIaeFUQY';
 const PIN_COUPLE = '270627';    // Akses Penuh Mempelai (Farhan & Indira)
 const PIN_COMMITTEE = '2027';   // Akses Mode Panitia & Keluarga (Anggaran Disembunyikan)
+
+const SHEET_TABS = [
+  'MASTER',
+  'PRE WEDDING',
+  'VENDOR DIRECTORY',
+  'TIMELINE & RUNDOWN',
+  'ADMINISTRASI',
+  'WEDDING TRACKER',
+  'SESERAHAN',
+  'MAHAR',
+  'TAMU'
+];
 
 function doGet(e) {
   try {
@@ -24,12 +36,14 @@ function doGet(e) {
     }
 
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const data = readAllWeddingModules(ss);
     const role = (pin === PIN_COMMITTEE) ? 'committee' : 'couple';
+    const format = String(params.format || 'raw').trim().toLowerCase();
+    const data = (format === 'parsed') ? readAllWeddingModules(ss) : readAllRawTabs(ss);
 
     return jsonResponse({
       status: 'success',
       role: role,
+      timestamp: new Date().toISOString(),
       syncedAt: new Date().toISOString(),
       data: data
     });
@@ -38,12 +52,41 @@ function doGet(e) {
   }
 }
 
+function readAllRawTabs(ss) {
+  const result = {};
+  SHEET_TABS.forEach(function(tabName) {
+    const ws = ss.getSheetByName(tabName);
+    if (ws) {
+      result[tabName] = ws.getDataRange().getDisplayValues();
+    } else {
+      result[tabName] = [];
+    }
+  });
+  return result;
+}
+
+function findEmptySlotInRange(ws, checkCol, startRow, endRow, skipRows) {
+  const skipSet = {};
+  (skipRows || []).forEach(function(r) { skipSet[r] = true; });
+  const numRows = Math.max(1, endRow - startRow + 1);
+  const colVals = ws.getRange(startRow, checkCol, numRows, 1).getValues();
+  for (let i = 0; i < colVals.length; i++) {
+    const r = startRow + i;
+    if (skipSet[r]) continue;
+    if (!String(colVals[i][0] || '').trim()) {
+      return r;
+    }
+  }
+  return 0;
+}
+
 function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
-    lock.waitLock(10000);
-    const body = JSON.parse(e.postData.contents || '{}');
-    const pin = String(body.pin || PIN_COUPLE).trim();
+    lock.waitLock(15000);
+    const rawContents = (e && e.postData && e.postData.contents) ? e.postData.contents : '{}';
+    const body = JSON.parse(rawContents);
+    const pin = String(body.pin || '').trim();
     if (pin !== PIN_COUPLE && pin !== PIN_COMMITTEE) {
       return jsonResponse({ status: 'error', message: 'PIN Akses tidak valid.' });
     }
@@ -52,13 +95,43 @@ function doPost(e) {
     const action = body.action || '';
     const item = body.item || {};
 
-    // GENERIC ACTIONS FROM SheetApi: append, updateRow, deleteRow
+    // GENERIC ACTIONS FROM SheetApi: append (slot-aware), updateRow, deleteRow
     if (action === 'append') {
       const sheetName = body.sheet || body.sheetName;
       const ws = ss.getSheetByName(sheetName);
       if (!ws) throw new Error('Sheet ' + sheetName + ' tidak ditemukan.');
       const rowValues = body.rowValues || [];
-      ws.appendRow(rowValues);
+
+      let slot = 0;
+      let startCol = 1;
+      let writeVals = rowValues;
+      if (sheetName === 'MAHAR') {
+        slot = findEmptySlotInRange(ws, 4, 16, 24, []);
+        if (!slot) throw new Error('Slot Log Mahar (baris 16-24) sudah penuh.');
+        startCol = 2;
+        writeVals = rowValues.slice(1);
+      } else if (sheetName === 'WEDDING TRACKER') {
+        slot = findEmptySlotInRange(ws, 4, 8, 32, []);
+        if (!slot) throw new Error('Slot WEDDING TRACKER (baris 8-32) sudah penuh.');
+        startCol = 2;
+        writeVals = rowValues.slice(1);
+      } else if (sheetName === 'PRE WEDDING') {
+        slot = findEmptySlotInRange(ws, 4, 9, 43, [18, 19, 27, 28, 36, 37]);
+        if (!slot) throw new Error('Slot PRE WEDDING (baris 9-43) sudah penuh.');
+        startCol = 2;
+        writeVals = rowValues.slice(1);
+      } else if (sheetName === 'SESERAHAN') {
+        slot = findEmptySlotInRange(ws, 4, 8, 73, [12, 13, 21, 22, 30, 31, 42, 43, 48, 49, 56, 57, 65, 66]);
+        if (!slot) throw new Error('Slot SESERAHAN (baris 8-73) sudah penuh.');
+        startCol = 2;
+        writeVals = rowValues.slice(1);
+      }
+
+      if (slot > 0 && writeVals.length > 0) {
+        ws.getRange(slot, startCol, 1, writeVals.length).setValues([writeVals]);
+      } else {
+        ws.appendRow(rowValues);
+      }
     }
     else if (action === 'updateRow') {
       const sheetName = body.sheet || body.sheetName;
@@ -67,18 +140,18 @@ function doPost(e) {
       const rowIndex = Number(body.rowIndex);
       const startCol = Number(body.startCol) || 1;
       const rowValues = body.rowValues || [];
-      if (rowIndex && rowValues.length > 0) {
-        ws.getRange(rowIndex, startCol, 1, rowValues.length).setValues([rowValues]);
+      if (!rowIndex || rowIndex < 1 || rowValues.length === 0) {
+        throw new Error('Parameter updateRow tidak valid.');
       }
+      ws.getRange(rowIndex, startCol, 1, rowValues.length).setValues([rowValues]);
     }
     else if (action === 'deleteRow') {
       const sheetName = body.sheet || body.sheetName;
       const ws = ss.getSheetByName(sheetName);
       if (!ws) throw new Error('Sheet ' + sheetName + ' tidak ditemukan.');
       const rowIndex = Number(body.rowIndex);
-      if (rowIndex) {
-        ws.deleteRow(rowIndex);
-      }
+      if (!rowIndex || rowIndex < 1) throw new Error('Baris deleteRow tidak valid.');
+      ws.deleteRow(rowIndex);
     }
 
     // 0. UPDATE MASTER META (Nama Mempelai D5/H5, Tanggal Akad D6, Venue H6, Target L6)
@@ -95,15 +168,8 @@ function doPost(e) {
     else if (action === 'update_wedding_tracker' || action === 'add_wedding_tracker') {
       const ws = ss.getSheetByName('WEDDING TRACKER');
       let r = Number(item.rowIndex || 0);
-      // Jika tambah item baru (r === 0), cari baris kosong pertama antara baris 8 s/d 32
       if (!r || r < 8) {
-        for (let checkR = 8; checkR <= 32; checkR++) {
-          const val = ws.getRange(checkR, 4).getValue();
-          if (!val || String(val).trim() === '') {
-            r = checkR;
-            break;
-          }
-        }
+        r = findEmptySlotInRange(ws, 4, 8, 32, []);
       }
       if (!r || r > 32) throw new Error('Slot baris pada WEDDING TRACKER sudah penuh.');
       const noUrut = r - 7;
@@ -121,11 +187,15 @@ function doPost(e) {
     // 2. UPDATE PRE WEDDING (Baris 9 s/d 43 — Jangan sentuh baris Subtotal 18, 27, 36, 44, 46)
     else if (action === 'update_pre_wedding') {
       const ws = ss.getSheetByName('PRE WEDDING');
-      const r = Number(item.rowIndex);
-      const subtotalRows = [18, 27, 36, 44, 46];
-      if (r < 9 || r > 43 || subtotalRows.indexOf(r) !== -1) {
-        throw new Error('Tidak dapat mengubah baris Subtotal/Total pada PRE WEDDING.');
+      let r = Number(item.rowIndex || 0);
+      const subtotalRows = [18, 19, 27, 28, 36, 37, 44, 45, 46];
+      if (!r || r < 9) {
+        r = findEmptySlotInRange(ws, 4, 9, 43, subtotalRows);
       }
+      if (!r || r < 9 || r > 43 || subtotalRows.indexOf(r) !== -1) {
+        throw new Error('Tidak ada slot valid atau mencoba mengubah baris Subtotal pada PRE WEDDING.');
+      }
+      if (item.kategori !== undefined) ws.getRange(r, 3).setValue(String(item.kategori).trim());
       if (item.item !== undefined) ws.getRange(r, 4).setValue(String(item.item).trim());
       if (item.pic !== undefined) ws.getRange(r, 5).setValue(String(item.pic).trim());
       if (item.estimasi !== undefined) ws.getRange(r, 7).setValue(Number(item.estimasi) || 0);
@@ -138,33 +208,26 @@ function doPost(e) {
     else if (action === 'update_seserahan' || action === 'add_seserahan') {
       const ws = ss.getSheetByName('SESERAHAN');
       let r = Number(item.rowIndex || 0);
-      const subtotalRows = [12, 21, 30, 42, 48, 56, 65, 74, 76];
-      // Jika tambah item baru (r === 0), cari baris kosong sesuai kategori kotak
+      const subtotalRows = [12, 13, 21, 22, 30, 31, 42, 43, 48, 49, 56, 57, 65, 66, 74, 75, 76];
       if (!r || r < 8) {
         const catRanges = {
           'Alat Solat': [8, 11],
-          'Skincare': [13, 20],
-          'Toiletries': [22, 29],
-          'Makeup': [31, 41],
-          'Underwear': [43, 47],
-          'Pakaian': [49, 55],
-          'Accessories': [57, 64],
-          'ETC': [66, 73]
+          'Skincare': [14, 20],
+          'Toiletries': [23, 29],
+          'Makeup': [32, 41],
+          'Underwear': [44, 47],
+          'Pakaian': [50, 55],
+          'Accessories': [58, 64],
+          'ETC': [67, 73]
         };
-        const range = catRanges[item.kategori] || [66, 73];
-        for (let checkR = range[0]; checkR <= range[1]; checkR++) {
-          const val = ws.getRange(checkR, 4).getValue();
-          if (!val || String(val).trim() === '') {
-            r = checkR;
-            break;
-          }
-        }
+        const range = catRanges[item.kategori] || [67, 73];
+        r = findEmptySlotInRange(ws, 4, range[0], range[1], subtotalRows);
       }
       if (!r || r > 73 || subtotalRows.indexOf(r) !== -1) {
         throw new Error('Slot baris pada kategori kotak Seserahan ini sudah penuh.');
       }
-      const noUrut = r;
-      ws.getRange(r, 2).setValue(noUrut);
+      const existingNo = Number(ws.getRange(r, 2).getValue()) || r;
+      ws.getRange(r, 2).setValue(existingNo);
       if (item.kategori !== undefined) ws.getRange(r, 3).setValue(String(item.kategori).trim());
       if (item.item !== undefined) ws.getRange(r, 4).setValue(String(item.item).trim());
       if (item.brand !== undefined) ws.getRange(r, 5).setValue(String(item.brand).trim());
@@ -173,21 +236,15 @@ function doPost(e) {
       if (item.status !== undefined) ws.getRange(r, 8).setValue(String(item.status || 'Pending').trim());
     }
 
-    // 4A. TAMBAH / UPDATE LOG CICILAN MAHAR (Baris 16+ di MAHAR)
+    // 4A. TAMBAH / UPDATE LOG CICILAN MAHAR (Baris 16..24 di MAHAR)
     else if (action === 'add_mahar_log' || action === 'update_mahar_log') {
       const ws = ss.getSheetByName('MAHAR');
       let targetRow = Number(item.rowIndex || 0);
       if (!targetRow || targetRow < 16) {
-        targetRow = 16;
-        for (let r = 16; r <= 30; r++) {
-          const kompVal = ws.getRange(r, 4).getValue();
-          if (!kompVal || String(kompVal).trim() === '') {
-            targetRow = r;
-            break;
-          }
-        }
+        targetRow = findEmptySlotInRange(ws, 4, 16, 24, []);
       }
-      const noUrut = targetRow - 15;
+      if (!targetRow || targetRow > 24) throw new Error('Slot Log Mahar (baris 16-24) sudah penuh.');
+      const noUrut = Number(ws.getRange(targetRow, 2).getValue()) || (targetRow - 15);
       ws.getRange(targetRow, 2).setValue(noUrut);
       if (item.tanggal) ws.getRange(targetRow, 3).setValue(item.tanggal);
       if (item.komponen) ws.getRange(targetRow, 4).setValue(String(item.komponen).trim());
@@ -247,22 +304,19 @@ function doPost(e) {
       }
     }
 
-    // 6B. UPDATE / TAMBAH TAMU & RSVP (Keluarga Inti Baris 10-19, Tamu Umum Baris 23-172)
+    // 6B. UPDATE / TAMBAH TAMU & RSVP (Keluarga Inti Baris 10-19, Tamu Umum Baris 23-171)
     else if (action === 'update_tamu') {
       const ws = ss.getSheetByName('TAMU');
       const side = item.side === 'CPP' ? 'CPP' : 'CPW';
+      const isFam = item.kelompok === 'Keluarga Inti';
       let r = Number(item.rowIndex || 0);
       const startCol = side === 'CPP' ? 3 : 10;
+      const nameCol = side === 'CPP' ? 4 : 11;
 
       if (!r || r < 10) {
-        const nameCol = side === 'CPP' ? 4 : 11;
-        const names = ws.getRange(23, nameCol, 150, 1).getValues();
-        for (let i = 0; i < names.length; i++) {
-          if (!String(names[i][0] || '').trim()) {
-            r = 23 + i;
-            break;
-          }
-        }
+        r = isFam
+          ? findEmptySlotInRange(ws, nameCol, 10, 19, [])
+          : findEmptySlotInRange(ws, nameCol, 23, 171, []);
       }
       if (!r) throw new Error('Slot kuota tamu untuk pihak ' + side + ' sudah penuh.');
 
@@ -278,7 +332,8 @@ function doPost(e) {
     // 7. UPDATE VENDOR DIRECTORY (Baris 17 s/d 30)
     else if (action === 'update_vendor') {
       const ws = ss.getSheetByName('VENDOR DIRECTORY');
-      const r = Number(item.rowIndex);
+      let r = Number(item.rowIndex || 0);
+      if (!r) r = findEmptySlotInRange(ws, 4, 17, 30, [31]);
       if (r < 17 || r > 30) throw new Error('Baris VENDOR DIRECTORY di luar rentang (17-30).');
       if (item.nama !== undefined) ws.getRange(r, 4).setValue(String(item.nama).trim());
       if (item.kontak !== undefined) ws.getRange(r, 5).setValue(String(item.kontak).trim());
@@ -290,11 +345,14 @@ function doPost(e) {
       if (item.catatan !== undefined) ws.getRange(r, 11).setValue(String(item.catatan).trim());
     }
 
-    // 8. UPDATE DETAIL & STATUS RUNDOWN / TIMELINE (Timeline 8-22, Rundown 31-50)
+    // 8. UPDATE DETAIL & STATUS RUNDOWN / TIMELINE (Timeline 8-27, Rundown 31-55)
     else if (action === 'update_rundown' || action === 'update_timeline') {
       const ws = ss.getSheetByName('TIMELINE & RUNDOWN');
-      const r = Number(item.rowIndex);
-      if ((item.tableType === 'timeline' || action === 'update_timeline') && r >= 8 && r <= 22) {
+      const isTimeline = (item.tableType === 'timeline' || action === 'update_timeline' || Boolean(item.fase));
+      let r = Number(item.rowIndex || 0);
+      if (isTimeline) {
+        if (!r) r = findEmptySlotInRange(ws, 5, 8, 27, []);
+        if (r < 8 || r > 27) throw new Error('Baris TIMELINE di luar rentang (8-27).');
         if (item.fase !== undefined) ws.getRange(r, 3).setValue(String(item.fase).trim());
         if (item.kategori !== undefined) ws.getRange(r, 4).setValue(String(item.kategori).trim());
         if (item.agenda !== undefined) ws.getRange(r, 5).setValue(String(item.agenda).trim());
@@ -302,7 +360,9 @@ function doPost(e) {
         if (item.target !== undefined) ws.getRange(r, 7).setValue(String(item.target).trim());
         if (item.pic !== undefined) ws.getRange(r, 8).setValue(String(item.pic).trim());
         if (item.status !== undefined) ws.getRange(r, 9).setValue(String(item.status).trim());
-      } else if (r >= 31 && r <= 50) {
+      } else {
+        if (!r) r = findEmptySlotInRange(ws, 5, 31, 55, []);
+        if (r < 31 || r > 55) throw new Error('Baris RUNDOWN di luar rentang (31-55).');
         if (item.waktu !== undefined) ws.getRange(r, 3).setValue(String(item.waktu).trim());
         if (item.durasi !== undefined) ws.getRange(r, 4).setValue(String(item.durasi).trim());
         if (item.sesi !== undefined) ws.getRange(r, 5).setValue(String(item.sesi).trim());
@@ -313,14 +373,16 @@ function doPost(e) {
         if (item.status !== undefined) ws.getRange(r, 10).setValue(String(item.status).trim());
         if (item.catatan !== undefined) ws.getRange(r, 11).setValue(String(item.catatan).trim());
       }
+    } else {
+      throw new Error('Aksi "' + action + '" tidak dikenali.');
     }
 
     SpreadsheetApp.flush();
-    const updatedData = readAllWeddingModules(ss);
     return jsonResponse({
       status: 'success',
-      syncedAt: new Date().toISOString(),
-      data: updatedData
+      role: (pin === PIN_COMMITTEE) ? 'committee' : 'couple',
+      timestamp: new Date().toISOString(),
+      syncedAt: new Date().toISOString()
     });
   } catch (err) {
     return jsonResponse({ status: 'error', message: String(err) });
@@ -354,7 +416,7 @@ function readAllWeddingModules(ss) {
     targetPaxTotal: 400
   };
   if (wsMaster) {
-    const mVals = wsMaster.getRange(5, 4, 2, 9).getValues(); // D5:L6
+    const mVals = wsMaster.getRange(5, 4, 2, 9).getValues();
     if (mVals[0][0]) meta.cpp = String(mVals[0][0]).trim();
     if (mVals[0][4]) meta.cpw = String(mVals[0][4]).trim();
     if (mVals[1][0]) meta.weddingDate = fmtDate(mVals[1][0]) || '2027-06-27';
@@ -444,7 +506,7 @@ function readAllWeddingModules(ss) {
     });
   });
 
-  // 4. MAHAR (Targets 10-12 & Logs 16-30)
+  // 4. MAHAR (Targets 10-12 & Logs 16-24)
   const wsMH = ss.getSheetByName('MAHAR');
   const mhTargetVals = wsMH.getRange(10, 2, 3, 10).getValues();
   const maharTargets = mhTargetVals.map(function(row, idx) {
@@ -477,11 +539,10 @@ function readAllWeddingModules(ss) {
     };
   });
 
-  const mhLogVals = wsMH.getRange(16, 2, 15, 10).getValues();
+  const mhLogVals = wsMH.getRange(16, 2, 9, 10).getValues();
   const maharLogs = [];
   mhLogVals.forEach(function(row, idx) {
     const r = 16 + idx;
-    if (r === 29 || r === 30) return;
     if (!row[2]) return;
     if (/target\s*kuantitas/i.test(String(row[2])) || /target\s*kuantitas/i.test(String(row[1])) || /target\s*kuantitas/i.test(String(row[9]))) return;
     const komp = String(row[2] || '').trim();
@@ -558,7 +619,7 @@ function readAllWeddingModules(ss) {
 
   // 7. TIMELINE & RUNDOWN
   const wsTR = ss.getSheetByName('TIMELINE & RUNDOWN');
-  const tlVals = wsTR.getRange(8, 2, 15, 8).getValues();
+  const tlVals = wsTR.getRange(8, 2, 20, 8).getValues();
   const timeline = [];
   tlVals.forEach(function(row, idx) {
     const r = 8 + idx;
@@ -577,7 +638,7 @@ function readAllWeddingModules(ss) {
     });
   });
 
-  const rdVals = wsTR.getRange(31, 2, 20, 10).getValues();
+  const rdVals = wsTR.getRange(31, 2, 25, 10).getValues();
   const rundown = [];
   rdVals.forEach(function(row, idx) {
     const r = 31 + idx;
@@ -598,10 +659,10 @@ function readAllWeddingModules(ss) {
     });
   });
 
-  // 8. TAMU (Keluarga Inti 10-19, Tamu Umum 23-172)
+  // 8. TAMU (Keluarga Inti 10-19, Tamu Umum 23-171)
   const wsTM = ss.getSheetByName('TAMU');
   const famVals = wsTM.getRange(10, 2, 10, 13).getValues();
-  const genVals = wsTM.getRange(23, 2, 150, 13).getValues();
+  const genVals = wsTM.getRange(23, 2, 149, 13).getValues();
   const tamu = [];
 
   famVals.forEach(function(row, idx) {

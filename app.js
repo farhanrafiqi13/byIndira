@@ -5,6 +5,17 @@
   const STORAGE_KEY_DATA = 'farhan_indira_wedding_data_v3';
   const STORAGE_KEY_CFG = 'farhan_indira_wedding_cfg_v1';
   const STORAGE_KEY_CHK = 'farhan_indira_wedding_chk_v1';
+  const STORAGE_KEY_GUEST_EXTRAS = 'farhan_indira_guest_extras_v1';
+
+  function getGasEndpoint() {
+    if (typeof window !== 'undefined' && window.WEDDING_GAS_ENDPOINT) {
+      return window.WEDDING_GAS_ENDPOINT;
+    }
+    if (typeof SheetApi !== 'undefined' && SheetApi.DEFAULT_ENDPOINT) {
+      return SheetApi.DEFAULT_ENDPOINT;
+    }
+    return 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec';
+  }
 
   const DEFAULT_DATA = {"meta": {"spreadsheetId": "1_VOUhsc_Rt6zlj8hHtsZaZpEmiGShchaJFqFIaeFUQY", "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1_VOUhsc_Rt6zlj8hHtsZaZpEmiGShchaJFqFIaeFUQY/edit", "cpp": "FARHAN RAFIQI", "cpw": "INDIRA GUSTI", "weddingDate": "2027-06-27", "venue": "Venue Intimate", "targetReady": "April 2027 (H-2 Bulan)", "targetPaxCpp": 200, "targetPaxCpw": 200, "targetPaxTotal": 400}, "weddingTracker": [{"id": "WT-R8", "sheet": "WEDDING TRACKER", "rowIndex": 8, "no": 1, "kategori": "Venue & Tempat Acara", "item": "Booking Venue Intimate (Akad & Resepsi)", "pic": "CPP & CPW Bersama", "target": "2027-02-10", "estimasi": 20000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Venue intimate kapasitas XXX pax, include fasilitas listrik & ruang rias"}, {"id": "WT-R9", "sheet": "WEDDING TRACKER", "rowIndex": 9, "no": 2, "kategori": "Katering (Prasmanan & Stall)", "item": "Paket Katering Intimate XXX Pax (Buffet & Stalls)", "pic": "CPP & CPW Bersama", "target": "2027-02-15", "estimasi": 21000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Buffet XXX porsi + stalls intimate, include bonus coffee break akad"}, {"id": "WT-R10", "sheet": "WEDDING TRACKER", "rowIndex": 10, "no": 3, "kategori": "Busana & Rias Pengantin (MUA)", "item": "Sewa Baju Pengantin & MUA Akad-Resepsi", "pic": "CPP & CPW Bersama", "target": "2027-02-22", "estimasi": 7500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Attire pengantin elegan minimalis & MUA intimate akad-resepsi"}, {"id": "WT-R11", "sheet": "WEDDING TRACKER", "rowIndex": 11, "no": 4, "kategori": "Busana & Rias Pengantin (MUA)", "item": "Seragam Keluarga & Bridesmaid", "pic": "CPW (Pengantin Wanita)", "target": "2027-03-01", "estimasi": 2000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Bahan kain seragam keluarga inti & bridesmaid"}, {"id": "WT-R12", "sheet": "WEDDING TRACKER", "rowIndex": 12, "no": 5, "kategori": "Fotografi & Videografi", "item": "Foto & Video Sinematik (Hari H)", "pic": "CPP & CPW Bersama", "target": "2027-03-08", "estimasi": 6000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Terpisah dengan foto PRE WEDDING"}, {"id": "WT-R13", "sheet": "WEDDING TRACKER", "rowIndex": 13, "no": 6, "kategori": "Dekorasi & Florist", "item": "Dekorasi Intimate, Floral Arch & Photo Booth", "pic": "CPP & CPW Bersama", "target": "2027-03-15", "estimasi": 7500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Konsep warm intimate, backdrop pelaminan minimalis & photo booth"}, {"id": "WT-R14", "sheet": "WEDDING TRACKER", "rowIndex": 14, "no": 7, "kategori": "Undangan & Souvenir", "item": "Undangan Digital Eksklusif & Cetak VIP", "pic": "CPP (Pengantin Pria)", "target": "2027-05-10", "estimasi": 500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Web invitation RSVP digital & cetak fisik kartu terbatas"}, {"id": "WT-R15", "sheet": "WEDDING TRACKER", "rowIndex": 15, "no": 8, "kategori": "Undangan & Souvenir", "item": "Pengadaan Souvenir Eksklusif XXX Pcs", "pic": "CPP & CPW Bersama", "target": "2027-05-17", "estimasi": 1500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "XXX pcs souvenir custom aroma pouch / lilin aromaterapi"}, {"id": "WT-R16", "sheet": "WEDDING TRACKER", "rowIndex": 16, "no": 9, "kategori": "Hiburan, MC & Sound System", "item": "Akustik Band & Sound System Intimate", "pic": "CPP (Pengantin Pria)", "target": "2027-03-22", "estimasi": 2400000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Live akustik trio intimate; MC dipandu tim WO"}, {"id": "WT-R17", "sheet": "WEDDING TRACKER", "rowIndex": 17, "no": 10, "kategori": "Wedding Organizer (WO)", "item": "Tim Koordinator Lapangan Intimate (Hari H)", "pic": "CPP & CPW Bersama", "target": "2027-03-29", "estimasi": 5000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tim WO 5-6 personil intimate, koordinasi vendor & rundown"}, {"id": "WT-R18", "sheet": "WEDDING TRACKER", "rowIndex": 18, "no": 11, "kategori": "Hantaran Seserahan & Mahar", "item": "Desain & Pembuatan Sepasang Cincin", "pic": "CPP (Pengantin Pria)", "target": "2027-04-05", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tercantum pada Sheet HANTARAN dan MAHAR"}, {"id": "WT-R19", "sheet": "WEDDING TRACKER", "rowIndex": 19, "no": 12, "kategori": "Dana Cadangan & Tak Terduga", "item": "Sewa Mobil Pengantin & Akomodasi", "pic": "CPP (Pengantin Pria)", "target": "2027-04-10", "estimasi": 1000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Operasional transportasi logistik & kendaraan keluarga"}, {"id": "WT-R20", "sheet": "WEDDING TRACKER", "rowIndex": 20, "no": 13, "kategori": "Wedding Organizer (WO)", "item": "Finalisasi Susunan Acara Intimate & Doa", "pic": "CPP & CPW Bersama", "target": "2027-04-15", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Include dalam layanan Wedding Organizer (rundown & timekeeper)"}, {"id": "WT-R21", "sheet": "WEDDING TRACKER", "rowIndex": 21, "no": 14, "kategori": "Katering (Prasmanan & Stall)", "item": "Snack Box Premium Akad & Panitia", "pic": "CPP & CPW Bersama", "target": "2027-04-20", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Include sebagai complimentary bonus paket katering XXX pax"}, {"id": "WT-R22", "sheet": "WEDDING TRACKER", "rowIndex": 22, "no": 15, "kategori": "Hiburan, MC & Sound System", "item": "Sound System & Backup Listrik Venue", "pic": "CPP & CPW Bersama", "target": "2027-04-24", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Include dalam fasilitas sewa gedung venue intimate"}, {"id": "WT-R23", "sheet": "WEDDING TRACKER", "rowIndex": 23, "no": 16, "kategori": "Administrasi Kesehatan", "item": "Cek Lab Pranikah & Perawatan Calon Pengantin", "pic": "CPP (Pengantin Pria)", "target": "2027-03-31", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tercantum pada Sheet ADMINISTRASI"}, {"id": "WT-R24", "sheet": "WEDDING TRACKER", "rowIndex": 24, "no": 17, "kategori": "Administrasi KUA & Berkas Legal", "item": "Pendaftaran Berkas Nikah & Bimbingan KUA", "pic": "CPP & CPW Bersama", "target": "2027-04-28", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tercantum pada Sheet ADMINISTRASI"}, {"id": "WT-R25", "sheet": "WEDDING TRACKER", "rowIndex": 25, "no": 18, "kategori": "Administrasi KUA & Berkas Legal", "item": "Pendaftaran Berkas Nikah & Bimbingan KUA", "pic": "CPP & CPW Bersama", "target": "2027-04-30", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tercantum pada Sheet ADMINISTRASI"}], "preWedding": [{"id": "PW-R9", "sheet": "PRE WEDDING", "rowIndex": 9, "no": 1, "kategori": "Lamaran", "item": "Sewa Venue / Restoran Lamaran", "pic": "CPP & CPW Bersama", "target": "Q1 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R10", "sheet": "PRE WEDDING", "rowIndex": 10, "no": 2, "kategori": "Lamaran", "item": "Dekorasi Backdrop & Bunga Lamaran", "pic": "CPW (Pengantin Wanita)", "target": "Q1 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R11", "sheet": "PRE WEDDING", "rowIndex": 11, "no": 3, "kategori": "Lamaran", "item": "MUA & Hairdo / Hijabdo Lamaran", "pic": "CPW (Pengantin Wanita)", "target": "Q1 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R12", "sheet": "PRE WEDDING", "rowIndex": 12, "no": 4, "kategori": "Lamaran", "item": "Busana Lamaran CPP & CPW", "pic": "CPW (Pengantin Wanita)", "target": "Q4 2026", "estimasi": 1500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Beli jadi"}, {"id": "PW-R13", "sheet": "PRE WEDDING", "rowIndex": 13, "no": 5, "kategori": "Lamaran", "item": "Cincin Tunangan / Tukar Cincin", "pic": "CPP (Pengantin Pria)", "target": "Q1 2027", "estimasi": 5000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Sepasang cincin tunangan emas/palladium"}, {"id": "PW-R14", "sheet": "PRE WEDDING", "rowIndex": 14, "no": 6, "kategori": "Lamaran", "item": "Hantaran Pembuka & Buah Tangan", "pic": "CPP (Pengantin Pria)", "target": "Q1 2027", "estimasi": 1000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Parsel buah premium, kue basah, lapis legit"}, {"id": "PW-R15", "sheet": "PRE WEDDING", "rowIndex": 15, "no": 7, "kategori": "Lamaran", "item": "Katering / Konsumsi", "pic": "CPW (Pengantin Wanita)", "target": "Q1 2027", "estimasi": 1500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Makan bersama"}, {"id": "PW-R16", "sheet": "PRE WEDDING", "rowIndex": 16, "no": 8, "kategori": "Lamaran", "item": "Dokumentasi Foto & Video Lamaran", "pic": "CPP & CPW Bersama", "target": "Q1 2027", "estimasi": 1000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": ""}, {"id": "PW-R17", "sheet": "PRE WEDDING", "rowIndex": 17, "no": 9, "kategori": "Lamaran", "item": "MC / Pemandu Acara Lamaran", "pic": "CPP & CPW Bersama", "target": "Q1 2027", "estimasi": 500000, "realisasi": 0, "status": "Deal / Booking", "catatan": "Teman Indira @alfina_mc"}, {"id": "PW-R20", "sheet": "PRE WEDDING", "rowIndex": 20, "no": 1, "kategori": "Foto Pre-Wedding", "item": "Paket Fotografer & Videografer Pre-Wed", "pic": "CPP & CPW Bersama", "target": "Q4 2026", "estimasi": 1940000, "realisasi": 300000, "status": "Deal / Booking", "catatan": "All in package @mulakisah"}, {"id": "PW-R21", "sheet": "PRE WEDDING", "rowIndex": 21, "no": 2, "kategori": "Foto Pre-Wedding", "item": "Sewa Studio / Izin Lokasi Outdoor", "pic": "CPP & CPW Bersama", "target": "Q4 2026", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "3 looks :"}, {"id": "PW-R22", "sheet": "PRE WEDDING", "rowIndex": 22, "no": 3, "kategori": "Foto Pre-Wedding", "item": "Sewa / Beli Wardrobe Sesi Foto", "pic": "CPP & CPW Bersama", "target": "Q4 2026", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "- Adat Belitung by mulakisah"}, {"id": "PW-R23", "sheet": "PRE WEDDING", "rowIndex": 23, "no": 4, "kategori": "Foto Pre-Wedding", "item": "MUA & Stylist Pre-Wedding", "pic": "CPW (Pengantin Wanita)", "target": "Q4 2026", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "- Bebas (own)"}, {"id": "PW-R24", "sheet": "PRE WEDDING", "rowIndex": 24, "no": 5, "kategori": "Foto Pre-Wedding", "item": "Properti Foto (Bouquet & Aksesoris)", "pic": "CPW (Pengantin Wanita)", "target": "Q4 2026", "estimasi": 0, "realisasi": 0, "status": "Belum Dimulai", "catatan": "- Latar biru (baju putih)"}, {"id": "PW-R25", "sheet": "PRE WEDDING", "rowIndex": 25, "no": 6, "kategori": "Foto Pre-Wedding", "item": "Cetak Foto Frame Galeri & Stand Kanvas", "pic": "CPP & CPW Bersama", "target": "Q3 2027", "estimasi": 1200000, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Frame minimalis untuk display meja penerima tamu"}, {"id": "PW-R26", "sheet": "PRE WEDDING", "rowIndex": 26, "no": 7, "kategori": "Foto Pre-Wedding", "item": "Pembuatan Video Teaser / Undangan Digital", "pic": "CPP (Pengantin Pria)", "target": "Q3 2027", "estimasi": 800000, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Teaser video 60 detik untuk reel & website"}, {"id": "PW-R29", "sheet": "PRE WEDDING", "rowIndex": 29, "no": 1, "kategori": "Pengajian Pranikah", "item": "Buku Doa / Souvenir Yasin & Dzikir", "pic": "CPW (Pengantin Wanita)", "target": "Q3 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R30", "sheet": "PRE WEDDING", "rowIndex": 30, "no": 2, "kategori": "Pengajian Pranikah", "item": "Ustadz / Penceramah Doa Bersama", "pic": "CPP (Pengantin Pria)", "target": "Q3 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R31", "sheet": "PRE WEDDING", "rowIndex": 31, "no": 3, "kategori": "Pengajian Pranikah", "item": "Busana Seragam Pengajian Keluarga", "pic": "CPW (Pengantin Wanita)", "target": "Q3 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R32", "sheet": "PRE WEDDING", "rowIndex": 32, "no": 4, "kategori": "Pengajian Pranikah", "item": "MUA Pengajian & Sungkem Pranikah", "pic": "CPW (Pengantin Wanita)", "target": "Q3 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R33", "sheet": "PRE WEDDING", "rowIndex": 33, "no": 5, "kategori": "Pengajian Pranikah", "item": "Katering / Konsumsi Tamu Pengajian", "pic": "CPW (Pengantin Wanita)", "target": "Q1 2027", "estimasi": 2500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": ""}, {"id": "PW-R34", "sheet": "PRE WEDDING", "rowIndex": 34, "no": 6, "kategori": "Pengajian Pranikah", "item": "Souvenir / Goodie Bag Jamaah", "pic": "CPW (Pengantin Wanita)", "target": "Q3 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R35", "sheet": "PRE WEDDING", "rowIndex": 35, "no": 7, "kategori": "Pengajian Pranikah", "item": "Sound System Portable & Tenda/Karpet", "pic": "CPW (Pengantin Wanita)", "target": "Q3 2027", "estimasi": 0, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tidak digunakan"}, {"id": "PW-R38", "sheet": "PRE WEDDING", "rowIndex": 38, "no": 1, "kategori": "Treatment Kesehatan", "item": "Medical Check-Up (MCU) Pranikah CPP", "pic": "CPP (Pengantin Pria)", "target": "Q2 2027", "estimasi": 500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tentatif"}, {"id": "PW-R39", "sheet": "PRE WEDDING", "rowIndex": 39, "no": 2, "kategori": "Treatment Kesehatan", "item": "Medical Check-Up (MCU) Pranikah CPW", "pic": "CPW (Pengantin Wanita)", "target": "Q2 2027", "estimasi": 2000000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tentatif"}, {"id": "PW-R40", "sheet": "PRE WEDDING", "rowIndex": 40, "no": 3, "kategori": "Treatment Kesehatan", "item": "Vaksinasi Pranikah (TT & HPV Guard)", "pic": "CPW (Pengantin Wanita)", "target": "Q2 2027", "estimasi": 200000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "HPV akan dilakukan setelah menikah. Biaya yang dimasukkan hanya Vaksinasi TT"}, {"id": "PW-R41", "sheet": "PRE WEDDING", "rowIndex": 41, "no": 4, "kategori": "Treatment Kesehatan", "item": "Konseling Pranikah & Gizi Puskesmas", "pic": "CPP & CPW Bersama", "target": "Q3 2027", "estimasi": 300000, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tentatif"}, {"id": "PW-R42", "sheet": "PRE WEDDING", "rowIndex": 42, "no": 5, "kategori": "Treatment Kesehatan", "item": "Perawatan Kulit & Spa Pengantin CPW", "pic": "CPW (Pengantin Wanita)", "target": "Q3 2027", "estimasi": 2500000, "realisasi": 0, "status": "Tidak Digunakan", "catatan": "Tentatif"}, {"id": "PW-R43", "sheet": "PRE WEDDING", "rowIndex": 43, "no": 6, "kategori": "Treatment Kesehatan", "item": "Grooming & Perawatan Diri CPP", "pic": "CPP (Pengantin Pria)", "target": "Q3 2027", "estimasi": 500000, "realisasi": 0, "status": "Belum Dimulai", "catatan": "Tentatif"}], "seserahan": [{"id": "SS-R8", "sheet": "SESERAHAN", "rowIndex": 8, "no": 1, "kategori": "Alat Solat", "item": "Mukena (Zeira Series)", "brand": "Alluna", "harga": 230000, "link": "https://shopee.co.id/ALLUNA-Mukena-Dewasa-Santorini-Silk-Jacquard-Premium-Lasercut-Mewah-Zeira-Series-i.109588470.43725150037?extraParams=%7B%22display_model_id%22%3A302038310015%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R9", "sheet": "SESERAHAN", "rowIndex": 9, "no": 2, "kategori": "Alat Solat", "item": "Gift Set Sajadah, Al-Qur'an & Tasbih", "brand": "Tazbiya", "harga": 285000, "link": "https://shopee.co.id/GIFT-SET-TAZBIYA-SAJADAH-DAN-AL-QURAN-I-Hadiah-Pernikahan-I-Paket-Seserahan-Kado-Pernikahan-Hampers-Ramadan-Hampers-Lebaran-i.12154728.27469776948?extraParams=%7B%22display_model_id%22%3A441267744318%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R14", "sheet": "SESERAHAN", "rowIndex": 14, "no": 5, "kategori": "Skincare", "item": "Facial Wash (Gentle Skin Cleanser 1000ml)", "brand": "Cetaphil", "harga": 346900, "link": "https://shopee.co.id/Cetaphil-Gentle-Skin-Cleanser-1000ml-dengan-Niacinamide-Glycerin-dan-Panthenol-Sabun-Pembersih-Muka-Untuk-Segala-Jenis-Kulit-i.11277516.567634011?extraParams=%7B%22display_model_id%22%3A23534943280%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R15", "sheet": "SESERAHAN", "rowIndex": 15, "no": 6, "kategori": "Skincare", "item": "Moisturizer (Cicaplast Baume B5+ Soothing Balm 100ml)", "brand": "La Roche Posay", "harga": 423100, "link": "https://shopee.co.id/La-Roche-Posay-Cicaplast-Baume-B5-Soothing-Balm-100ml-Krim-Kulit-Kering-Iritasi-Ringan-Wajah-Badan-i.433144176.24468990234?extraParams=%7B%22display_model_id%22%3A222599734355%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R16", "sheet": "SESERAHAN", "rowIndex": 16, "no": 7, "kategori": "Skincare", "item": "Serum (White Truffle First Spray Serum 100ml)", "brand": "d'Alba", "harga": 292500, "link": "https://shopee.co.id/d'Alba-White-Truffle-First-Spray-Serum-100ml-i.489174620.11446765625?extraParams=%7B%22display_model_id%22%3A130266383222%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R17", "sheet": "SESERAHAN", "rowIndex": 17, "no": 8, "kategori": "Skincare", "item": "Peeling Serum (Intensive Peeling Solution 35gr x 2)", "brand": "Elformula", "harga": 207000, "link": "https://shopee.co.id/ELFORMULA-Bundle-2pcs-Intensive-Peeling-Solution-35gr-x-2-Peeling-Serum-Dark-Spot-Glass-Skin-Eksfoliasi-Wajah-Mengangkat-Sel-Kulit-Mati-AHA-BHA-PHA-Glowing-Smooth-Mencerahkan-Kulit-Halus-Blackhead-Brightening-Whitening-Exfoliasi-i.600719961.11588876188?extraParams=%7B%22display_model_id%22%3A215780235029%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R18", "sheet": "SESERAHAN", "rowIndex": 18, "no": 9, "kategori": "Skincare", "item": "Sunscreen (Airy Smooth x 3)", "brand": "Wardah", "harga": 106205, "link": "https://shopee.co.id/Wardah-Sunscreen-UV-Shield-Triple-Pack-Acne-Calming-SerumSPF-35-PA-Bright-C-Hydrating-Sunscreen-SPF-35-PA-Airy-Smooth-Sunscreen-SPF-50-PA-25ml-0-Alkohol-Ringan-Transparant-Sunscreen-No.-1-Sunscreen-of-the-Year-Skincare-i.59763733.41505182271?extraParams=%7B%22display_model_id%22%3A290436735860%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R23", "sheet": "SESERAHAN", "rowIndex": 23, "no": 12, "kategori": "Toiletries", "item": "Couple Towel", "brand": "Terry Palmer", "harga": 377667, "link": "https://shopee.co.id/Howel-and-Co-Althea-(Couple-Towel)-i.50219513.41204768783?extraParams=%7B%22display_model_id%22%3A280404558083%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R24", "sheet": "SESERAHAN", "rowIndex": 24, "no": 13, "kategori": "Toiletries", "item": "Keratin Total Repair Kit (Shampoo, Condi, Mask, Serum)", "brand": "TRESemme", "harga": 318500, "link": "https://shopee.co.id/Keratin-Total-Repair-Kit-TRESemme-Keratin-Smooth-Shampoo-170ml-Condi-170ml-Mask-180-ml-Serum-100-ml-i.932470899.42322758236?extraParams=%7B%22display_model_id%22%3A296849028073%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R25", "sheet": "SESERAHAN", "rowIndex": 25, "no": 14, "kategori": "Toiletries", "item": "Shower Gel 1000ml for Brightening", "brand": "Moseru", "harga": 149000, "link": "https://shopee.co.id/-READY-STOCK-MOSSERU-Shower-Gel-500ml-for-Brightening-Sabun-Mandi-Mencerahkan-Sabun-Mandi-Cair-Pencerah-Tubuh-Body-Wash-Melembapkan-i.788496337.57709998794?extraParams=%7B%22display_model_id%22%3A355883366527%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R26", "sheet": "SESERAHAN", "rowIndex": 26, "no": 15, "kategori": "Toiletries", "item": "Brightening Body Serum 7x BRIGHTENING x 2", "brand": "Bonavie", "harga": 76000, "link": "https://shopee.co.id/-Special-Affiliate-Bonavie-Brightening-Body-Serum-7x-BRIGHTENING-Fragrance-Wangi-Mewah-Body-Lotion-Mencerahkan-Melembabkan-i.681243698.51309139179?extraParams=%7B%22display_model_id%22%3A380810487965%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R27", "sheet": "SESERAHAN", "rowIndex": 27, "no": 16, "kategori": "Toiletries", "item": "Paket Pencerah Gigi (Optic White O2 + 2 Sikat Gigi)", "brand": "Colgate", "harga": 145000, "link": "https://shopee.co.id/Colgate-Paket-Pencerah-Gigi-Dalam-3-Hari-Optic-White-O2-Cushion-Clean-i.19351258.20067016615?extraParams=%7B%22display_model_id%22%3A127224868362%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R32", "sheet": "SESERAHAN", "rowIndex": 32, "no": 19, "kategori": "Makeup", "item": "Skin Tint (Copy Paste Tinted Sunscreen SPF 40 PA++++)", "brand": "Somethinc", "harga": 161000, "link": "https://shopee.co.id/SOMETHINC-Copy-Paste-Tinted-Sunscreen-SPF-40-PA-Skin-Tint-Ringan-Dengan-Finish-Dewy-Meratakan-Warna-Kulit-Serta-Melindungi-Wajah-Dari-UVA-UVB-Mengandung-skincare-dan-Tahan-Lama-i.195455930.25401007243?extraParams=%7B%22display_model_id%22%3A255310450945%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R33", "sheet": "SESERAHAN", "rowIndex": 33, "no": 20, "kategori": "Makeup", "item": "Bedak (Powder Foundation Two-Way Cake)", "brand": "Maybelline", "harga": 149200, "link": "https://shopee.co.id/Maybelline-Superstay-Flex-Powder-30H-Waterproof-i.62582411.42514980152?extraParams=%7B%22display_model_id%22%3A301239606019%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R34", "sheet": "SESERAHAN", "rowIndex": 34, "no": 21, "kategori": "Makeup", "item": "Blush On (Wonder Crush Serum Liquid Blush On)", "brand": "Esqa", "harga": 100000, "link": "https://shopee.co.id/ESQA-Wonder-Crush-Serum-Liquid-Blush-On-i.60328369.18585640571?extraParams=%7B%22display_model_id%22%3A88809741581%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R35", "sheet": "SESERAHAN", "rowIndex": 35, "no": 22, "kategori": "Makeup", "item": "Eyeshadow (Goddess Eyeshadow Palette)", "brand": "Esqa", "harga": 169000, "link": "https://shopee.co.id/ESQA-Goddess-Eyeshadow-Palette-i.60328369.2810686129?extraParams=%7B%22display_model_id%22%3A22416261513%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R36", "sheet": "SESERAHAN", "rowIndex": 36, "no": 23, "kategori": "Makeup", "item": "Bundle Eye Makeup (Sky High Maskara + Tattoo Liner)", "brand": "Maybelline", "harga": 185880, "link": "https://shopee.co.id/Variation-Name-Sky-High-Tattoo-Liner-i.62582411.18492909364?extraParams=%7B%22display_model_id%22%3A218823575260%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R37", "sheet": "SESERAHAN", "rowIndex": 37, "no": 24, "kategori": "Makeup", "item": "Lipstick (Superstay Teddy Tint)", "brand": "Maybelline", "harga": 71000, "link": "https://shopee.co.id/Maybelline-Superstay-Teddy-Tint-5-mL-Teddy-Soft-Matte-Tahan-12-Jam-Lipstick-Lipcream-Lipstik-Perfect-Lip-Tint-i.62582411.28157131188?extraParams=%7B%22display_model_id%22%3A187702520860%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R38", "sheet": "SESERAHAN", "rowIndex": 38, "no": 25, "kategori": "Makeup", "item": "Lipcream (Glossy Glasting Liquid Lip)", "brand": "Wardah", "harga": 97970, "link": "https://shopee.co.id/WARDAH-Lip-Cream-Glossy-Glasting-Liquid-Lip-Hi-Pigmented-Glass-Color-Ringan-Tidak-Lengket-Transferproof-Liptint-Lipgloss-Lipstik-Lip-Tint-Lip-Matte-Lipstick-Lipcream-Glossy-Lip-Longlasting-Waterproof-Tahan-Lama-Makeup-i.59763733.24156148592?extraParams=%7B%22display_model_id%22%3A88855629213%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R39", "sheet": "SESERAHAN", "rowIndex": 39, "no": 26, "kategori": "Makeup", "item": "Brush (Beauté The Onyx Perfect Duo Bundle)", "brand": "Aeris", "harga": 108800, "link": "https://shopee.co.id/Aeris-Beaut%C3%A9-The-Onyx-Perfect-Duo-Bundle-Set-Praktis-Brush-Make-Up-Hitam-Premium-Lembut-Vegan-untuk-Pemula-Kuas-Bedak-Foundation-Concealer-Blush-i.86767687.23764637468?extraParams=%7B%22display_model_id%22%3A290922034609%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R44", "sheet": "SESERAHAN", "rowIndex": 44, "no": 29, "kategori": "Underwear", "item": "Bra + Celana Dalam (4 set)", "brand": "Sorex", "harga": 348800, "link": "https://shopee.co.id/Sorex-Bra-Set-Busa-Sedang-Kawat-Kait-3-Setara-Cup-A-B-CD-Cutting-Mini-BH-17133-i.34668189.24765196544?extraParams=%7B%22display_model_id%22%3A240372736281%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R45", "sheet": "SESERAHAN", "rowIndex": 45, "no": 30, "kategori": "Underwear", "item": "Lingerie", "brand": "Qigerie", "harga": 139195, "link": "https://shopee.co.id/Gwen-Qigerie-Baju-Daster-Sexy-Wanita-i.389600185.28615181952?extraParams=%7B%22display_model_id%22%3A246854973022%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R50", "sheet": "SESERAHAN", "rowIndex": 50, "no": 33, "kategori": "Pakaian", "item": "Baju (AS SHE IS - LORENE TOP)", "brand": "Pastelly", "harga": 348400, "link": "https://shopee.co.id/PASTELLY-AS-SHE-IS-LORENE-TOP-i.490730798.41734290800?extraParams=%7B%22display_model_id%22%3A321483944955%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R51", "sheet": "SESERAHAN", "rowIndex": 51, "no": 34, "kategori": "Pakaian", "item": "Celana (Gion Satin Pants)", "brand": "Marveile", "harga": 229000, "link": "https://shopee.co.id/-Marveile-Gion-Satin-Pants-Celana-Panjang-Satin-Wanita-(-SLIM-CUT-HIGHWAIST-)-i.406683489.50509351670?extraParams=%7B%22display_model_id%22%3A138467946474%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R52", "sheet": "SESERAHAN", "rowIndex": 52, "no": 35, "kategori": "Pakaian", "item": "Gamis (Border L Monogram Satin)", "brand": "Elzatta", "harga": 389000, "link": "https://shopee.co.id/Elzatta-Long-Dress-Gamis-Border-L-Monogram-Satin-i.12073181.25391155572?extraParams=%7B%22display_model_id%22%3A311257069886%2C%22model_selection_logic%22%3Anull%7D", "status": "Pending"}, {"id": "SS-R53", "sheet": "SESERAHAN", "rowIndex": 53, "no": 36, "kategori": "Pakaian", "item": "Kerudung (Segi Empat Paris Polos Keisha Paris)", "brand": "Elzatta", "harga": 55000, "link": "https://shopee.co.id/Elzatta-Hijab-Jilbab-Kerudung-Segi-Empat-Paris-Polos-Keisha-Paris-i.12073181.42514099531?extraParams=%7B%22display_model_id%22%3A206368184026%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R58", "sheet": "SESERAHAN", "rowIndex": 58, "no": 39, "kategori": "Accessories", "item": "Bag (Tas Bahu Kulit Emory - Hitam)", "brand": "Pedro", "harga": 2799000, "link": "https://www.pedroshoes.co.id/id/women/PW2-75060139_BLACK-ID.html", "status": "Pending"}, {"id": "SS-R59", "sheet": "SESERAHAN", "rowIndex": 59, "no": 40, "kategori": "Accessories", "item": "Bag (Tas Bucket Turn-Lock Chance - Taupe)", "brand": "Charles & Keith", "harga": 1699000, "link": "https://www.charleskeith.co.id/id/CK2-10701618_TAUPE-ID.html", "status": "Pending"}, {"id": "SS-R60", "sheet": "SESERAHAN", "rowIndex": 60, "no": 41, "kategori": "Accessories", "item": "Sandal (Sandal Slide Crystal Mesh - Black Textured)", "brand": "Charles & Keith", "harga": 1099000, "link": "https://www.charleskeith.co.id/id/CK1-70381254_BLKTXT-ID.html", "status": "Pending"}, {"id": "SS-R61", "sheet": "SESERAHAN", "rowIndex": 61, "no": 42, "kategori": "Accessories", "item": "Flatshoes (Sepatu Mary Janes Double-Strap Brogue)", "brand": "Charles & Keith", "harga": 1099000, "link": "https://www.charleskeith.co.id/id/CK1-70381187_BEIGE-ID.html", "status": "Pending"}, {"id": "SS-R62", "sheet": "SESERAHAN", "rowIndex": 62, "no": 43, "kategori": "Accessories", "item": "Jam tangan (LTP-V007L-7B2UDF)", "brand": "Casio", "harga": 403340, "link": "https://shopee.co.id/Casio-Jam-Tangan-Wanita-LTP-V007L-7B2UDF-i.43688581.5139567065?extraParams=%7B%22display_model_id%22%3A70091660072%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R67", "sheet": "SESERAHAN", "rowIndex": 67, "no": 46, "kategori": "ETC", "item": "Hairdryer", "brand": "Ona", "harga": 1484000, "link": "https://shopee.co.id/ONA-PIXEL-Mini-Highspeed-Hairdryer-Pengering-Rambut-Garansi-5thn-300-Juta-Ion-Negatif-6-Suhu-1100W-i.1074192609.28177272910?extraParams=%7B%22display_model_id%22%3A415305047042%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}, {"id": "SS-R68", "sheet": "SESERAHAN", "rowIndex": 68, "no": 47, "kategori": "ETC", "item": "Perfume (Gorgeous Tuberose 110ml)", "brand": "Mandalika", "harga": 766972, "link": "https://shopee.co.id/MANDALIKA-Perfume-Gorgeous-Tuberose-110ml-Parfum-Anya-Geraldine-i.1129592427.19886641773?extraParams=%7B%22display_model_id%22%3A187180904166%2C%22model_selection_logic%22%3A3%7D", "status": "Pending"}], "maharTargets": [{"id": "MT-R10", "rowIndex": 10, "no": 1, "instrumen": "Saham BSSR (PT Baramulti Suksessarana Tbk)", "spesifikasi": "27 Lot Saham Dividen (2.700 Lembar)", "targetJumlah": 27.0, "satuan": "Lot", "hargaSatuan": 499948, "totalEstimasi": 13498599, "realisasi": 6523872, "status": "Sebagian ⏳", "lokasi": "RDN Indo Premier (IPOT) / KSEI"}, {"id": "MT-R11", "rowIndex": 11, "no": 2, "instrumen": "Logam Mulia Emas (Hartadinata EMASKU)", "spesifikasi": "Akumulasi 6 Gram Emas Hartadinata / Logam Mulia", "targetJumlah": 6.0, "satuan": "Gram", "hargaSatuan": 4845639, "totalEstimasi": 14536917, "realisasi": 0, "status": "Belum Ada ❌", "lokasi": "Brankas / Safe Deposit Box"}, {"id": "MT-R12", "rowIndex": 12, "no": 3, "instrumen": "Uang Tunai Mahar", "spesifikasi": "Uang Kertas Emisi Baru (Angka Cantik 2027)", "targetJumlah": 1.0, "satuan": "Paket", "hargaSatuan": 2027000, "totalEstimasi": 2027000, "realisasi": 2027000, "status": "Lengkap ✅", "lokasi": "Frame Mahar & Rekening Pribadi"}], "maharLogs": [{"id": "ML-R16", "rowIndex": 16, "no": 1, "tanggal": "2026-10-30", "komponen": "Saham BSSR", "volume": 1.0, "satuan": "Lot", "hargaSatuan": 5075, "status": "Selesai", "totalRealisasi": 508464, "sumberDana": "RDN Indo Premier (IPOT)", "catatan": "Cicil 3 lot saham BSSR"}, {"id": "ML-R17", "rowIndex": 17, "no": 2, "tanggal": "2026-10-30", "komponen": "Saham BSSR", "volume": 2.0, "satuan": "Lot", "hargaSatuan": 5050, "status": "Selesai", "totalRealisasi": 1011919, "sumberDana": "RDN Indo Premier (IPOT)", "catatan": "Cicil 3 lot saham BSSR"}, {"id": "ML-R18", "rowIndex": 18, "no": 3, "tanggal": "2026-11-07", "komponen": "Uang Tunai", "volume": 1.0, "satuan": "Paket", "hargaSatuan": 2027000, "status": "Selesai", "totalRealisasi": 2027000, "sumberDana": "Rekening Bank CPP", "catatan": "Di Bibit"}, {"id": "ML-R19", "rowIndex": 19, "no": 4, "tanggal": "2026-11-05", "komponen": "Saham BSSR", "volume": 9.0, "satuan": "Lot", "hargaSatuan": 5000, "status": "Selesai", "totalRealisasi": 4508550, "sumberDana": "RDN Indo Premier (IPOT)", "catatan": ""}, {"id": "ML-R20", "rowIndex": 20, "no": 5, "tanggal": "2026-11-05", "komponen": "Saham BSSR", "volume": 1.0, "satuan": "Lot", "hargaSatuan": 4940, "status": "Selesai", "totalRealisasi": 494939, "sumberDana": "RDN Indo Premier (IPOT)", "catatan": "Udah 13 lot BSSR"}], "administrasi": [{"id": "AD-R8", "sheet": "ADMINISTRASI", "rowIndex": 8, "no": 1, "instansi": "Pengantar RT/RW", "dokumen": "Surat Pengantar RT/RW Calon Pengantin Pria", "cppCheck": false, "cpwCheck": "NA", "target": "2027-02-15", "estimasi": 0, "realisasi": 0, "catatan": "Membawa fotokopi KTP & KK ke Ketua RT dan RW domisili CPP"}, {"id": "AD-R9", "sheet": "ADMINISTRASI", "rowIndex": 9, "no": 2, "instansi": "Pengantar RT/RW", "dokumen": "Surat Pengantar RT/RW Calon Pengantin Wanita", "cppCheck": "NA", "cpwCheck": false, "target": "2027-02-15", "estimasi": 0, "realisasi": 0, "catatan": "Membawa fotokopi KTP & KK ke Ketua RT dan RW domisili CPW"}, {"id": "AD-R10", "sheet": "ADMINISTRASI", "rowIndex": 10, "no": 3, "instansi": "Kelurahan", "dokumen": "Formulir N1 (Surat Pengantar Nikah Kelurahan)", "cppCheck": false, "cpwCheck": false, "target": "2027-02-28", "estimasi": 0, "realisasi": 0, "catatan": "Diterbitkan oleh kelurahan domisili masing-masing calon mempelai"}, {"id": "AD-R11", "sheet": "ADMINISTRASI", "rowIndex": 11, "no": 4, "instansi": "Kelurahan", "dokumen": "Formulir N2 (Surat Permohonan Kehendak Nikah)", "cppCheck": false, "cpwCheck": false, "target": "2027-02-28", "estimasi": 0, "realisasi": 0, "catatan": "Formulir permohonan kehendak nikah resmi dari kelurahan"}, {"id": "AD-R12", "sheet": "ADMINISTRASI", "rowIndex": 12, "no": 5, "instansi": "Kelurahan", "dokumen": "Formulir N4 (Surat Persetujuan Mempelai)", "cppCheck": false, "cpwCheck": false, "target": "2027-02-28", "estimasi": 20000, "realisasi": 0, "catatan": "Surat persetujuan kedua mempelai bermeterai cukup"}, {"id": "AD-R13", "sheet": "ADMINISTRASI", "rowIndex": 13, "no": 6, "instansi": "Kelurahan", "dokumen": "Formulir N5 (Surat Izin Orang Tua / Wali)", "cppCheck": false, "cpwCheck": false, "target": "2027-02-28", "estimasi": 20000, "realisasi": 0, "catatan": "Persetujuan tertulis resmi dari orang tua/wali masing-masing"}, {"id": "AD-R14", "sheet": "ADMINISTRASI", "rowIndex": 14, "no": 7, "instansi": "Kelurahan", "dokumen": "Surat Keterangan Belum Menikah dari Kelurahan", "cppCheck": false, "cpwCheck": false, "target": "2027-02-28", "estimasi": 0, "realisasi": 0, "catatan": "Surat keterangan status lajang/belum pernah menikah dari kelurahan"}, {"id": "AD-R15", "sheet": "ADMINISTRASI", "rowIndex": 15, "no": 8, "instansi": "Kelurahan / KUA", "dokumen": "Surat Rekomendasi Nikah (Numpang Nikah)", "cppCheck": false, "cpwCheck": "NA", "target": "2027-03-05", "estimasi": 0, "realisasi": 0, "catatan": "Dari KUA asal CPP ditujukan ke KUA lokasi akad nikah CPW"}, {"id": "AD-R16", "sheet": "ADMINISTRASI", "rowIndex": 16, "no": 9, "instansi": "Dokumen Pribadi", "dokumen": "Fotokopi KTP Calon Pengantin (CPP & CPW)", "cppCheck": false, "cpwCheck": false, "target": "2027-02-10", "estimasi": 25000, "realisasi": 0, "catatan": "Fotokopi legalisir 5-10 rangkap & siapkan scan PDF resolusi tinggi"}, {"id": "AD-R17", "sheet": "ADMINISTRASI", "rowIndex": 17, "no": 10, "instansi": "Dokumen Pribadi", "dokumen": "Fotokopi Kartu Keluarga (KK) Masing-masing", "cppCheck": false, "cpwCheck": false, "target": "2027-02-10", "estimasi": 20000, "realisasi": 0, "catatan": "Fotokopi KK terbaru masing-masing calon pengantin 5 rangkap"}, {"id": "AD-R18", "sheet": "ADMINISTRASI", "rowIndex": 18, "no": 11, "instansi": "Dokumen Pribadi", "dokumen": "Fotokopi Akta Kelahiran & Ijazah Terakhir", "cppCheck": false, "cpwCheck": false, "target": "2027-02-10", "estimasi": 25000, "realisasi": 0, "catatan": "Verifikasi keselarasan ejaan nama calon mempelai & orang tua"}, {"id": "AD-R19", "sheet": "ADMINISTRASI", "rowIndex": 19, "no": 12, "instansi": "Dokumen Pribadi", "dokumen": "Pasfoto Background Biru (Ukuran 2x3 & 4x6)", "cppCheck": false, "cpwCheck": false, "target": "2027-02-12", "estimasi": 80000, "realisasi": 0, "catatan": "Foto formal berkerah/berjas latar biru, masing-masing 5 lembar"}, {"id": "AD-R20", "sheet": "ADMINISTRASI", "rowIndex": 20, "no": 13, "instansi": "Dokumen Pribadi", "dokumen": "Fotokopi KTP Orang Tua & 2 Orang Saksi Nikah", "cppCheck": false, "cpwCheck": false, "target": "2027-02-15", "estimasi": 15000, "realisasi": 0, "catatan": "Fotokopi identitas KTP ayah/ibu serta saksi pernikahan yang sah"}, {"id": "AD-R21", "sheet": "ADMINISTRASI", "rowIndex": 21, "no": 14, "instansi": "Kesehatan / Puskesmas", "dokumen": "Skrining Kesehatan Catin di Puskesmas Domisili", "cppCheck": false, "cpwCheck": false, "target": "2027-03-15", "estimasi": 100000, "realisasi": 0, "catatan": "Tes darah lengkap, anemia, golongan darah, dan konseling pranikah"}, {"id": "AD-R22", "sheet": "ADMINISTRASI", "rowIndex": 22, "no": 15, "instansi": "Kesehatan / Puskesmas", "dokumen": "Sertifikat Imunisasi Tetanus Toxoid (TT)", "cppCheck": "NA", "cpwCheck": false, "target": "2027-03-31", "estimasi": 50000, "realisasi": 0, "catatan": "Vaksinasi TT bagi calon pengantin wanita di Puskesmas/Klinik"}, {"id": "AD-R23", "sheet": "ADMINISTRASI", "rowIndex": 23, "no": 16, "instansi": "Kesehatan / BKKBN", "dokumen": "Sertifikat Layak Kawin Aplikasi ELSIMIL", "cppCheck": false, "cpwCheck": false, "target": "2027-03-31", "estimasi": 0, "realisasi": 0, "catatan": "Isi kuesioner & upload hasil lab puskesmas via aplikasi Elsimil BKKBN"}, {"id": "AD-R24", "sheet": "ADMINISTRASI", "rowIndex": 24, "no": 17, "instansi": "KUA & SIMKAH", "dokumen": "Pendaftaran Nikah Online via SIMKAH Kemenag", "cppCheck": false, "cpwCheck": false, "target": "2027-04-05", "estimasi": 0, "realisasi": 0, "catatan": "Registrasi mandiri di simkah4.kemenag.go.id minimal H-90 s.d H-30"}, {"id": "AD-R25", "sheet": "ADMINISTRASI", "rowIndex": 25, "no": 18, "instansi": "KUA & SIMKAH", "dokumen": "Verifikasi & Penyerahan Berkas Fisik ke KUA", "cppCheck": false, "cpwCheck": false, "target": "2027-04-12", "estimasi": 0, "realisasi": 0, "catatan": "Penyerahan seluruh berkas asli dan fotokopi ke kantor KUA terkait"}, {"id": "AD-R26", "sheet": "ADMINISTRASI", "rowIndex": 26, "no": 19, "instansi": "KUA & SIMKAH", "dokumen": "Pembayaran Billing PNBP Nikah (Luar Kantor/Bedol)", "cppCheck": false, "cpwCheck": false, "target": "2027-04-15", "estimasi": 600000, "realisasi": 0, "catatan": "Setor biaya PNBP resmi Rp 600.000 via Bank/ATM (Rp 0 jika di KUA)"}, {"id": "AD-R27", "sheet": "ADMINISTRASI", "rowIndex": 27, "no": 20, "instansi": "KUA & SIMKAH", "dokumen": "Bimbingan Perkawinan (Bimwin / Suscatin)", "cppCheck": false, "cpwCheck": false, "target": "2027-04-22", "estimasi": 0, "realisasi": 0, "catatan": "Mengikuti pembekalan keluarga sakinah dari KUA secara tatap muka/webinar"}, {"id": "AD-R28", "sheet": "ADMINISTRASI", "rowIndex": 28, "no": 21, "instansi": "KUA & SIMKAH", "dokumen": "Konfirmasi Penghulu, Jadwal & Kelengkapan Mas Kawin", "cppCheck": false, "cpwCheck": false, "target": "2027-04-30", "estimasi": 0, "realisasi": 0, "catatan": "Koordinasi kehadiran penghulu di venue serta detail mahar pernikahan"}, {"id": "AD-R29", "sheet": "ADMINISTRASI", "rowIndex": 29, "no": 22, "instansi": "Pasca Nikah / KUA", "dokumen": "Penerimaan Buku Nikah Fisik & Kartu Nikah Digital", "cppCheck": false, "cpwCheck": false, "target": "2027-07-01", "estimasi": 0, "realisasi": 0, "catatan": "Pemeriksaan penulisan identitas buku nikah sesaat setelah ijab kabul"}, {"id": "AD-R30", "sheet": "ADMINISTRASI", "rowIndex": 30, "no": 23, "instansi": "Disdukcapil", "dokumen": "Penerbitan Kartu Keluarga (KK) Baru Pasutri", "cppCheck": false, "cpwCheck": false, "target": "2027-07-10", "estimasi": 0, "realisasi": 0, "catatan": "Pengajuan pecah KK dan cetak KK mandiri baru berstatus suami-istri"}, {"id": "AD-R31", "sheet": "ADMINISTRASI", "rowIndex": 31, "no": 24, "instansi": "Disdukcapil", "dokumen": "Pembaruan Kartu Keluarga Orang Tua Masing-masing", "cppCheck": false, "cpwCheck": false, "target": "2027-07-15", "estimasi": 0, "realisasi": 0, "catatan": "Penyesuaian pengurangan anggota keluarga di KK orang tua CPP & CPW"}, {"id": "AD-R32", "sheet": "ADMINISTRASI", "rowIndex": 32, "no": 25, "instansi": "Disdukcapil", "dokumen": "Pembaruan KTP-el Status Perkawinan (Kawin)", "cppCheck": false, "cpwCheck": false, "target": "2027-07-20", "estimasi": 0, "realisasi": 0, "catatan": "Cetak KTP elektronik baru CPP & CPW berstatus Menikah/Kawin"}, {"id": "AD-R33", "sheet": "ADMINISTRASI", "rowIndex": 33, "no": 26, "instansi": "Administrasi Terkait", "dokumen": "Pembaruan Kepesertaan BPJS Kesehatan & Perbankan", "cppCheck": false, "cpwCheck": false, "target": "2027-07-31", "estimasi": 0, "realisasi": 0, "catatan": "Penyatuan faskes BPJS satu keluarga dan update data ahli waris bank"}], "vendors": [{"id": "VD-R17", "sheet": "VENDOR DIRECTORY", "rowIndex": 17, "no": 1, "kategori": "Venue & Tempat Resepsi", "nama": "WO by ...", "kontak": "@plataran.wedding / Bp. Anton (0812-3456-XXX)", "nilaiKontrak": 20000000, "sisaPembayaran": 20000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Sewa gedung intimate XXX pax, listrik 10.000W & ruang VIP", "catatan": "DP 50% telah disetor, pelunasan H-14"}, {"id": "VD-R18", "sheet": "VENDOR DIRECTORY", "rowIndex": 18, "no": 2, "kategori": "Katering & Minuman", "nama": "Puspa Catering Premium", "kontak": "@puspacatering / Ibu Maya (0811-9876-XXX)", "nilaiKontrak": 21000000, "sisaPembayaran": 21000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Buffet XXX pax + 4 stall premium + complimentary coffee break", "catatan": "Food test approved, menu final terkunci"}, {"id": "VD-R19", "sheet": "VENDOR DIRECTORY", "rowIndex": 19, "no": 3, "kategori": "MUA & Busana Pengantin", "nama": "Biyan Kebaya & Attire", "kontak": "@biyan.atelier / Mba Citra (0813-2233-XXX)", "nilaiKontrak": 5000000, "sisaPembayaran": 5000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Beskap CPP adat & kebaya modern CPW akad-resepsi", "catatan": "Fitting tahap 1 tuntas, fitting final H-1 bulan"}, {"id": "VD-R20", "sheet": "VENDOR DIRECTORY", "rowIndex": 20, "no": 4, "kategori": "MUA & Busana Pengantin", "nama": "Anpasuha Makeup Artist", "kontak": "@anpasuha_mua / Mas Dimas (0815-6677-XXX)", "nilaiKontrak": 2500000, "sisaPembayaran": 2500000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "MUA pengantin wanita akad-resepsi & retouch", "catatan": "Pembayaran full lunas"}, {"id": "VD-R21", "sheet": "VENDOR DIRECTORY", "rowIndex": 21, "no": 5, "kategori": "MUA & Busana Pengantin", "nama": "Gajah Mada Textile & Tailor", "kontak": "@gm.textile / Ibu Rini (0817-1122-XXX)", "nilaiKontrak": 2000000, "sisaPembayaran": 2000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Bahan seragam keluarga inti CPP & CPW 11 pax", "catatan": "Kain telah didistribusikan ke keluarga"}, {"id": "VD-R22", "sheet": "VENDOR DIRECTORY", "rowIndex": 22, "no": 6, "kategori": "Dokumentasi (Foto & Video)", "nama": "The Uppermost Photography", "kontak": "@theuppermost / Bp. Tito (0818-4455-XXX)", "nilaiKontrak": 6000000, "sisaPembayaran": 6000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Foto & Cinematic Video Akad-Resepsi + Drone + Album Eksklusif", "catatan": "DP 50% tuntas, tim standby H-2 jam"}, {"id": "VD-R23", "sheet": "VENDOR DIRECTORY", "rowIndex": 23, "no": 7, "kategori": "Dekorasi & Florist", "nama": "Stupa Caspea Floral & Decor", "kontak": "@stupacaspea / Mba Rara (0812-9988-XXX)", "nilaiKontrak": 7500000, "sisaPembayaran": 7500000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Pelaminan intimate modern, floral arch lorong & meja akad", "catatan": "Layout 3D disetujui, loading H-1 malam"}, {"id": "VD-R24", "sheet": "VENDOR DIRECTORY", "rowIndex": 24, "no": 8, "kategori": "Undangan & Souvenir", "nama": "Alinea Wedding Invitation", "kontak": "@alinea.invitation / Admin (0856-7788-XXX)", "nilaiKontrak": 500000, "sisaPembayaran": 500000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Web invitation RSVP digital + 50 undangan fisik VIP foil emas", "catatan": "Sistem RSVP online aktif & link siap disebar"}, {"id": "VD-R25", "sheet": "VENDOR DIRECTORY", "rowIndex": 25, "no": 9, "kategori": "Undangan & Souvenir", "nama": "Kaminari Botanical Goods", "kontak": "@kaminari.gift / Mba Lisa (0819-3344-XXX)", "nilaiKontrak": 1500000, "sisaPembayaran": 1500000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "300 pcs scented wax sachet + hardbox packaging & thank you tag", "catatan": "Proses produksi kemasan, siap ambil H-14"}, {"id": "VD-R26", "sheet": "VENDOR DIRECTORY", "rowIndex": 26, "no": 10, "kategori": "Vendor Tambahan / Lainnya", "nama": "KUA Kecamatan Setempat", "kontak": "Penghulu / Petugas KUA (0813-5566-XXX)", "nilaiKontrak": 600000, "sisaPembayaran": 600000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Pencatatan nikah luar kantor resmi & bimbingan pranikah", "catatan": "Jadwal penghulu terkonfirmasi jam 08.00 WIB"}, {"id": "VD-R27", "sheet": "VENDOR DIRECTORY", "rowIndex": 27, "no": 11, "kategori": "Hiburan, MC & Akustik", "nama": "Acoustic Soul & Host", "kontak": "@acousticsoul_band / Mas Rian (0811-3322-XXX)", "nilaiKontrak": 2400000, "sisaPembayaran": 2400000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Akustik trio live resepsi + sound 3.000 watt + MC akad", "catatan": "Songlist intimate sudah diserahkan"}, {"id": "VD-R28", "sheet": "VENDOR DIRECTORY", "rowIndex": 28, "no": 12, "kategori": "Wedding Organizer (WO)", "nama": "Kalyana Wedding Planner", "kontak": "@kalyana.wo / Mba Sarah (0812-8899-XXX)", "nilaiKontrak": 5000000, "sisaPembayaran": 5000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "6 Personil kru lapangan hari H, timekeeper & koordinasi vendor", "catatan": "Rundown & technical meeting terjadwal"}, {"id": "VD-R29", "sheet": "VENDOR DIRECTORY", "rowIndex": 29, "no": 13, "kategori": "Jasa Hantaran & Mahar", "nama": "Frank & Co Jewellery", "kontak": "@franknco_id / Gallery Mall (0821-4433-XXX)", "nilaiKontrak": 5000000, "sisaPembayaran": 5000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Sepasang cincin emas putih & rose gold dengan ukir nama", "catatan": "Cincin sudah diambil & tersimpan aman"}, {"id": "VD-R30", "sheet": "VENDOR DIRECTORY", "rowIndex": 30, "no": 14, "kategori": "Jasa Hantaran & Mahar", "nama": "Studio Mahar & Seni Akrilik", "kontak": "@studiomahar / Mba Nisa (0813-8877-XXX)", "nilaiKontrak": 1000000, "sisaPembayaran": 1000000, "statusKerjasama": "Riset", "statusPembayaran": "Belum Bayar", "layanan": "Frame 3D akrilik gold, lampu LED & box cincin velvet", "catatan": "Desain frame selesai dirangkai"}], "timeline": [{"id": "TL-R8", "rowIndex": 8, "no": 1, "fase": "H-5 Bulan", "kategori": "Anggaran & Konsep", "agenda": "Penentuan Budget & Konsep Acara", "rincian": "Finalisasi total budget, tema konsep pernikahan, & alokasi dana", "target": "2027-02-05", "pic": "Kedua Mempelai", "status": "Dalam Proses"}, {"id": "TL-R9", "rowIndex": 9, "no": 2, "fase": "H-4,5 Bulan", "kategori": "Venue & Tanggal", "agenda": "Riset & Booking Venue Acara", "rincian": "Survei gedung/venue intimate, penetapan tanggal, & pembayaran DP", "target": "2027-02-10", "pic": "CPP & CPW", "status": "Belum Mulai"}, {"id": "TL-R10", "rowIndex": 10, "no": 3, "fase": "H-3 Bulan", "kategori": "Wedding Organizer", "agenda": "Pemilihan & Kontrak Tim WO", "rincian": "Wawancara vendor WO, review portofolio, dan penandatanganan SPK", "target": "2027-03-29", "pic": "CPW", "status": "Belum Mulai"}, {"id": "TL-R11", "rowIndex": 11, "no": 4, "fase": "H-4,5 Bulan", "kategori": "Catering & Menu", "agenda": "Test Food & Booking Catering", "rincian": "Food tasting menu buffet dan stall, estimasi porsi tamu, & kunci harga", "target": "2027-02-15", "pic": "Kedua Keluarga", "status": "Belum Mulai"}, {"id": "TL-R12", "rowIndex": 12, "no": 5, "fase": "H-3,5 Bulan", "kategori": "Dokumentasi", "agenda": "Kontrak Foto & Videografer", "rincian": "Paket liputan prewedding, akad, resepsi, drone shot, & video reel", "target": "2027-03-08", "pic": "CPP", "status": "Belum Mulai"}, {"id": "TL-R13", "rowIndex": 13, "no": 6, "fase": "H-4 Bulan", "kategori": "Busana & MUA", "agenda": "Booking Perias & Desainer Busana", "rincian": "Konsultasi kebaya/beskap, paket MUA pengantin dan kedua orang tua", "target": "2027-02-22", "pic": "CPW", "status": "Belum Mulai"}, {"id": "TL-R14", "rowIndex": 14, "no": 7, "fase": "H-3,5 Bulan", "kategori": "Dekorasi", "agenda": "Finalisasi Layout & Desain Dekorasi", "rincian": "Moodboard dekorasi pelaminan, lorong masuk, meja akad, & photobooth", "target": "2027-03-15", "pic": "CPW & Vendor", "status": "Belum Mulai"}, {"id": "TL-R15", "rowIndex": 15, "no": 8, "fase": "H-3 Bulan", "kategori": "Hiburan & MC", "agenda": "Booking MC & Live Music / Akustik", "rincian": "Pemilihan MC akad & resepsi, sound system, dan pengisi live music", "target": "2027-03-22", "pic": "CPP & CPW", "status": "Belum Mulai"}, {"id": "TL-R16", "rowIndex": 16, "no": 9, "fase": "H-2 Bulan", "kategori": "Administrasi KUA", "agenda": "Pengurusan Berkas N1-N4 & KUA", "rincian": "Surat pengantar RT/RW, kelurahan, puskesmas, dan pendaftaran KUA", "target": "2027-04-30", "pic": "CPP & CPW", "status": "Belum Mulai"}, {"id": "TL-R17", "rowIndex": 17, "no": 10, "fase": "H-1,5 Bulan", "kategori": "Tamu & Undangan", "agenda": "Finalisasi Daftar Tamu & Undangan", "rincian": "Kurasi list 150 pax CPP & 150 pax CPW, cetak fisik & e-invitation", "target": "2027-05-10", "pic": "Kedua Mempelai", "status": "Belum Mulai"}, {"id": "TL-R18", "rowIndex": 18, "no": 11, "fase": "H-2,5 Bulan", "kategori": "Mahar & Hantaran", "agenda": "Penyiapan Mahar & Kotak Seserahan", "rincian": "Pembelian logam mulia, hias pigura mahar & penataan box seserahan", "target": "2027-04-05", "pic": "CPP", "status": "Belum Mulai"}, {"id": "TL-R19", "rowIndex": 19, "no": 12, "fase": "H-1 Bulan", "kategori": "Souvenir", "agenda": "Pengadaan Souvenir & Packaging", "rincian": "Produksi souvenir 300 pcs, thank you card, dan finishing packaging", "target": "2027-05-17", "pic": "CPW", "status": "Belum Mulai"}, {"id": "TL-R20", "rowIndex": 20, "no": 13, "fase": "H-3 Minggu", "kategori": "Distribusi Undangan", "agenda": "Sebar Undangan Fisik & Digital", "rincian": "Pengiriman undangan fisik via ekspedisi & blast web invitation", "target": "2027-06-05", "pic": "Tim Keluarga", "status": "Belum Mulai"}, {"id": "TL-R21", "rowIndex": 21, "no": 14, "fase": "H-1 Minggu", "kategori": "Technical Meeting", "agenda": "Technical Meeting Seluruh Vendor", "rincian": "Koordinasi final alur rundown, loading time, & tata letak venue", "target": "2027-06-19", "pic": "WO & All Vendors", "status": "Belum Mulai"}, {"id": "TL-R22", "rowIndex": 22, "no": 15, "fase": "H-1 Hari", "kategori": "Gladi Resik & Drop Barang", "agenda": "Gladi Resik & Serah Terima Properti", "rincian": "Drop barang mahar, seserahan, souvenir ke venue & istirahat mempelai", "target": "2027-06-25", "pic": "WO & Keluarga", "status": "Belum Mulai"}], "rundown": [{"id": "RD-R31", "rowIndex": 31, "no": 1, "waktu": "05.00 - 06.30", "durasi": "90 mnt", "sesi": "MUA & Wardrobe CPW", "deskripsi": "Make up pengantin wanita dan fitting busana akad", "lokasi": "Ruang Rias Pengantin", "pic": "Bridesmaid / MUA", "vendor": "MUA & Wardrobe", "status": "Menunggu", "catatan": "Siapkan sarapan ringan & kopi"}, {"id": "RD-R32", "rowIndex": 32, "no": 2, "waktu": "06.00 - 07.00", "durasi": "60 mnt", "sesi": "MUA & Wardrobe CPP", "deskripsi": "Fitting beskap & grooming pengantin pria dan keluarga", "lokasi": "Ruang Rias Pria", "pic": "Bestman", "vendor": "Wardrobe Team", "status": "Menunggu", "catatan": "Pastikan peci, keris, dan selop siap"}, {"id": "RD-R33", "rowIndex": 33, "no": 3, "waktu": "06.30 - 07.15", "durasi": "45 mnt", "sesi": "Briefing Tim WO & Vendor", "deskripsi": "Final check sound system, mic akad, live streaming, dekorasi", "lokasi": "Main Hall Venue", "pic": "Wedding Organizer", "vendor": "Seluruh Vendor", "status": "Menunggu", "catatan": "Distribusi walkie talkie & rundown final"}, {"id": "RD-R34", "rowIndex": 34, "no": 4, "waktu": "07.15 - 07.45", "durasi": "30 mnt", "sesi": "Kedatangan Keluarga Besar", "deskripsi": "Penyambutan keluarga CPP dan penempatan di ruang tunggu", "lokasi": "Foyer / Ruang VIP", "pic": "Among Tamu", "vendor": "Venue / Catering", "status": "Menunggu", "catatan": "Morning tea & snack standby"}, {"id": "RD-R35", "rowIndex": 35, "no": 5, "waktu": "07.45 - 08.00", "durasi": "15 mnt", "sesi": "Prosesi Penyambutan CPP", "deskripsi": "Pengalungan ronce melati & penyerahan seserahan simbolis", "lokasi": "Pintu Masuk Akad", "pic": "MC & WO", "vendor": "WO & Dokumentasi", "status": "Menunggu", "catatan": "Bunga kalung disiapkan WO"}, {"id": "RD-R36", "rowIndex": 36, "no": 6, "waktu": "08.00 - 08.15", "durasi": "15 mnt", "sesi": "Pembukaan Akad Nikah", "deskripsi": "Pembacaan ayat suci Al-Qur'an dan khutbah nikah", "lokasi": "Meja Ijab Qabul", "pic": "MC & Qari", "vendor": "Sound System & MC", "status": "Menunggu", "catatan": "Meja akad, mikrofon, dan sound check"}, {"id": "RD-R37", "rowIndex": 37, "no": 7, "waktu": "08.15 - 08.45", "durasi": "30 mnt", "sesi": "Ijab Qabul & Doa Pasca Akad", "deskripsi": "Prosesi pengucapan ijab kabul, tanda tangan berkas & doa", "lokasi": "Meja Ijab Qabul", "pic": "Penghulu / KUA", "vendor": "KUA, Saksi, WO", "status": "Menunggu", "catatan": "Cek berkas KUA, mahar, dan mas kawin"}, {"id": "RD-R38", "rowIndex": 38, "no": 8, "waktu": "08.45 - 09.15", "durasi": "30 mnt", "sesi": "Penyerahan Mahar & Cincin", "deskripsi": "Penyerahan mahar, pemasangan cincin, & nasihat pernikahan", "lokasi": "Panggung Akad", "pic": "WO & MC", "vendor": "Dokumentasi & WO", "status": "Menunggu", "catatan": "Kotak mahar & cincin disiapkan"}, {"id": "RD-R39", "rowIndex": 39, "no": 9, "waktu": "09.15 - 09.45", "durasi": "30 mnt", "sesi": "Sungkeman & Doa Restu", "deskripsi": "Prosesi sungkem kepada orang tua dengan iringan lagu syahdu", "lokasi": "Area Pelaminan", "pic": "MC & WO", "vendor": "Sound System & WO", "status": "Menunggu", "catatan": "Siapkan tisu dan bantalan sungkem"}, {"id": "RD-R40", "rowIndex": 40, "no": 10, "waktu": "09.45 - 10.30", "durasi": "45 mnt", "sesi": "Sesi Foto Keluarga Inti Akad", "deskripsi": "Foto resmi bersama orang tua, saksi, dan keluarga inti", "lokasi": "Pelaminan Akad", "pic": "Tim Dokumentasi", "vendor": "Foto & Video", "status": "Menunggu", "catatan": "Koordinator keluarga atur antrean foto"}, {"id": "RD-R41", "rowIndex": 41, "no": 11, "waktu": "10.30 - 11.15", "durasi": "45 mnt", "sesi": "Retouch MUA & Ganti Busana", "deskripsi": "Retouch makeup dan ganti busana resepsi kedua mempelai", "lokasi": "Ruang Rias Pengantin", "pic": "MUA & Wardrobe", "vendor": "MUA Team", "status": "Menunggu", "catatan": "Siapkan makan siang pengantin"}, {"id": "RD-R42", "rowIndex": 42, "no": 12, "waktu": "10.45 - 11.15", "durasi": "30 mnt", "sesi": "Check-in Catering & Dekorasi", "deskripsi": "Final food tasting display, pemanasan buffet, cek flow tamu", "lokasi": "Area Buffet & Pelaminan", "pic": "PIC Catering", "vendor": "Catering & Dekor", "status": "Menunggu", "catatan": "Cek piring, gelas, gubukan, dan VIP buffet"}, {"id": "RD-R43", "rowIndex": 43, "no": 13, "waktu": "11.15 - 11.30", "durasi": "15 mnt", "sesi": "Pembukaan Registrasi Resepsi", "deskripsi": "Registrasi tamu undangan dibuka, souvenir & check-in aktif", "lokasi": "Meja Penerima Tamu", "pic": "Penerima Tamu", "vendor": "WO & Buku Tamu", "status": "Menunggu", "catatan": "Meja angpao, spidol, gembok & souvenir"}, {"id": "RD-R44", "rowIndex": 44, "no": 14, "waktu": "11.30 - 11.45", "durasi": "15 mnt", "sesi": "Grand Entrance Pengantin", "deskripsi": "Kirab masuk pengantin didampingi bridesmaid & groomsmen", "lokasi": "Red Carpet / Foyer", "pic": "MC & WO", "vendor": "Musik & Lighting", "status": "Menunggu", "catatan": "Confetti / sparkular & alur red carpet"}, {"id": "RD-R45", "rowIndex": 45, "no": 15, "waktu": "11.45 - 12.00", "durasi": "15 mnt", "sesi": "Sambutan & Doa Makan", "deskripsi": "Sambutan perwakilan keluarga dan pembacaan doa berkah", "lokasi": "Panggung Pelaminan", "pic": "Jubir Keluarga", "vendor": "Sound System & MC", "status": "Menunggu", "catatan": "Mic wireless stand by di panggung"}, {"id": "RD-R46", "rowIndex": 46, "no": 16, "waktu": "12.00 - 13.00", "durasi": "60 mnt", "sesi": "Ramah Tamah & Live Music", "deskripsi": "Jamuan makan siang tamu diiringi penampilan live music akustik", "lokasi": "Dining Area & Stage", "pic": "Band Akustik", "vendor": "Catering & Band", "status": "Menunggu", "catatan": "Pantau ketersediaan menu stall/gubukan"}, {"id": "RD-R47", "rowIndex": 47, "no": 17, "waktu": "12.30 - 13.45", "durasi": "75 mnt", "sesi": "Sesi Foto Tamu & Ucapan Selamat", "deskripsi": "Tamu undangan naik ke pelaminan untuk selamat & foto bersama", "lokasi": "Pelaminan Utama", "pic": "WO Usher", "vendor": "Tim Dokumentasi", "status": "Menunggu", "catatan": "Alur antrean satu arah naik-turun pelaminan"}, {"id": "RD-R48", "rowIndex": 48, "no": 18, "waktu": "13.45 - 14.15", "durasi": "30 mnt", "sesi": "Lempar Buket & Mini Games", "deskripsi": "Interaksi pengantin dengan tamu, lempar buket & doorprize", "lokasi": "Center Stage Venue", "pic": "MC", "vendor": "MC & WO", "status": "Menunggu", "catatan": "Buket bunga pengantin & 3 doorprize"}, {"id": "RD-R49", "rowIndex": 49, "no": 19, "waktu": "14.15 - 14.30", "durasi": "15 mnt", "sesi": "Closing & Foto Vendor", "deskripsi": "Penutupan acara resepsi, foto bersama seluruh panitia & vendor", "lokasi": "Pelaminan Utama", "pic": "MC & WO", "vendor": "Seluruh Vendor", "status": "Menunggu", "catatan": "Musik penutup dan ucapan terima kasih"}, {"id": "RD-R50", "rowIndex": 50, "no": 20, "waktu": "14.30 - 16.00", "durasi": "90 mnt", "sesi": "Load Out & Serah Terima Barang", "deskripsi": "Pengecekan barang, pengamanan kotak angpao, load-out vendor", "lokasi": "Venue & Ruang VIP", "pic": "PIC Keluarga & WO", "vendor": "Security & Venue", "status": "Menunggu", "catatan": "Penghitungan & serah terima kotak angpao"}], "tamu": [{"id": "TM-CPP-FAM-R10", "rowIndex": 10, "side": "CPP", "kelompok": "Keluarga Inti", "no": 1, "kategori": "Ayah CPP", "nama": "A Sofyan Rasad", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-FAM-R10", "rowIndex": 10, "side": "CPW", "kelompok": "Keluarga Inti", "no": 1, "kategori": "Ayah CPW", "nama": "Agus Suparman", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPP-FAM-R11", "rowIndex": 11, "side": "CPP", "kelompok": "Keluarga Inti", "no": 2, "kategori": "Ibu CPP", "nama": "Zulhaidar", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-FAM-R11", "rowIndex": 11, "side": "CPW", "kelompok": "Keluarga Inti", "no": 2, "kategori": "Ibu CPW", "nama": "Yeni Indri Yani", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPP-FAM-R12", "rowIndex": 12, "side": "CPP", "kelompok": "Keluarga Inti", "no": 3, "kategori": "Saudara Kandung 1", "nama": "HIbaturrahman Riadhi", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-FAM-R12", "rowIndex": 12, "side": "CPW", "kelompok": "Keluarga Inti", "no": 3, "kategori": "Saudara Kandung 1", "nama": "Damara Gahdania", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPP-FAM-R13", "rowIndex": 13, "side": "CPP", "kelompok": "Keluarga Inti", "no": 4, "kategori": "Saudara Kandung 2", "nama": "Amalia Zhahrina", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-FAM-R13", "rowIndex": 13, "side": "CPW", "kelompok": "Keluarga Inti", "no": 4, "kategori": "Saudara Kandung 2", "nama": "Salsabila Ramadahani", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPP-FAM-R14", "rowIndex": 14, "side": "CPP", "kelompok": "Keluarga Inti", "no": 5, "kategori": "Saudara Ipar 1", "nama": "Deanaz Rizqi", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-FAM-R14", "rowIndex": 14, "side": "CPW", "kelompok": "Keluarga Inti", "no": 5, "kategori": "Saudara Kandung 3", "nama": "Chika Syafani Ramadahn", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-FAM-R15", "rowIndex": 15, "side": "CPW", "kelompok": "Keluarga Inti", "no": 6, "kategori": "Saudara Kandung 4", "nama": "M. Rif'at Syabil", "pax": 1, "statusUndangan": "Draft", "rsvp": "Hadir"}, {"id": "TM-CPW-GEN-R23", "rowIndex": 23, "side": "CPW", "kelompok": "Tamu Umum", "no": 1, "kategori": "Keluarga Besar", "nama": "Nenek (papa)", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R24", "rowIndex": 24, "side": "CPW", "kelompok": "Tamu Umum", "no": 2, "kategori": "Keluarga Besar", "nama": "Om Yanto & Bibi Elin", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R25", "rowIndex": 25, "side": "CPW", "kelompok": "Tamu Umum", "no": 3, "kategori": "Keluarga Besar", "nama": "Dewi & Rafa", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R26", "rowIndex": 26, "side": "CPW", "kelompok": "Tamu Umum", "no": 4, "kategori": "Keluarga Besar", "nama": "Nenek (mama)", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R27", "rowIndex": 27, "side": "CPW", "kelompok": "Tamu Umum", "no": 5, "kategori": "Keluarga Besar", "nama": "Wa Goam & Wa Titin", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R28", "rowIndex": 28, "side": "CPW", "kelompok": "Tamu Umum", "no": 6, "kategori": "Keluarga Besar", "nama": "Bang Genjos & Po Uul", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R29", "rowIndex": 29, "side": "CPW", "kelompok": "Tamu Umum", "no": 7, "kategori": "Keluarga Besar", "nama": "Bang Aga & Po Intan", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R30", "rowIndex": 30, "side": "CPW", "kelompok": "Tamu Umum", "no": 8, "kategori": "Keluarga Besar", "nama": "Fadli & Fadlan", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R31", "rowIndex": 31, "side": "CPW", "kelompok": "Tamu Umum", "no": 9, "kategori": "Keluarga Besar", "nama": "Wa Liyah", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R32", "rowIndex": 32, "side": "CPW", "kelompok": "Tamu Umum", "no": 10, "kategori": "Keluarga Besar", "nama": "Bang Aun & Teh Ria", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R33", "rowIndex": 33, "side": "CPW", "kelompok": "Tamu Umum", "no": 11, "kategori": "Keluarga Besar", "nama": "Bang Oman & Kk Dilah", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R34", "rowIndex": 34, "side": "CPW", "kelompok": "Tamu Umum", "no": 12, "kategori": "Keluarga Besar", "nama": "Nabila", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R35", "rowIndex": 35, "side": "CPW", "kelompok": "Tamu Umum", "no": 13, "kategori": "Keluarga Besar", "nama": "Wa Turi & Wa Pikoh", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R36", "rowIndex": 36, "side": "CPW", "kelompok": "Tamu Umum", "no": 14, "kategori": "Keluarga Besar", "nama": "Bang Yayang & Po Nur", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R37", "rowIndex": 37, "side": "CPW", "kelompok": "Tamu Umum", "no": 15, "kategori": "Keluarga Besar", "nama": "Bang Tahir & Po Ika", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R38", "rowIndex": 38, "side": "CPW", "kelompok": "Tamu Umum", "no": 16, "kategori": "Keluarga Besar", "nama": "Akbar & Kia", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R39", "rowIndex": 39, "side": "CPW", "kelompok": "Tamu Umum", "no": 17, "kategori": "Keluarga Besar", "nama": "Wa Rohmat & Po Ipah", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R40", "rowIndex": 40, "side": "CPW", "kelompok": "Tamu Umum", "no": 18, "kategori": "Keluarga Besar", "nama": "Bang Azam & Kk Mila", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R41", "rowIndex": 41, "side": "CPW", "kelompok": "Tamu Umum", "no": 19, "kategori": "Keluarga Besar", "nama": "Gilang & Raihan & Arifah", "pax": 3, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R42", "rowIndex": 42, "side": "CPW", "kelompok": "Tamu Umum", "no": 20, "kategori": "Keluarga Besar", "nama": "Wa Guntur & Wa Imah", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R43", "rowIndex": 43, "side": "CPW", "kelompok": "Tamu Umum", "no": 21, "kategori": "Keluarga Besar", "nama": "Bang Tama & Po Mega", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R44", "rowIndex": 44, "side": "CPW", "kelompok": "Tamu Umum", "no": 22, "kategori": "Keluarga Besar", "nama": "Bang Fajar & Po Uti", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R45", "rowIndex": 45, "side": "CPW", "kelompok": "Tamu Umum", "no": 23, "kategori": "Keluarga Besar", "nama": "Wa Jajang & Wa Yuli", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R46", "rowIndex": 46, "side": "CPW", "kelompok": "Tamu Umum", "no": 24, "kategori": "Keluarga Besar", "nama": "Afwan & Nisa", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R47", "rowIndex": 47, "side": "CPW", "kelompok": "Tamu Umum", "no": 25, "kategori": "Keluarga Besar", "nama": "Naila & Hanif", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R48", "rowIndex": 48, "side": "CPW", "kelompok": "Tamu Umum", "no": 26, "kategori": "Keluarga Besar", "nama": "Cing Anwar & Cing Komar", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R49", "rowIndex": 49, "side": "CPW", "kelompok": "Tamu Umum", "no": 27, "kategori": "Keluarga Besar", "nama": "Adib & Kamila", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R50", "rowIndex": 50, "side": "CPW", "kelompok": "Tamu Umum", "no": 28, "kategori": "Keluarga Besar", "nama": "Cing Takin & Teh Hilda", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R51", "rowIndex": 51, "side": "CPW", "kelompok": "Tamu Umum", "no": 29, "kategori": "Keluarga Besar", "nama": "Nazran", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R52", "rowIndex": 52, "side": "CPW", "kelompok": "Tamu Umum", "no": 30, "kategori": "Keluarga Besar", "nama": "Cing Roup", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R53", "rowIndex": 53, "side": "CPW", "kelompok": "Tamu Umum", "no": 31, "kategori": "Keluarga Besar", "nama": "Noval & Abyan & Gelsi", "pax": 3, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R54", "rowIndex": 54, "side": "CPW", "kelompok": "Tamu Umum", "no": 32, "kategori": "Rekan Kerja & Kolega Kantor", "nama": "Pak Wawan & Istri", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R55", "rowIndex": 55, "side": "CPW", "kelompok": "Tamu Umum", "no": 33, "kategori": "Rekan Kerja & Kolega Kantor", "nama": "Pak Sugi & Istri", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R56", "rowIndex": 56, "side": "CPW", "kelompok": "Tamu Umum", "no": 34, "kategori": "Rekan Kerja & Kolega Kantor", "nama": "Kk Lia & Suami", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R57", "rowIndex": 57, "side": "CPW", "kelompok": "Tamu Umum", "no": 35, "kategori": "Rekan Kerja & Kolega Kantor", "nama": "Ka Indira & Bf", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R58", "rowIndex": 58, "side": "CPW", "kelompok": "Tamu Umum", "no": 36, "kategori": "Rekan Kerja & Kolega Kantor", "nama": "Etc", "pax": 15, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R59", "rowIndex": 59, "side": "CPW", "kelompok": "Tamu Umum", "no": 37, "kategori": "Kerabat", "nama": "Tante Maya & Bila & Rey", "pax": 3, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R60", "rowIndex": 60, "side": "CPW", "kelompok": "Tamu Umum", "no": 38, "kategori": "Tetangga & Lingkungan", "nama": "Tante Yuni", "pax": 1, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R88", "rowIndex": 88, "side": "CPW", "kelompok": "Tamu Umum", "no": 66, "kategori": "Sahabat & Teman Dekat", "nama": "Zulfa & Suami", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R89", "rowIndex": 89, "side": "CPW", "kelompok": "Tamu Umum", "no": 67, "kategori": "Sahabat & Teman Dekat", "nama": "Angel & Suami", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R90", "rowIndex": 90, "side": "CPW", "kelompok": "Tamu Umum", "no": 68, "kategori": "Sahabat & Teman Dekat", "nama": "Yessy & Bf", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R91", "rowIndex": 91, "side": "CPW", "kelompok": "Tamu Umum", "no": 69, "kategori": "Sahabat & Teman Dekat", "nama": "Diva & Bf", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R92", "rowIndex": 92, "side": "CPW", "kelompok": "Tamu Umum", "no": 70, "kategori": "teman", "nama": "Tata & Bf", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R93", "rowIndex": 93, "side": "CPW", "kelompok": "Tamu Umum", "no": 71, "kategori": "teman", "nama": "Ka Ova & Ka Anggi", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R94", "rowIndex": 94, "side": "CPW", "kelompok": "Tamu Umum", "no": 72, "kategori": "Sahabat & Teman Dekat", "nama": "Alfina & Mama", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}, {"id": "TM-CPW-GEN-R95", "rowIndex": 95, "side": "CPW", "kelompok": "Tamu Umum", "no": 73, "kategori": "teman", "nama": "Dewi & Bf", "pax": 2, "statusUndangan": "Draft", "rsvp": "Belum Konfirmasi"}]};
 
@@ -28,9 +39,10 @@
     activeGuestTab: 'all',
     activeVendorSubView: 'rundown',
     config: {
-      scriptUrl: (typeof SheetApi !== 'undefined' ? SheetApi.DEFAULT_ENDPOINT : 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec'),
+      scriptUrl: getGasEndpoint(),
       pin: '270627'
     },
+    guestExtras: {},
     checklist: {}
   };
 
@@ -109,17 +121,18 @@
         }
       }
       const rawCfg = localStorage.getItem(STORAGE_KEY_CFG);
-      const defaultEndpoint = (typeof SheetApi !== 'undefined' ? SheetApi.DEFAULT_ENDPOINT : 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec');
+      const defaultEndpoint = getGasEndpoint();
+      state.config.scriptUrl = defaultEndpoint;
       if (rawCfg) {
         const cfg = JSON.parse(rawCfg);
-        state.config.scriptUrl = cfg.scriptUrl || defaultEndpoint;
         state.config.pin = cfg.pin || '270627';
         state.role = (cfg.role === 'committee') ? 'committee' : 'couple';
       } else {
-        state.config.scriptUrl = defaultEndpoint;
         state.config.pin = '270627';
         state.role = 'couple';
       }
+      const rawExtras = localStorage.getItem(STORAGE_KEY_GUEST_EXTRAS);
+      if (rawExtras) state.guestExtras = JSON.parse(rawExtras) || {};
       const rawChk = localStorage.getItem(STORAGE_KEY_CHK);
       if (rawChk) state.checklist = JSON.parse(rawChk) || {};
     } catch (e) {}
@@ -129,12 +142,25 @@
     try {
       localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(state.data));
       localStorage.setItem(STORAGE_KEY_CFG, JSON.stringify({
-        scriptUrl: state.config.scriptUrl,
+        scriptUrl: getGasEndpoint(),
         pin: state.config.pin,
         role: state.role
       }));
+      localStorage.setItem(STORAGE_KEY_GUEST_EXTRAS, JSON.stringify(state.guestExtras || {}));
       localStorage.setItem(STORAGE_KEY_CHK, JSON.stringify(state.checklist));
     } catch (e) {}
+  }
+
+  function mergeGuestExtras(guests) {
+    const extras = state.guestExtras || {};
+    (guests || []).forEach(function(g) {
+      const k = (g.side || 'CPP') + '|' + String(g.nama || '').trim().toLowerCase();
+      const ex = extras[g.id] || extras[k];
+      if (ex) {
+        if (!g.whatsapp && ex.whatsapp) g.whatsapp = ex.whatsapp;
+        if (!g.instagram && ex.instagram) g.instagram = ex.instagram;
+      }
+    });
   }
 
   function formatRp(num) {
@@ -1546,6 +1572,47 @@
     }
   }
 
+  function syncEditPicFieldUI(modKey, currentVal) {
+    const pSel = document.getElementById('editPicSelect');
+    const pInp = document.getElementById('editPicInput');
+    if (!pInp) return;
+
+    const freeTextOnly = (modKey === 'seserahan' || modKey === 'vendors' || modKey === 'rundown');
+    if (freeTextOnly) {
+      if (pSel) pSel.classList.add('hidden');
+      pInp.classList.remove('hidden');
+      pInp.value = currentVal || '';
+      if (modKey === 'seserahan') pInp.placeholder = 'Contoh: Somethinc / Pedro';
+      else if (modKey === 'vendors') pInp.placeholder = 'Contoh: @vendor / 0812...';
+      else pInp.placeholder = 'Contoh: Wedding Organizer / Bestman';
+      return;
+    }
+
+    if (pSel) {
+      pSel.classList.remove('hidden');
+      const val = String(currentVal || 'CPP & CPW Bersama').trim();
+      let matched = false;
+      for (let i = 0; i < pSel.options.length; i++) {
+        if (pSel.options[i].value === val && val !== 'Lainnya') {
+          pSel.selectedIndex = i;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched && val) {
+        pSel.value = 'Lainnya';
+        pInp.classList.remove('hidden');
+        pInp.placeholder = 'Ketik nama PIC...';
+      } else {
+        pInp.classList.add('hidden');
+      }
+      pInp.value = val;
+    } else {
+      pInp.classList.remove('hidden');
+      pInp.value = currentVal || '';
+    }
+  }
+
   function populateAddCategoryDropdown(modKey) {
     const catSel = document.getElementById('addCategorySelect');
     if (!catSel) return;
@@ -1554,6 +1621,12 @@
       cats = ['Alat Solat', 'Skincare', 'Toiletries', 'Makeup', 'Underwear', 'Pakaian', 'Accessories', 'ETC'];
     } else if (modKey === 'preWedding') {
       cats = ['Lamaran', 'Foto Pre-Wedding', 'Pengajian Pranikah', 'Treatment Kesehatan'];
+    } else if (modKey === 'vendors') {
+      cats = ['Venue & Tempat Resepsi', 'Katering & Minuman', 'MUA & Busana Pengantin', 'Dokumentasi (Foto & Video)', 'Dekorasi & Florist', 'Undangan & Souvenir', 'Hiburan, MC & Akustik', 'Wedding Organizer (WO)', 'Jasa Hantaran & Mahar', 'Vendor Tambahan / Lainnya'];
+    } else if (modKey === 'rundown') {
+      cats = ['Akad Nikah', 'Resepsi', 'Persiapan & MUA', 'Logistik & Load Out'];
+    } else if (modKey === 'timeline') {
+      cats = ['Anggaran & Konsep', 'Venue & Tanggal', 'Catering & Menu', 'Wedding Organizer', 'Administrasi KUA', 'Tamu & Undangan', 'Lainnya'];
     } else {
       cats = ['Venue & Tempat Acara', 'Katering (Prasmanan & Stall)', 'Busana & Rias Pengantin (MUA)', 'Fotografi & Videografi', 'Dekorasi & Florist', 'Undangan & Souvenir', 'Hiburan, MC & Sound System', 'Wedding Organizer (WO)', 'Hantaran Seserahan & Mahar', 'Administrasi & Legal', 'Lainnya'];
     }
@@ -1568,8 +1641,9 @@
     const estInp = document.getElementById('editEstimasiInput');
     const realInp = document.getElementById('editRealisasiInput');
     const stSel = document.getElementById('editStatusSelect');
-    const picInp = document.getElementById('editPicInput');
     const noteInp = document.getElementById('editNoteInput');
+    const errEl = document.getElementById('editItemError');
+    if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
 
     nameInp.value = '';
     realInp.value = '0';
@@ -1582,9 +1656,44 @@
       estInp.value = '-';
       estInp.readOnly = true;
       document.getElementById('labelEditRealisasi').textContent = 'Harga Barang (Rp)';
+      realInp.readOnly = false;
       document.getElementById('labelEditPic').textContent = 'Brand / Merek';
-      picInp.value = '';
       stSel.innerHTML = '<option value="Pending">Pending (Rencana)</option><option value="Selesai">Selesai (Sudah Dibeli)</option><option value="Belum Dibeli">Belum Dibeli</option>';
+      syncEditPicFieldUI(modKey, '');
+    } else if (modKey === 'vendors') {
+      nameLbl.textContent = 'Nama Vendor / Perusahaan Baru';
+      nameInp.placeholder = 'Contoh: Nama Catering / WO / MUA';
+      document.getElementById('labelEditEstimasi').textContent = 'Nilai Kontrak (Rp)';
+      estInp.value = '0';
+      estInp.readOnly = false;
+      document.getElementById('labelEditRealisasi').textContent = 'Sisa Pembayaran (Rp)';
+      realInp.readOnly = false;
+      document.getElementById('labelEditPic').textContent = 'Kontak / PIC Vendor';
+      stSel.innerHTML = '<option value="Belum Bayar">Belum Bayar</option><option value="Down Payment (DP 1)">Down Payment (DP 1)</option><option value="Lunas (100% Selesai)">Lunas (100% Selesai)</option><option value="Booking Fee (Tanda Jadi)">Booking Fee (Tanda Jadi)</option>';
+      syncEditPicFieldUI(modKey, '');
+    } else if (modKey === 'rundown') {
+      nameLbl.textContent = 'Nama Sesi Rundown Baru';
+      nameInp.placeholder = 'Contoh: Sambutan Keluarga';
+      document.getElementById('labelEditEstimasi').textContent = 'Waktu Sesi';
+      estInp.value = '08.00 - 08.30';
+      estInp.readOnly = false;
+      document.getElementById('labelEditRealisasi').textContent = 'Lokasi';
+      realInp.value = 'Main Hall Venue';
+      realInp.readOnly = false;
+      document.getElementById('labelEditPic').textContent = 'PIC Lapangan';
+      stSel.innerHTML = '<option value="Siap">Siap</option><option value="Dalam Proses">Dalam Proses</option><option value="Selesai">Selesai</option><option value="Menunggu">Menunggu</option>';
+      syncEditPicFieldUI(modKey, 'Wedding Organizer');
+    } else if (modKey === 'timeline') {
+      nameLbl.textContent = 'Agenda Timeline Persiapan Baru';
+      nameInp.placeholder = 'Contoh: Fitting Final Kebaya';
+      document.getElementById('labelEditEstimasi').textContent = 'Estimasi Biaya (Rp)';
+      estInp.value = '0';
+      estInp.readOnly = false;
+      document.getElementById('labelEditRealisasi').textContent = 'Realisasi Aktual (Rp)';
+      realInp.readOnly = false;
+      document.getElementById('labelEditPic').textContent = 'PIC Pelaksana';
+      stSel.innerHTML = '<option value="Belum Mulai">Belum Mulai</option><option value="Dalam Proses">Dalam Proses</option><option value="Selesai">Selesai</option>';
+      syncEditPicFieldUI(modKey, 'CPP & CPW Bersama');
     } else if (modKey === 'preWedding') {
       nameLbl.textContent = 'Nama Kebutuhan Pre-Wedding Baru';
       nameInp.placeholder = 'Contoh: Sewa Wardrobe Tambahan';
@@ -1592,9 +1701,10 @@
       estInp.value = '0';
       estInp.readOnly = false;
       document.getElementById('labelEditRealisasi').textContent = 'Realisasi Aktual (Rp)';
+      realInp.readOnly = false;
       document.getElementById('labelEditPic').textContent = 'PIC Pelaksana';
-      picInp.value = 'CPP & CPW Bersama';
       stSel.innerHTML = '<option value="Belum Dimulai">Belum Dimulai</option><option value="Dalam Proses ⏳">Dalam Proses ⏳</option><option value="Deal / Booking">Deal / Booking</option><option value="Selesai ✅">Selesai ✅</option><option value="Tidak Digunakan">Tidak Digunakan</option>';
+      syncEditPicFieldUI(modKey, 'CPP & CPW Bersama');
     } else {
       nameLbl.textContent = 'Nama Item / Tugas Akad-Resepsi Baru';
       nameInp.placeholder = 'Contoh: Tambahan Kursi / Genset';
@@ -1602,9 +1712,10 @@
       estInp.value = '0';
       estInp.readOnly = false;
       document.getElementById('labelEditRealisasi').textContent = 'Realisasi Aktual (Rp)';
+      realInp.readOnly = false;
       document.getElementById('labelEditPic').textContent = 'PIC Pelaksana';
-      picInp.value = 'CPP & CPW Bersama';
       stSel.innerHTML = '<option value="Belum Dimulai">Belum Dimulai</option><option value="Dalam Proses ⏳">Dalam Proses ⏳</option><option value="Deal / Booking">Deal / Booking</option><option value="Selesai ✅">Selesai ✅</option>';
+      syncEditPicFieldUI(modKey, 'CPP & CPW Bersama');
     }
   }
 
@@ -1669,55 +1780,48 @@
       estInp.value = it.kategori || '';
       estInp.readOnly = true;
       document.getElementById('labelEditRealisasi').textContent = 'Harga Barang (Rp)';
+      realInp.readOnly = false;
       realInp.value = formatDots(it.harga);
       stSel.value = it.status || 'Pending';
       document.getElementById('labelEditPic').textContent = 'Brand / Merek';
-      picInp.value = it.brand || '';
+      syncEditPicFieldUI('seserahan', it.brand || '');
       noteInp.value = it.link || '';
     } else if (modKey === 'vendors') {
       document.getElementById('labelEditEstimasi').textContent = 'Nilai Kontrak (Rp)';
       estInp.value = formatDots(it.nilaiKontrak);
       estInp.readOnly = false;
       document.getElementById('labelEditRealisasi').textContent = 'Sisa Pembayaran (Rp)';
+      realInp.readOnly = false;
       realInp.value = formatDots(it.sisaPembayaran);
       stSel.value = it.statusPembayaran || 'Belum Bayar';
       document.getElementById('labelEditPic').textContent = 'Kontak / PIC Vendor';
-      picInp.value = it.kontak || '';
+      syncEditPicFieldUI('vendors', it.kontak || '');
       noteInp.value = it.catatan || '';
     } else if (modKey === 'rundown') {
       document.getElementById('labelEditEstimasi').textContent = 'Waktu Sesi';
       estInp.value = it.waktu || '';
       estInp.readOnly = true;
       document.getElementById('labelEditRealisasi').textContent = 'Lokasi';
+      realInp.readOnly = false;
       realInp.value = it.lokasi || '';
       stSel.value = it.status || 'Siap';
       document.getElementById('labelEditPic').textContent = 'PIC Lapangan';
-      picInp.value = it.pic || '';
+      syncEditPicFieldUI('rundown', it.pic || '');
       noteInp.value = it.catatan || '';
     } else {
       document.getElementById('labelEditEstimasi').textContent = 'Estimasi Biaya (Rp)';
       estInp.value = formatDots(it.estimasi);
       estInp.readOnly = false;
       document.getElementById('labelEditRealisasi').textContent = 'Realisasi Aktual (Rp)';
+      realInp.readOnly = false;
       realInp.value = formatDots(it.realisasi);
       stSel.value = it.status || 'Belum Dimulai';
       document.getElementById('labelEditPic').textContent = 'PIC Pelaksana';
-      const pSel = document.getElementById('editPicSelect');
-      const valPic = it.pic || 'CPP & CPW Bersama';
-      if (pSel) {
-        let match = false;
-        for (let i = 0; i < pSel.options.length; i++) {
-          if (pSel.options[i].value === valPic) {
-            pSel.selectedIndex = i;
-            match = true;
-            break;
-          }
-        }
-        if (!match) pSel.value = 'Lainnya';
-      }
-      picInp.value = it.pic || '';
+      syncEditPicFieldUI(modKey, it.pic || 'CPP & CPW Bersama');
       noteInp.value = it.catatan || it.rincian || '';
     }
+    const errEl = document.getElementById('editItemError');
+    if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
   }
 
   function syncMaharTargetField() {
@@ -1787,13 +1891,136 @@
     return total;
   }
 
-  async function syncMutation(sheetName, action, payload) {
-    if (!state.config.scriptUrl) {
-      state.config.scriptUrl = (typeof SheetApi !== 'undefined' ? SheetApi.DEFAULT_ENDPOINT : 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec');
+  function getSheetRowsSafe(sheetName) {
+    return (state.data && state.data.rawSheets && Array.isArray(state.data.rawSheets[sheetName]))
+      ? state.data.rawSheets[sheetName]
+      : null;
+  }
+
+  function getExistingSheetRowNo(sheetName, rowIndex1Based, colIdxZeroBased, fallbackNo) {
+    const rows = getSheetRowsSafe(sheetName);
+    if (rows && rows[rowIndex1Based - 1]) {
+      const v = parseInt(rows[rowIndex1Based - 1][colIdxZeroBased], 10);
+      if (!isNaN(v) && v > 0) return v;
     }
+    return fallbackNo;
+  }
+
+  function findFirstEmptySheetSlot(sheetName, checkColIdx, startRow, endRow, skipRows, localList, filterFn) {
+    const skipSet = {};
+    (skipRows || []).forEach(function(r) { skipSet[r] = true; });
+
+    const rows = getSheetRowsSafe(sheetName);
+    if (rows && rows.length > 0) {
+      const limit = Math.min(endRow, rows.length);
+      for (let r = startRow; r <= limit; r++) {
+        if (skipSet[r]) continue;
+        const row = rows[r - 1];
+        const val = row ? String(row[checkColIdx] || '').trim() : '';
+        if (!val) return r;
+      }
+    }
+
+    const used = {};
+    (localList || []).forEach(function(x) {
+      if (!filterFn || filterFn(x)) {
+        if (x.rowIndex) used[Number(x.rowIndex)] = true;
+      }
+    });
+    for (let r = startRow; r <= endRow; r++) {
+      if (skipSet[r]) continue;
+      if (!used[r]) return r;
+    }
+    return 0;
+  }
+
+  function getMaharMaxLogRow() {
+    const rows = getSheetRowsSafe('MAHAR');
+    if (rows) {
+      for (let r = 16; r <= Math.min(35, rows.length); r++) {
+        const row = rows[r - 1];
+        const rowTxt = (row ? row.slice(0, 4).join(' ') : '').toUpperCase();
+        if (rowTxt.indexOf('TOTAL') !== -1) return r - 1;
+      }
+    }
+    return 24;
+  }
+
+  function resolveNewSheetRowSlot(modKey, category, extra) {
+    if (modKey === 'maharLogs') {
+      const maxRow = getMaharMaxLogRow();
+      return findFirstEmptySheetSlot('MAHAR', 3, 16, maxRow, [], state.data.maharLogs);
+    }
+    if (modKey === 'weddingTracker') {
+      let maxWt = 32;
+      const rows = getSheetRowsSafe('WEDDING TRACKER');
+      if (rows) {
+        for (let r = 8; r <= Math.min(45, rows.length); r++) {
+          const rowTxt = (rows[r - 1] ? rows[r - 1].slice(0, 4).join(' ') : '').toUpperCase();
+          if (rowTxt.indexOf('TOTAL') !== -1) { maxWt = r - 1; break; }
+        }
+      }
+      return findFirstEmptySheetSlot('WEDDING TRACKER', 3, 8, maxWt, [], state.data.weddingTracker);
+    }
+    if (modKey === 'preWedding') {
+      const ranges = {
+        'Lamaran': [9, 17],
+        'Foto Pre-Wedding': [20, 26],
+        'Pengajian Pranikah': [29, 35],
+        'Treatment Kesehatan': [38, 43]
+      };
+      const skip = [18, 19, 27, 28, 36, 37, 44, 45, 46];
+      const rng = ranges[category] || [9, 43];
+      let slot = findFirstEmptySheetSlot('PRE WEDDING', 3, rng[0], rng[1], skip, state.data.preWedding);
+      if (!slot) slot = findFirstEmptySheetSlot('PRE WEDDING', 3, 9, 43, skip, state.data.preWedding);
+      return slot;
+    }
+    if (modKey === 'seserahan') {
+      const ranges = {
+        'Alat Solat': [8, 11],
+        'Skincare': [14, 20],
+        'Toiletries': [23, 29],
+        'Makeup': [32, 41],
+        'Underwear': [44, 47],
+        'Pakaian': [50, 55],
+        'Accessories': [58, 64],
+        'ETC': [67, 73]
+      };
+      const skip = [12, 13, 21, 22, 30, 31, 42, 43, 48, 49, 56, 57, 65, 66, 74, 75, 76];
+      const rng = ranges[category] || [67, 73];
+      let slot = findFirstEmptySheetSlot('SESERAHAN', 3, rng[0], rng[1], skip, state.data.seserahan);
+      if (!slot) slot = findFirstEmptySheetSlot('SESERAHAN', 3, 8, 73, skip, state.data.seserahan);
+      return slot;
+    }
+    if (modKey === 'vendors') {
+      return findFirstEmptySheetSlot('VENDOR DIRECTORY', 3, 17, 30, [31], state.data.vendors);
+    }
+    if (modKey === 'timeline') {
+      return findFirstEmptySheetSlot('TIMELINE & RUNDOWN', 4, 8, 27, [28, 29, 30], state.data.timeline);
+    }
+    if (modKey === 'rundown') {
+      return findFirstEmptySheetSlot('TIMELINE & RUNDOWN', 4, 31, 55, [], state.data.rundown);
+    }
+    if (modKey === 'tamu') {
+      const side = (extra && extra.side === 'CPW') ? 'CPW' : 'CPP';
+      const isFam = Boolean(extra && extra.isFam);
+      const colIdx = side === 'CPP' ? 3 : 10;
+      const filterFn = function(x) { return x.side === side && (isFam ? x.kelompok === 'Keluarga Inti' : x.kelompok !== 'Keluarga Inti'); };
+      return isFam
+        ? findFirstEmptySheetSlot('TAMU', colIdx, 10, 19, [], state.data.tamu, filterFn)
+        : findFirstEmptySheetSlot('TAMU', colIdx, 23, 171, [], state.data.tamu, filterFn);
+    }
+    return 0;
+  }
+
+  async function syncMutation(sheetName, action, payload, opts) {
+    state.config.scriptUrl = getGasEndpoint();
+    const options = opts || {};
     const sp = document.getElementById('syncSpinner');
     if (sp) sp.classList.add('animate-spin');
-    showToast('Menyinkronkan perubahan ke Google Sheets...', false);
+    if (!options.silentStart) {
+      showToast('Menyinkronkan perubahan ke Google Sheets...', false);
+    }
     try {
       if (action === 'append') {
         await SheetApi.append(sheetName, payload.rowValues, state.config.scriptUrl, state.config.pin);
@@ -1802,175 +2029,241 @@
       } else if (action === 'deleteRow') {
         await SheetApi.deleteRow(sheetName, payload.rowIndex, state.config.scriptUrl, state.config.pin);
       }
-      // Re-fetch seluruh 9 tab secara otomatis agar seluruh kalkulasi formula spreadsheet langsung terupdate
-      await syncFromAppsScript(true);
-      showToast('✓ Sinkronisasi Berhasil: Data formula & spreadsheet telah diperbarui!');
+      // Re-fetch seluruh 9 tab secara otomatis agar kalkulasi formula spreadsheet terupdate
+      if (!options.skipPull) {
+        await syncFromAppsScript(true);
+      }
+      if (!options.quietSuccessToast) {
+        showToast('✓ Sinkronisasi Berhasil: Data & formula spreadsheet telah diperbarui!');
+      }
+      return { ok: true };
     } catch (e) {
-      showToast('Gagal sinkronisasi: ' + (e.message || String(e)), true);
+      const errMsg = e.message || String(e);
+      showToast('Gagal sinkronisasi: ' + errMsg, true);
+      return { ok: false, error: errMsg };
     } finally {
       if (sp) sp.classList.remove('animate-spin');
     }
   }
 
   async function pushToAppsScript(action, itemPayload) {
-    if (!state.config.scriptUrl) {
-      state.config.scriptUrl = (typeof SheetApi !== 'undefined' ? SheetApi.DEFAULT_ENDPOINT : 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec');
-    }
+    state.config.scriptUrl = getGasEndpoint();
     try {
       if (action === 'update_master_meta') {
-        if (itemPayload.cpp !== undefined) await syncMutation('MASTER', 'updateRow', { rowIndex: 5, startCol: 4, rowValues: [itemPayload.cpp] });
-        if (itemPayload.cpw !== undefined) await syncMutation('MASTER', 'updateRow', { rowIndex: 5, startCol: 8, rowValues: [itemPayload.cpw] });
-        if (itemPayload.weddingDate) await syncMutation('MASTER', 'updateRow', { rowIndex: 6, startCol: 4, rowValues: [itemPayload.weddingDate] });
-        if (itemPayload.venue !== undefined) await syncMutation('MASTER', 'updateRow', { rowIndex: 6, startCol: 8, rowValues: [itemPayload.venue] });
-        if (itemPayload.targetReady !== undefined) await syncMutation('MASTER', 'updateRow', { rowIndex: 6, startCol: 12, rowValues: [itemPayload.targetReady] });
+        const tasks = [];
+        if (itemPayload.cpp !== undefined) tasks.push({ rowIndex: 5, startCol: 4, rowValues: [itemPayload.cpp] });
+        if (itemPayload.cpw !== undefined) tasks.push({ rowIndex: 5, startCol: 8, rowValues: [itemPayload.cpw] });
+        if (itemPayload.weddingDate) tasks.push({ rowIndex: 6, startCol: 4, rowValues: [itemPayload.weddingDate] });
+        if (itemPayload.venue !== undefined) tasks.push({ rowIndex: 6, startCol: 8, rowValues: [itemPayload.venue] });
+        if (itemPayload.targetReady !== undefined) tasks.push({ rowIndex: 6, startCol: 12, rowValues: [itemPayload.targetReady] });
+        for (let i = 0; i < tasks.length; i++) {
+          const isLast = (i === tasks.length - 1);
+          const res = await syncMutation('MASTER', 'updateRow', tasks[i], {
+            skipPull: !isLast,
+            silentStart: i > 0,
+            quietSuccessToast: !isLast
+          });
+          if (!res.ok) return res;
+        }
+        return { ok: true };
       } else if (action === 'update_guest_quota') {
-        if (itemPayload.targetPaxCpp !== undefined) await syncMutation('TAMU', 'updateRow', { rowIndex: 4, startCol: 7, rowValues: [itemPayload.targetPaxCpp] });
-        if (itemPayload.targetPaxCpw !== undefined) await syncMutation('TAMU', 'updateRow', { rowIndex: 4, startCol: 11, rowValues: [itemPayload.targetPaxCpw] });
+        if (itemPayload.targetPaxCpp !== undefined) {
+          const r1 = await syncMutation('TAMU', 'updateRow', { rowIndex: 4, startCol: 7, rowValues: [itemPayload.targetPaxCpp] }, {
+            skipPull: itemPayload.targetPaxCpw !== undefined,
+            quietSuccessToast: itemPayload.targetPaxCpw !== undefined
+          });
+          if (!r1.ok) return r1;
+        }
+        if (itemPayload.targetPaxCpw !== undefined) {
+          return await syncMutation('TAMU', 'updateRow', { rowIndex: 4, startCol: 11, rowValues: [itemPayload.targetPaxCpw] }, {
+            silentStart: itemPayload.targetPaxCpp !== undefined
+          });
+        }
+        return { ok: true };
       } else if (action === 'update_tamu') {
         const g = itemPayload;
         const isCpp = g.side === 'CPP';
-        const startCol = isCpp ? 2 : 9;
-        if (g.rowIndex) {
-          await syncMutation('TAMU', 'updateRow', {
-            rowIndex: g.rowIndex,
-            startCol: startCol,
-            rowValues: [g.no, g.kategori, g.nama, g.pax, g.statusUndangan, g.rsvp]
-          });
-        } else {
-          const rowVals = isCpp
-            ? ['', g.no, g.kategori, g.nama, g.pax, g.statusUndangan, g.rsvp, '', '', '', '', '', '', '']
-            : ['', '', '', '', '', '', '', '', g.no, g.kategori, g.nama, g.pax, g.statusUndangan, g.rsvp];
-          await syncMutation('TAMU', 'append', { rowValues: rowVals });
+        const isFam = g.kelompok === 'Keluarga Inti';
+        let targetRow = Number(g.rowIndex || 0);
+        if (!targetRow) {
+          targetRow = resolveNewSheetRowSlot('tamu', null, { side: g.side, isFam: isFam });
         }
+        if (!targetRow) {
+          const errMsg = 'Slot daftar tamu pihak ' + g.side + ' (' + g.kelompok + ') pada spreadsheet sudah penuh.';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        g.rowIndex = targetRow;
+        const noColIdx = isCpp ? 1 : 8;
+        const existingNo = getExistingSheetRowNo('TAMU', targetRow, noColIdx, 0);
+        if (existingNo > 0) {
+          const startCol = isCpp ? 3 : 10;
+          return await syncMutation('TAMU', 'updateRow', {
+            rowIndex: targetRow,
+            startCol: startCol,
+            rowValues: [g.kategori, g.nama, g.pax, g.statusUndangan, g.rsvp]
+          });
+        }
+        const startCol = isCpp ? 2 : 9;
+        return await syncMutation('TAMU', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: startCol,
+          rowValues: [g.no, g.kategori, g.nama, g.pax, g.statusUndangan, g.rsvp]
+        });
       } else if (action === 'update_administrasi') {
         const item = itemPayload;
-        if (item.rowIndex) {
-          await syncMutation('ADMINISTRASI', 'updateRow', {
-            rowIndex: item.rowIndex,
-            startCol: 5,
-            rowValues: [item.cppCheck === 'NA' ? '—' : (item.cppCheck ? 'TRUE' : 'FALSE'), item.cpwCheck === 'NA' ? '—' : (item.cpwCheck ? 'TRUE' : 'FALSE')]
-          });
-        }
-      } else if (action === 'update_seserahan') {
-        const it = itemPayload;
-        if (it.rowIndex) {
-          await syncMutation('SESERAHAN', 'updateRow', {
-            rowIndex: it.rowIndex,
-            startCol: 2,
-            rowValues: [it.no, it.kategori, it.item, it.brand || '', it.harga || 0, it.link || '', it.status || 'Pending']
-          });
-        } else {
-          await syncMutation('SESERAHAN', 'append', {
-            rowValues: ['', it.no, it.kategori, it.item, it.brand || '', it.harga || 0, it.link || '', it.status || 'Pending']
-          });
-        }
-      } else if (action === 'add_seserahan') {
-        const it = itemPayload;
-        await syncMutation('SESERAHAN', 'append', {
-          rowValues: ['', it.no, it.kategori, it.item, it.brand || '', it.harga || 0, it.link || '', it.status || 'Pending']
+        if (!item.rowIndex) return { ok: false, error: 'Baris KUA tidak valid.' };
+        return await syncMutation('ADMINISTRASI', 'updateRow', {
+          rowIndex: item.rowIndex,
+          startCol: 5,
+          rowValues: [item.cppCheck === 'NA' ? '—' : (item.cppCheck ? 'TRUE' : 'FALSE'), item.cpwCheck === 'NA' ? '—' : (item.cpwCheck ? 'TRUE' : 'FALSE')]
         });
-      } else if (action === 'update_mahar_log') {
-        const log = itemPayload;
-        if (log.rowIndex) {
-          await syncMutation('MAHAR', 'updateRow', {
-            rowIndex: log.rowIndex,
-            startCol: 2,
-            rowValues: [log.no, log.tanggal, log.komponen, log.volume, log.satuan, log.hargaSatuan, log.status, log.totalRealisasi, log.sumberDana || '', log.catatan || '']
-          });
-        } else {
-          await syncMutation('MAHAR', 'append', {
-            rowValues: ['', log.no, log.tanggal, log.komponen, log.volume, log.satuan, log.hargaSatuan, log.status, log.totalRealisasi, log.sumberDana || '', log.catatan || '']
-          });
+      } else if (action === 'update_seserahan' || action === 'add_seserahan') {
+        const it = itemPayload;
+        let targetRow = Number(it.rowIndex || 0);
+        if (!targetRow) {
+          targetRow = resolveNewSheetRowSlot('seserahan', it.kategori);
         }
-      } else if (action === 'add_mahar_log') {
+        if (!targetRow) {
+          const errMsg = 'Slot kotak Seserahan sudah penuh di spreadsheet (baris 8-73).';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        it.rowIndex = targetRow;
+        const noVal = getExistingSheetRowNo('SESERAHAN', targetRow, 1, it.no);
+        return await syncMutation('SESERAHAN', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 2,
+          rowValues: [noVal, it.kategori, it.item, it.brand || '', it.harga || 0, it.link || '', it.status || 'Pending']
+        });
+      } else if (action === 'update_mahar_log' || action === 'add_mahar_log') {
         const log = itemPayload;
-        await syncMutation('MAHAR', 'append', {
-          rowValues: ['', log.no, log.tanggal, log.komponen, log.volume, log.satuan, log.hargaSatuan, log.status, log.totalRealisasi, log.sumberDana || '', log.catatan || '']
+        let targetRow = Number(log.rowIndex || 0);
+        if (!targetRow || targetRow < 16) {
+          targetRow = resolveNewSheetRowSlot('maharLogs');
+        }
+        if (!targetRow) {
+          const errMsg = 'Slot Log Cicilan Mahar (baris 16-' + getMaharMaxLogRow() + ') penuh. Sisipkan baris sebelum Total di Sheet MAHAR.';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        log.rowIndex = targetRow;
+        const noVal = getExistingSheetRowNo('MAHAR', targetRow, 1, log.no || (targetRow - 15));
+        return await syncMutation('MAHAR', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 2,
+          rowValues: [noVal, log.tanggal, log.komponen, log.volume, log.satuan, log.hargaSatuan, log.status, log.totalRealisasi, log.sumberDana || '', log.catatan || '']
         });
       } else if (action === 'update_mahar_target') {
-        await syncMutation('MAHAR', 'updateRow', {
+        return await syncMutation('MAHAR', 'updateRow', {
           rowIndex: itemPayload.rowIndex,
           startCol: 5,
           rowValues: [itemPayload.targetJumlah]
-        });
-      } else if (action === 'update_wedding_tracker') {
+        }, itemPayload._opts || {});
+      } else if (action === 'update_wedding_tracker' || action === 'add_wedding_tracker') {
         const it = itemPayload;
-        if (it.rowIndex) {
-          await syncMutation('WEDDING TRACKER', 'updateRow', {
-            rowIndex: it.rowIndex,
-            startCol: 2,
-            rowValues: [it.no, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
-          });
-        } else {
-          await syncMutation('WEDDING TRACKER', 'append', {
-            rowValues: ['', it.no, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
-          });
+        let targetRow = Number(it.rowIndex || 0);
+        if (!targetRow) {
+          targetRow = resolveNewSheetRowSlot('weddingTracker');
         }
-      } else if (action === 'add_wedding_tracker') {
-        const it = itemPayload;
-        await syncMutation('WEDDING TRACKER', 'append', {
-          rowValues: ['', it.no, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
+        if (!targetRow) {
+          const errMsg = 'Slot item pada WEDDING TRACKER (baris 8-32) sudah penuh.';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        it.rowIndex = targetRow;
+        const noVal = getExistingSheetRowNo('WEDDING TRACKER', targetRow, 1, it.no || (targetRow - 7));
+        return await syncMutation('WEDDING TRACKER', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 2,
+          rowValues: [noVal, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
         });
       } else if (action === 'update_pre_wedding') {
         const it = itemPayload;
-        if (it.rowIndex) {
-          await syncMutation('PRE WEDDING', 'updateRow', {
-            rowIndex: it.rowIndex,
-            startCol: 2,
-            rowValues: [it.no, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
-          });
-        } else {
-          await syncMutation('PRE WEDDING', 'append', {
-            rowValues: ['', it.no, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
-          });
+        let targetRow = Number(it.rowIndex || 0);
+        if (!targetRow) {
+          targetRow = resolveNewSheetRowSlot('preWedding', it.kategori);
         }
+        if (!targetRow) {
+          const errMsg = 'Slot item pada PRE WEDDING (baris 9-43) sudah penuh.';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        it.rowIndex = targetRow;
+        const noVal = getExistingSheetRowNo('PRE WEDDING', targetRow, 1, it.no);
+        return await syncMutation('PRE WEDDING', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 2,
+          rowValues: [noVal, it.kategori, it.item, it.pic, it.target || '', it.estimasi, it.realisasi, it.status, it.catatan]
+        });
       } else if (action === 'update_vendor') {
         const it = itemPayload;
-        if (it.rowIndex) {
-          await syncMutation('VENDOR DIRECTORY', 'updateRow', {
-            rowIndex: it.rowIndex,
-            startCol: 2,
-            rowValues: [it.no, it.kategori, it.nama, it.kontak, it.nilaiKontrak]
-          });
-          await syncMutation('VENDOR DIRECTORY', 'updateRow', {
-            rowIndex: it.rowIndex,
-            startCol: 8,
-            rowValues: [it.statusKerjasama, it.statusPembayaran, it.layanan, it.catatan]
-          });
-        } else {
-          await syncMutation('VENDOR DIRECTORY', 'append', {
-            rowValues: ['', it.no, it.kategori, it.nama, it.kontak, it.nilaiKontrak, '', it.statusKerjasama, it.statusPembayaran, it.layanan, it.catatan]
-          });
+        let targetRow = Number(it.rowIndex || 0);
+        if (!targetRow) {
+          targetRow = resolveNewSheetRowSlot('vendors');
         }
-      } else if (action === 'update_rundown') {
+        if (!targetRow) {
+          const errMsg = 'Slot direktori VENDOR DIRECTORY (baris 17-30) sudah penuh.';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        it.rowIndex = targetRow;
+        const noVal = getExistingSheetRowNo('VENDOR DIRECTORY', targetRow, 1, it.no || (targetRow - 16));
+        const r1 = await syncMutation('VENDOR DIRECTORY', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 2,
+          rowValues: [noVal, it.kategori, it.nama, it.kontak, it.nilaiKontrak]
+        }, { skipPull: true, quietSuccessToast: true });
+        if (!r1.ok) return r1;
+        return await syncMutation('VENDOR DIRECTORY', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 8,
+          rowValues: [it.statusKerjasama, it.statusPembayaran, it.layanan, it.catatan]
+        }, { silentStart: true });
+      } else if (action === 'update_rundown' || action === 'update_timeline') {
         const it = itemPayload;
-        if (it.tableType === 'timeline' || it.fase) {
-          if (it.rowIndex) {
-            await syncMutation('TIMELINE & RUNDOWN', 'updateRow', {
-              rowIndex: it.rowIndex,
-              startCol: 2,
-              rowValues: [it.no, it.fase, it.kategori, it.agenda, it.rincian || '', it.target || '', it.pic, it.status]
-            });
-          } else {
-            await syncMutation('TIMELINE & RUNDOWN', 'append', {
-              rowValues: ['', it.no, it.fase || 'H-Bulan', it.kategori, it.agenda, it.rincian || '', it.target || '', it.pic, it.status]
-            });
+        const isTimeline = (action === 'update_timeline' || it.tableType === 'timeline' || Boolean(it.fase));
+        if (isTimeline) {
+          let targetRow = Number(it.rowIndex || 0);
+          if (!targetRow) {
+            targetRow = resolveNewSheetRowSlot('timeline');
           }
-        } else {
-          if (it.rowIndex) {
-            await syncMutation('TIMELINE & RUNDOWN', 'updateRow', {
-              rowIndex: it.rowIndex,
-              startCol: 2,
-              rowValues: [it.no, it.waktu, it.durasi, it.sesi, it.deskripsi || '', it.lokasi || '', it.pic, it.vendor || '', it.status, it.catatan || '']
-            });
-          } else {
-            await syncMutation('TIMELINE & RUNDOWN', 'append', {
-              rowValues: ['', it.no, it.waktu || '08:00', it.durasi || '30 Menit', it.sesi, it.deskripsi || '', it.lokasi || 'Venue', it.pic, it.vendor || '', it.status, it.catatan || '']
-            });
+          if (!targetRow) {
+            const errMsg = 'Slot TIMELINE (baris 8-27) sudah penuh.';
+            showToast(errMsg, true);
+            return { ok: false, error: errMsg };
           }
+          it.rowIndex = targetRow;
+          const noVal = getExistingSheetRowNo('TIMELINE & RUNDOWN', targetRow, 1, it.no || (targetRow - 7));
+          return await syncMutation('TIMELINE & RUNDOWN', 'updateRow', {
+            rowIndex: targetRow,
+            startCol: 2,
+            rowValues: [noVal, it.fase || 'H-Bulan', it.kategori, it.agenda, it.rincian || '', it.target || '', it.pic, it.status]
+          });
         }
+        let targetRow = Number(it.rowIndex || 0);
+        if (!targetRow) {
+          targetRow = resolveNewSheetRowSlot('rundown');
+        }
+        if (!targetRow) {
+          const errMsg = 'Slot RUNDOWN (baris 31-55) sudah penuh.';
+          showToast(errMsg, true);
+          return { ok: false, error: errMsg };
+        }
+        it.rowIndex = targetRow;
+        const noVal = getExistingSheetRowNo('TIMELINE & RUNDOWN', targetRow, 1, it.no || (targetRow - 30));
+        return await syncMutation('TIMELINE & RUNDOWN', 'updateRow', {
+          rowIndex: targetRow,
+          startCol: 2,
+          rowValues: [noVal, it.waktu || '08:00', it.durasi || '30 Menit', it.sesi, it.deskripsi || '', it.lokasi || 'Venue', it.pic, it.vendor || '', it.status, it.catatan || '']
+        });
       }
-    } catch (e) {}
+      return { ok: false, error: 'Aksi sinkronisasi tidak dikenali: ' + action };
+    } catch (e) {
+      const errMsg = e.message || String(e);
+      showToast('Gagal mengirim ke Google Sheets: ' + errMsg, true);
+      return { ok: false, error: errMsg };
+    }
   }
 
   function renderSkeletonLoading(container, count) {
@@ -1992,9 +2285,7 @@
   }
 
   async function syncFromAppsScript(isSilentAutoSync) {
-    if (!state.config.scriptUrl) {
-      state.config.scriptUrl = (typeof SheetApi !== 'undefined' ? SheetApi.DEFAULT_ENDPOINT : 'https://script.google.com/macros/s/AKfycby6AFTahWtcamlrAdKO0d5NlnFbwgoLi1MXnOJpzZFV5ju5nIri8AYSyO4rWS2OkWZaZQ/exec');
-    }
+    state.config.scriptUrl = getGasEndpoint();
     const sp = document.getElementById('syncSpinner');
     if (sp) sp.classList.add('animate-spin');
     if (!isSilentAutoSync) {
@@ -2006,6 +2297,7 @@
         const parsed = SheetApi.parseAllTabs(json.data);
         if (parsed) {
           state.data = Object.assign(state.data, parsed);
+          mergeGuestExtras(state.data.tamu);
         }
         if (json.role) state.role = json.role;
         saveLocalState();
@@ -2657,11 +2949,32 @@
       pSelect.addEventListener('change', function() {
         if (pSelect.value !== 'Lainnya') {
           pInput.value = pSelect.value;
+          pInput.classList.add('hidden');
         } else {
           pInput.value = '';
+          pInput.classList.remove('hidden');
           pInput.focus();
         }
       });
+    }
+
+    async function withFormSubmitting(formEl, busyText, fn) {
+      const btn = formEl ? formEl.querySelector('button[type="submit"]') : null;
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+        btn.textContent = busyText || '⏳ Menyimpan ke Sheets...';
+      }
+      try {
+        return await fn();
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('opacity-70', 'cursor-not-allowed');
+          btn.innerHTML = origHtml;
+        }
+      }
     }
 
     ['editEstimasiInput', 'editRealisasiInput', 'maharTotalRealisasiInput'].forEach(function(id) {
@@ -2684,6 +2997,10 @@
 
     safeOn('formEditItem', 'submit', async function(e) {
       e.preventDefault();
+      const formEl = this;
+      const errEl = document.getElementById('editItemError');
+      if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
+
       const formMode = document.getElementById('editItemMode').value;
       const modKey = document.getElementById('editModuleSelect').value;
       const customNameVal = (document.getElementById('editCustomNameInput').value || '').trim();
@@ -2692,23 +3009,35 @@
         return;
       }
 
-      const estVal = parseDigits(document.getElementById('editEstimasiInput').value);
-      const realVal = parseDigits(document.getElementById('editRealisasiInput').value);
+      const estInpEl = document.getElementById('editEstimasiInput');
+      const realInpEl = document.getElementById('editRealisasiInput');
+      const estVal = parseDigits(estInpEl ? estInpEl.value : '');
+      const realVal = parseDigits(realInpEl ? realInpEl.value : '');
+      const rawRealText = (realInpEl ? realInpEl.value : '').trim();
       const stVal = document.getElementById('editStatusSelect').value;
       const picVal = (document.getElementById('editPicInput').value || '').trim();
       const noteVal = (document.getElementById('editNoteInput').value || '').trim();
 
       if (formMode === 'add') {
         const catVal = document.getElementById('addCategorySelect') ? document.getElementById('addCategorySelect').value : 'Umum';
+        const targetRow = resolveNewSheetRowSlot(modKey, catVal);
+        if (!targetRow) {
+          const fullMsg = 'Slot baris pada modul ' + modKey + ' di spreadsheet sudah penuh.';
+          if (errEl) { errEl.textContent = fullMsg; errEl.classList.remove('hidden'); }
+          showToast(fullMsg, true);
+          return;
+        }
+
         let newItem = null;
         let actionName = 'add_wedding_tracker';
 
         if (modKey === 'seserahan') {
+          const noVal = getExistingSheetRowNo('SESERAHAN', targetRow, 1, state.data.seserahan.length + 1);
           newItem = {
-            id: 'SS-R' + Date.now(),
+            id: 'SS-R' + targetRow,
             sheet: 'SESERAHAN',
-            rowIndex: 0,
-            no: state.data.seserahan.length + 1,
+            rowIndex: targetRow,
+            no: noVal,
             kategori: catVal,
             item: customNameVal,
             brand: picVal,
@@ -2719,11 +3048,12 @@
           state.data.seserahan.push(newItem);
           actionName = 'add_seserahan';
         } else if (modKey === 'preWedding') {
+          const noVal = getExistingSheetRowNo('PRE WEDDING', targetRow, 1, state.data.preWedding.length + 1);
           newItem = {
-            id: 'PW-R' + Date.now(),
+            id: 'PW-R' + targetRow,
             sheet: 'PRE WEDDING',
-            rowIndex: 0,
-            no: state.data.preWedding.length + 1,
+            rowIndex: targetRow,
+            no: noVal,
             kategori: catVal,
             item: customNameVal,
             pic: picVal || 'CPP & CPW Bersama',
@@ -2736,11 +3066,12 @@
           state.data.preWedding.push(newItem);
           actionName = 'update_pre_wedding';
         } else if (modKey === 'vendors') {
+          const noVal = getExistingSheetRowNo('VENDOR DIRECTORY', targetRow, 1, state.data.vendors.length + 1);
           newItem = {
-            id: 'VD-R' + Date.now(),
+            id: 'VD-R' + targetRow,
             sheet: 'VENDOR DIRECTORY',
-            rowIndex: 0,
-            no: state.data.vendors.length + 1,
+            rowIndex: targetRow,
+            no: noVal,
             kategori: catVal,
             nama: customNameVal,
             kontak: picVal,
@@ -2754,16 +3085,17 @@
           state.data.vendors.push(newItem);
           actionName = 'update_vendor';
         } else if (modKey === 'rundown') {
+          const noVal = getExistingSheetRowNo('TIMELINE & RUNDOWN', targetRow, 1, targetRow - 30);
           newItem = {
-            id: 'RD-R' + Date.now(),
-            rowIndex: 0,
-            no: state.data.rundown.length + 1,
-            waktu: '08:00',
+            id: 'RD-R' + targetRow,
+            rowIndex: targetRow,
+            no: noVal,
+            waktu: (estInpEl && estInpEl.value ? estInpEl.value.trim() : '') || '08:00',
             durasi: '30 Menit',
             sesi: customNameVal,
             deskripsi: noteVal,
-            lokasi: 'Venue',
-            pic: picVal,
+            lokasi: rawRealText || 'Venue',
+            pic: picVal || 'Wedding Organizer',
             vendor: '',
             status: stVal || 'Siap',
             catatan: ''
@@ -2771,26 +3103,28 @@
           state.data.rundown.push(newItem);
           actionName = 'update_rundown';
         } else if (modKey === 'timeline') {
+          const noVal = getExistingSheetRowNo('TIMELINE & RUNDOWN', targetRow, 1, targetRow - 7);
           newItem = {
-            id: 'TL-R' + Date.now(),
-            rowIndex: 0,
-            no: state.data.timeline.length + 1,
+            id: 'TL-R' + targetRow,
+            rowIndex: targetRow,
+            no: noVal,
             fase: 'H-Bulan',
             kategori: catVal,
             agenda: customNameVal,
             rincian: noteVal,
             target: '',
-            pic: picVal,
+            pic: picVal || 'CPP & CPW Bersama',
             status: stVal || 'Belum Mulai'
           };
           state.data.timeline.push(newItem);
-          actionName = 'update_rundown';
+          actionName = 'update_timeline';
         } else {
+          const noVal = getExistingSheetRowNo('WEDDING TRACKER', targetRow, 1, targetRow - 7);
           newItem = {
-            id: 'WT-R' + Date.now(),
+            id: 'WT-R' + targetRow,
             sheet: 'WEDDING TRACKER',
-            rowIndex: 0,
-            no: state.data.weddingTracker.length + 1,
+            rowIndex: targetRow,
+            no: noVal,
             kategori: catVal,
             item: customNameVal,
             pic: picVal || 'CPP & CPW Bersama',
@@ -2804,11 +3138,17 @@
           actionName = 'add_wedding_tracker';
         }
 
-        saveLocalState();
-        closeQuickModal();
-        refreshAll();
-        showToast('Item baru "' + customNameVal + '" berhasil ditambahkan ke ' + modKey + '!');
-        await pushToAppsScript(actionName, newItem);
+        await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+          saveLocalState();
+          refreshAll();
+          const syncRes = await pushToAppsScript(actionName, newItem);
+          closeQuickModal();
+          if (syncRes && syncRes.ok) {
+            showToast('✓ Item baru "' + customNameVal + '" tersimpan ke Google Sheets (Baris #' + targetRow + ')!');
+          } else {
+            showToast('⚠ Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || 'Periksa koneksi'), true);
+          }
+        });
         return;
       }
 
@@ -2840,7 +3180,7 @@
         it.status = stVal;
         it.pic = picVal;
         it.catatan = noteVal;
-        it.lokasi = realInp ? realInp.value : (it.lokasi || '');
+        it.lokasi = rawRealText || (it.lokasi || '');
         actionName = 'update_rundown';
       } else if (modKey === 'timeline') {
         if (customNameVal) it.agenda = customNameVal;
@@ -2860,15 +3200,22 @@
         actionName = (modKey === 'preWedding') ? 'update_pre_wedding' : 'update_wedding_tracker';
       }
 
-      saveLocalState();
-      closeQuickModal();
-      refreshAll();
-      showToast('Data berhasil diperbarui pada modul ' + modKey + '!');
-      await pushToAppsScript(actionName, it);
+      await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+        saveLocalState();
+        refreshAll();
+        const syncRes = await pushToAppsScript(actionName, it);
+        closeQuickModal();
+        if (syncRes && syncRes.ok) {
+          showToast('✓ Data "' + (customNameVal || it.item || it.nama || it.sesi || it.agenda) + '" diperbarui di Google Sheets!');
+        } else {
+          showToast('⚠ Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || 'Periksa koneksi'), true);
+        }
+      });
     });
 
     safeOn('formAddMahar', 'submit', async function(e) {
       e.preventDefault();
+      const formEl = this;
       const komp = document.getElementById('maharKomponenSelect').value;
       const targetQty = Math.max(0.01, Number(document.getElementById('maharTargetQtyInput').value) || 1);
       const tgl = document.getElementById('maharDateInput').value || new Date().toISOString().split('T')[0];
@@ -2877,85 +3224,117 @@
       const st = document.getElementById('maharStatusSelect').value;
       const acc = (document.getElementById('maharAccountInput').value || '').trim();
       const note = (document.getElementById('maharNoteInput').value || '').trim();
+      const editLogId = document.getElementById('maharLogEditId').value;
 
-      // Update Target Jumlah di maharTargets jika diubah
       const tObj = state.data.maharTargets.find(function(t) {
         if (komp === 'Saham BSSR') return /saham|bssr/i.test(t.instrumen);
         if (komp === 'Emas Hartadinata') return /emas|logam\s*mulia/i.test(t.instrumen);
         return /uang|tunai/i.test(t.instrumen);
       });
-      if (tObj && tObj.targetJumlah !== targetQty) {
-        tObj.targetJumlah = targetQty;
-        await pushToAppsScript('update_mahar_target', { rowIndex: tObj.rowIndex, targetJumlah: targetQty });
+      const targetChanged = Boolean(tObj && Number(tObj.targetJumlah) !== Number(targetQty));
+      const hasLogEntry = Boolean(vol > 0 && (totalRealisasi > 0 || st === 'Terencana'));
+
+      let nextLogRow = 0;
+      if (hasLogEntry && !editLogId) {
+        nextLogRow = resolveNewSheetRowSlot('maharLogs');
+        if (!nextLogRow) {
+          showToast('Slot Log Cicilan Mahar (baris 16-' + getMaharMaxLogRow() + ') di Sheet MAHAR penuh.', true);
+          return;
+        }
       }
 
-      const editLogId = document.getElementById('maharLogEditId').value;
-      if (vol > 0 && totalRealisasi > 0) {
-        const satuan = komp === 'Saham BSSR' ? 'Lot' : (komp === 'Emas Hartadinata' ? 'Gram' : 'Paket');
-        let price = 0;
-        if (komp === 'Saham BSSR') {
-          price = Math.round(totalRealisasi / (vol * 100)); // harga per lembar
-        } else {
-          price = Math.round(totalRealisasi / vol); // harga per gram / paket
+      await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+        let targetRes = { ok: true };
+        if (targetChanged && tObj) {
+          tObj.targetJumlah = targetQty;
+          targetRes = await pushToAppsScript('update_mahar_target', {
+            rowIndex: tObj.rowIndex,
+            targetJumlah: targetQty,
+            _opts: { skipPull: hasLogEntry, quietSuccessToast: hasLogEntry }
+          });
         }
 
-        if (editLogId) {
-          const targetLog = state.data.maharLogs.find(function(x) { return x.id === editLogId; });
-          if (targetLog) {
-            targetLog.tanggal = tgl;
-            targetLog.komponen = komp;
-            targetLog.volume = vol;
-            targetLog.satuan = satuan;
-            targetLog.hargaSatuan = price;
-            targetLog.status = st;
-            targetLog.totalRealisasi = totalRealisasi;
-            targetLog.sumberDana = acc;
-            targetLog.catatan = note;
-
-            recalculateMaharTargets();
-            saveLocalState();
-            closeQuickModal();
-            refreshAll();
-            showToast('Log transaksi #' + targetLog.no + ' diubah ke ' + st + '!');
-            await pushToAppsScript('update_mahar_log', targetLog);
-            return;
+        if (hasLogEntry) {
+          const satuan = komp === 'Saham BSSR' ? 'Lot' : (komp === 'Emas Hartadinata' ? 'Gram' : 'Paket');
+          let price = 0;
+          if (totalRealisasi > 0 && vol > 0) {
+            price = (komp === 'Saham BSSR')
+              ? Math.round(totalRealisasi / (vol * 100))
+              : Math.round(totalRealisasi / vol);
           }
+
+          if (editLogId) {
+            const targetLog = state.data.maharLogs.find(function(x) { return x.id === editLogId; });
+            if (targetLog) {
+              targetLog.tanggal = tgl;
+              targetLog.komponen = komp;
+              targetLog.volume = vol;
+              targetLog.satuan = satuan;
+              targetLog.hargaSatuan = price;
+              targetLog.status = st;
+              targetLog.totalRealisasi = totalRealisasi;
+              targetLog.sumberDana = acc;
+              targetLog.catatan = note;
+
+              recalculateMaharTargets();
+              saveLocalState();
+              refreshAll();
+              const logRes = await pushToAppsScript('update_mahar_log', targetLog);
+              closeQuickModal();
+              if (logRes && logRes.ok) {
+                showToast('✓ Log transaksi Mahar #' + targetLog.no + ' diperbarui di Google Sheets!');
+              } else {
+                showToast('⚠ Tersimpan lokal, gagal kirim ke Sheets: ' + ((logRes && logRes.error) || ''), true);
+              }
+              return;
+            }
+          }
+
+          const noVal = getExistingSheetRowNo('MAHAR', nextLogRow, 1, nextLogRow - 15);
+          const newLog = {
+            id: 'ML-R' + nextLogRow,
+            rowIndex: nextLogRow,
+            no: noVal,
+            tanggal: tgl,
+            komponen: komp,
+            volume: vol,
+            satuan: satuan,
+            hargaSatuan: price,
+            status: st,
+            totalRealisasi: totalRealisasi,
+            sumberDana: acc,
+            catatan: note
+          };
+
+          state.data.maharLogs.push(newLog);
+          recalculateMaharTargets();
+          saveLocalState();
+          refreshAll();
+          const addRes = await pushToAppsScript('add_mahar_log', newLog);
+          closeQuickModal();
+          if (addRes && addRes.ok) {
+            showToast('✓ Cicilan Mahar (' + komp + ') tersimpan di Baris #' + nextLogRow + ' Google Sheets!');
+          } else {
+            showToast('⚠ Tersimpan lokal, gagal kirim ke Sheets: ' + ((addRes && addRes.error) || ''), true);
+          }
+          return;
         }
 
-        const nextRow = 16 + state.data.maharLogs.length;
-        const newLog = {
-          id: 'ML-R' + Date.now(),
-          rowIndex: nextRow,
-          no: state.data.maharLogs.length + 1,
-          tanggal: tgl,
-          komponen: komp,
-          volume: vol,
-          satuan: satuan,
-          hargaSatuan: price,
-          status: st,
-          totalRealisasi: totalRealisasi,
-          sumberDana: acc,
-          catatan: note
-        };
-
-        state.data.maharLogs.push(newLog);
         recalculateMaharTargets();
         saveLocalState();
         closeQuickModal();
         refreshAll();
-        showToast('Cicilan & Target Mahar (' + komp + ') berhasil dicatat!');
-        await pushToAppsScript('add_mahar_log', newLog);
-      } else {
-        recalculateMaharTargets();
-        saveLocalState();
-        closeQuickModal();
-        refreshAll();
-        showToast('Target Mahar (' + komp + ': ' + targetQty + ') berhasil diperbarui!');
-      }
+        if (targetChanged && targetRes && !targetRes.ok) {
+          showToast('⚠ Target lokal berubah, gagal update ke Sheets: ' + (targetRes.error || ''), true);
+        } else {
+          showToast('✓ Target Mahar (' + komp + ': ' + targetQty + ') berhasil diperbarui!');
+        }
+      });
     });
 
     safeOn('formGuestModal', 'submit', async function(e) {
       e.preventDefault();
+      const formEl = this;
       const editId = document.getElementById('guestEditId').value;
       const side = document.getElementById('guestSideSelect').value;
       const rawCircle = document.getElementById('guestCircleSelect').value;
@@ -2989,13 +3368,20 @@
           targetGuest.instagram = igVal;
         }
       } else {
-        const sameSideCount = state.data.tamu.filter(function(x) { return x.side === side && x.kelompok === 'Tamu Umum'; }).length;
+        const slotRow = resolveNewSheetRowSlot('tamu', null, { side: side, isFam: isFam });
+        if (!slotRow) {
+          showToast('Slot daftar tamu ' + side + ' (' + kelompok + ') di Sheet TAMU sudah penuh.', true);
+          return;
+        }
+        const noColIdx = (side === 'CPP') ? 1 : 8;
+        const defaultNo = isFam ? (slotRow - 9) : (slotRow - 22);
+        const noVal = getExistingSheetRowNo('TAMU', slotRow, noColIdx, defaultNo);
         targetGuest = {
-          id: 'TM-' + side + '-GEN-' + Date.now(),
-          rowIndex: 23 + sameSideCount,
+          id: 'TM-' + side + (isFam ? '-FAM-R' : '-GEN-R') + slotRow,
+          rowIndex: slotRow,
           side: side,
-          kelompok: 'Tamu Umum',
-          no: sameSideCount + 1,
+          kelompok: kelompok,
+          no: noVal,
           kategori: circle,
           nama: nama,
           pax: pax,
@@ -3007,11 +3393,24 @@
         state.data.tamu.push(targetGuest);
       }
 
-      saveLocalState();
-      closeQuickModal();
-      refreshAll();
-      showToast('Data tamu "' + nama + '" berhasil disimpan!');
-      if (targetGuest) await pushToAppsScript('update_tamu', targetGuest);
+      if (targetGuest) {
+        if (!state.guestExtras) state.guestExtras = {};
+        const keyByName = side + '|' + nama.toLowerCase();
+        state.guestExtras[targetGuest.id] = { whatsapp: waVal, instagram: igVal };
+        state.guestExtras[keyByName] = { whatsapp: waVal, instagram: igVal };
+      }
+
+      await withFormSubmitting(formEl, '⏳ Menyimpan ke Sheets...', async function() {
+        saveLocalState();
+        refreshAll();
+        const syncRes = targetGuest ? await pushToAppsScript('update_tamu', targetGuest) : { ok: false };
+        closeQuickModal();
+        if (syncRes && syncRes.ok) {
+          showToast('✓ Tamu "' + nama + '" tersimpan ke Google Sheets (Baris #' + targetGuest.rowIndex + ')!');
+        } else {
+          showToast('⚠ Tersimpan lokal, gagal kirim ke Google Sheets: ' + ((syncRes && syncRes.error) || ''), true);
+        }
+      });
     });
 
 // openRoleUnlockModal defined above
@@ -3130,16 +3529,12 @@
     });
 
     safeOn('btnSaveSyncConfig', 'click', function() {
-      state.config.scriptUrl = (document.getElementById('cfgScriptUrl').value || '').trim();
+      state.config.scriptUrl = getGasEndpoint();
       state.config.pin = (document.getElementById('cfgPinInput').value || '2027').trim();
       if (state.config.pin === '270627') state.role = 'couple';
       else state.role = 'committee';
       saveLocalState();
-      if (state.config.scriptUrl) syncFromAppsScript(false);
-      else {
-        refreshAll();
-        showToast('Pengaturan disimpan.');
-      }
+      syncFromAppsScript(false);
     });
 
     safeOn('btnSaveMasterMeta', 'click', async function() {
@@ -3181,8 +3576,6 @@
     } catch (eCd) {}
 
     try {
-      const elUrl = document.getElementById('cfgScriptUrl');
-      if (elUrl) elUrl.value = state.config.scriptUrl || '';
       const elPin = document.getElementById('cfgPinInput');
       if (elPin) elPin.value = state.config.pin || '';
     } catch (e) {}

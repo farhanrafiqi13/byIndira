@@ -1,10 +1,10 @@
-const CACHE_NAME = 'v2.2-primer';
+const CACHE_NAME = 'v2.3-syncfix';
 const ASSETS = [
   './',
   './index.html',
-  './styles.css?v=2.2-primer',
-  './sheetApi.js?v=2.2-primer',
-  './app.js?v=2.2-primer',
+  './styles.css?v=2.3-syncfix',
+  './sheetApi.js?v=2.3-syncfix',
+  './app.js?v=2.3-syncfix',
   './manifest.json',
   './logo.png',
   './icons/icon-192.png',
